@@ -1,5 +1,6 @@
 package main;
 
+import entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -19,14 +20,10 @@ public final class GamePanel extends JPanel implements Runnable{
     
     private KeyHandler keyH = new KeyHandler();
     private Thread gameThread;
+    private Player player = new Player(this, keyH);
     
     //FPS
     private final int FPS = 60;
-    
-    //Player default position
-    private int playerX = 100;
-    private int playerY = 100;
-    private int playerSpeed = 4;
     
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -44,6 +41,7 @@ public final class GamePanel extends JPanel implements Runnable{
     @Override
     public void run() {
         
+        //Game Loop Delta Strategy
         double drawInterval = 1000000000/FPS;
         double delta = 0;
         long lastTime = System.nanoTime();
@@ -75,15 +73,7 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     
     public void update(){
-        if(keyH.upPressed){
-            playerY -= playerSpeed;
-        }else if(keyH.downPressed){
-            playerY += playerSpeed;
-        }else if(keyH.leftPressed){
-            playerX -= playerSpeed;
-        }else if(keyH.rightPressed){
-            playerX += playerSpeed;
-        }
+        player.update();
     }
     
     @Override
@@ -91,8 +81,39 @@ public final class GamePanel extends JPanel implements Runnable{
         super.paintComponent(g);
         
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.white);
-        g2.fillRect(playerX, playerY, tileSize, tileSize);
+        player.draw(g2);
         g2.dispose();
+    }
+    
+    //Getters
+    public int getOriginalTileSize() {
+        return originalTileSize;
+    }
+    public int getScale() {
+        return scale;
+    }
+    public int getTileSize() {
+        return tileSize;
+    }
+    public int getMaxScreenCol() {
+        return maxScreenCol;
+    }
+    public int getMaxScreenRow() {
+        return maxScreenRow;
+    }
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+    public KeyHandler getKeyH() {
+        return keyH;
+    }
+    public Player getPlayer() {
+        return player;
+    }
+    public int getFPS() {
+        return FPS;
     }
 }
