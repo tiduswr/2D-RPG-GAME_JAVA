@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
+import tile.TileManager;
 
 public final class GamePanel extends JPanel implements Runnable{
     //Screen Settings
@@ -21,6 +22,7 @@ public final class GamePanel extends JPanel implements Runnable{
     private KeyHandler keyH = new KeyHandler();
     private Thread gameThread;
     private Player player = new Player(this, keyH);
+    private TileManager tileM = new TileManager(this);
     
     //FPS
     private final int FPS = 60;
@@ -81,6 +83,7 @@ public final class GamePanel extends JPanel implements Runnable{
         super.paintComponent(g);
         
         Graphics2D g2 = (Graphics2D) g;
+        tileM.draw(g2);
         player.draw(g2);
         g2.dispose();
     }
