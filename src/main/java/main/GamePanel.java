@@ -24,6 +24,12 @@ public final class GamePanel extends JPanel implements Runnable{
     private Player player = new Player(this, keyH);
     private TileManager tileM = new TileManager(this);
     
+    //World Settings
+    private final int maxWorldCol = 50;
+    private final int maxWorldRow = 50;
+    private final int worldWidth = tileSize * maxWorldCol;
+    private final int worldHeight = tileSize * maxWorldRow;
+    
     //FPS
     private final int FPS = 60;
     
@@ -118,5 +124,17 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     public int getFPS() {
         return FPS;
+    }
+    public int getMaxWorldCol() {
+        return maxWorldCol;
+    }
+    public int getMaxWorldRow() {
+        return maxWorldRow;
+    }
+    public int getWorldWidth() {
+        return worldWidth;
+    }
+    public int getWorldHeight() {
+        return worldHeight;
     }
 }
