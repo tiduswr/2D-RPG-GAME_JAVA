@@ -14,30 +14,31 @@ public final class GamePanel extends JPanel implements Runnable{
     final int originalTileSize = 16; //16x16 Size of Player Character, NPCS, Enemys, Itens...
     final int scale = 3;
     
+    //Window Settings
     final int tileSize = originalTileSize * scale; // Scale 16x16 to 48x48
     final int maxScreenCol = 16; //Horizontal Size
     final int maxScreenRow = 12; //Vertical Size
     final int screenWidth = tileSize * maxScreenCol; //768 Pixels
     final int screenHeight = tileSize * maxScreenRow;// 576 Pixels
+        
+    //World Settings
+    private final int maxWorldCol = 50;
+    private final int maxWorldRow = 50;
     
+    //FPS
+    private final int FPS = 60;
+    
+    //System Game
     private Thread gameThread;
-    
+    private Sound sound = new Sound();
     private KeyHandler keyH = new KeyHandler();
     private CollisionChecker cChecker = new CollisionChecker(this);
     private TileManager tileM = new TileManager(this);
     
+    //Player Sttings
     private Player player = new Player(this, keyH);
     private AssetSetter assetSetter = new AssetSetter(this);
     private SuperObject obj[] = new SuperObject[10]; //Pode ser mostrados até 10 objetos por vez no jogo
-    
-    //World Settings
-    private final int maxWorldCol = 50;
-    private final int maxWorldRow = 50;
-    private final int worldWidth = tileSize * maxWorldCol;
-    private final int worldHeight = tileSize * maxWorldRow;
-    
-    //FPS
-    private final int FPS = 60;
     
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -55,6 +56,7 @@ public final class GamePanel extends JPanel implements Runnable{
     
     public void setupGame(){
         assetSetter.setObject();
+        playMusic(0);
     }
     
     @Override
@@ -117,6 +119,22 @@ public final class GamePanel extends JPanel implements Runnable{
         g2.dispose();
     }
     
+    //Sound Handlers
+    public void playMusic(int i){
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+    
+    public void stopMusic(){
+        sound.stop();
+    }
+    
+    public void playSoundEffect(int i){
+        sound.setFile(i);
+        sound.play();
+    }
+    
     //Getters
     public int getOriginalTileSize() {
         return originalTileSize;
@@ -153,12 +171,6 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     public int getMaxWorldRow() {
         return maxWorldRow;
-    }
-    public int getWorldWidth() {
-        return worldWidth;
-    }
-    public int getWorldHeight() {
-        return worldHeight;
     }
     public CollisionChecker getcChecker() {
         return cChecker;

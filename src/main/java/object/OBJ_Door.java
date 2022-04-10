@@ -23,6 +23,7 @@ public class OBJ_Door extends SuperObject{
         super.executeAction();
         if(gp.getPlayer().getQtdKeys() > 0){
             gp.getPlayer().removeKeys(1);
+            gp.playSoundEffect(5);
             return true;
         }
         return false;

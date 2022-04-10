@@ -26,7 +26,11 @@ public class Player extends Entity{
         this.screenY = gp.getScreenHeight()/2 - (gp.getTileSize()/2);
         
         //Rectangle that define the pixels of Collision in Player
-        solidArea = new Rectangle(8, 16, 32, 32);
+        solidArea = new Rectangle();
+        solidArea.x = 8;
+        solidArea.y = 12;
+        solidArea.width = 32;
+        solidArea.height = 32;
         setSolidAreaDefaultX(solidArea.x);
         setSolidAreaDefaultY(solidArea.y);
         

@@ -20,6 +20,7 @@ public class OBJ_Key extends SuperObject{
     public boolean executeAction() {
         super.executeAction();
         gp.getPlayer().addKeys(1);
+        gp.playSoundEffect(6);
         System.out.println(gp.getPlayer().getQtdKeys());
         return true;
     }
