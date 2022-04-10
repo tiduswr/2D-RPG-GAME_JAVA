@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
+import object.SuperObject;
 import tile.TileManager;
 
 public final class GamePanel extends JPanel implements Runnable{
@@ -19,11 +20,15 @@ public final class GamePanel extends JPanel implements Runnable{
     final int screenWidth = tileSize * maxScreenCol; //768 Pixels
     final int screenHeight = tileSize * maxScreenRow;// 576 Pixels
     
+    private Thread gameThread;
+    
     private KeyHandler keyH = new KeyHandler();
     private CollisionChecker cChecker = new CollisionChecker(this);
-    private Thread gameThread;
-    private Player player = new Player(this, keyH);
     private TileManager tileM = new TileManager(this);
+    
+    private Player player = new Player(this, keyH);
+    private AssetSetter assetSetter = new AssetSetter(this);
+    private SuperObject obj[] = new SuperObject[10]; //Pode ser mostrados até 10 objetos por vez no jogo
     
     //World Settings
     private final int maxWorldCol = 50;
@@ -40,11 +45,16 @@ public final class GamePanel extends JPanel implements Runnable{
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
+        setupGame();
     }
     
     public void startGameThread(){
         gameThread = new Thread(this);
         gameThread.start();
+    }
+    
+    public void setupGame(){
+        assetSetter.setObject();
     }
     
     @Override
@@ -90,8 +100,20 @@ public final class GamePanel extends JPanel implements Runnable{
         super.paintComponent(g);
         
         Graphics2D g2 = (Graphics2D) g;
+        
+        //TILE
         tileM.draw(g2);
+        
+        //OBJECT
+        for(SuperObject o : obj){
+            if(o != null){
+                o.draw(g2);
+            }
+        }
+        
+        //PLAYER
         player.draw(g2);
+        
         g2.dispose();
     }
     
@@ -143,5 +165,11 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     public TileManager getTileM() {
         return tileM;
+    }
+    public AssetSetter getAssetSetter() {
+        return assetSetter;
+    }
+    public SuperObject[] getObj() {
+        return obj;
     }
 }

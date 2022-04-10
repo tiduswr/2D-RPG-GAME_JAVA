@@ -1,6 +1,7 @@
 package main;
 
 import entity.Entity;
+import object.SuperObject;
 
 public class CollisionChecker {
     
@@ -52,5 +53,79 @@ public class CollisionChecker {
                 e.setCollisionOn(gp.getTileM().getTile(t1).isCollision() || gp.getTileM().getTile(t2).isCollision());
                 break;
         }
+    }
+    
+    public int checkObject(Entity e, boolean player){
+        
+        int i = 0;
+        int index = -1;
+        
+        for(SuperObject o : gp.getObj()){
+            if(o != null){
+                //Get entity solid area position
+                e.getSolidArea().x = e.getWorldX() + e.getSolidArea().x;
+                e.getSolidArea().y = e.getWorldY() + e.getSolidArea().y;
+                
+                //Get object solid area pos
+                o.getSolidArea().x = o.getWorldX() + o.getSolidArea().x;
+                o.getSolidArea().y = o.getWorldY() + o.getSolidArea().y;
+                
+                switch(e.getDirection()){
+                    case "up":
+                        e.getSolidArea().y -= e.getSpeed();
+                        if(e.getSolidArea().intersects(o.getSolidArea())){
+                            if(o.isCollision()){
+                                e.setCollisionOn(true);
+                            }
+                            if(player){
+                                index = i;
+                            }
+                        }
+                        break;
+                    case "down":
+                        e.getSolidArea().y += e.getSpeed();
+                        if(e.getSolidArea().intersects(o.getSolidArea())){
+                            if(o.isCollision()){
+                                e.setCollisionOn(true);
+                            }
+                            if(player){
+                                index = i;
+                            }
+                        }
+                        break;
+                    case "left":
+                        e.getSolidArea().x -= e.getSpeed();
+                        if(e.getSolidArea().intersects(o.getSolidArea())){
+                            if(o.isCollision()){
+                                e.setCollisionOn(true);
+                            }
+                            if(player){
+                                index = i;
+                            }
+                        }
+                        break;
+                    case "right":
+                        e.getSolidArea().x += e.getSpeed();
+                        if(e.getSolidArea().intersects(o.getSolidArea())){
+                            if(o.isCollision()){
+                                e.setCollisionOn(true);
+                            }
+                            if(player){
+                                index = i;
+                            }
+                        }
+                        break;
+                }                
+                
+                //Reset solid area position
+                e.getSolidArea().x = e.getSolidAreaDefaultX();
+                e.getSolidArea().y = e.getSolidAreaDefaultY();
+                o.getSolidArea().x = o.getSolidAreaDefaultX();
+                o.getSolidArea().y = o.getSolidAreaDefaultY();
+                
+            }
+            i++;
+        }
+        return index;
     }
 }

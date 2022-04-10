@@ -9,6 +9,7 @@ public class Entity {
     protected BufferedImage u1, u2, l1, l2, r1, r2, d1, d2;
     protected String direction;
     protected Rectangle solidArea;
+    private int solidAreaDefaultX, solidAreaDefaultY;
     protected boolean collisionOn = false;
     
     protected int spriteCounter = 0;
@@ -44,5 +45,16 @@ public class Entity {
     public String getDirection() {
         return direction;
     }
-    
+    public int getSolidAreaDefaultX() {
+        return solidAreaDefaultX;
+    }
+    public void setSolidAreaDefaultX(int solidAreaDefaultX) {
+        this.solidAreaDefaultX = solidAreaDefaultX;
+    }
+    public int getSolidAreaDefaultY() {
+        return solidAreaDefaultY;
+    }
+    public void setSolidAreaDefaultY(int solidAreaDefaultY) {
+        this.solidAreaDefaultY = solidAreaDefaultY;
+    }
 }

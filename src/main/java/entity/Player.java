@@ -1,6 +1,5 @@
 package entity;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -10,10 +9,12 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
+import object.Action;
 
 public class Player extends Entity{
     private GamePanel gp;
     private KeyHandler keyH;
+    private int qtdKeys = 0;
     
     private final int screenX, screenY;
     
@@ -26,6 +27,8 @@ public class Player extends Entity{
         
         //Rectangle that define the pixels of Collision in Player
         solidArea = new Rectangle(8, 16, 32, 32);
+        setSolidAreaDefaultX(solidArea.x);
+        setSolidAreaDefaultY(solidArea.y);
         
         setDefaultValues();
         getPlayerImages();
@@ -67,9 +70,15 @@ public class Player extends Entity{
                 direction = "right";
             }
             
-            //Check Collision
+            //Check Tile Collision
             collisionOn = false;
             gp.getcChecker().checkTile(this);
+            
+            //Check object collision
+            int objIndex = gp.getcChecker().checkObject(this, true);
+            pickUpObject(objIndex);
+                    
+            //Only move if collisionOn is true
             switch(direction){
                 case "up":
                     if(!collisionOn) worldY -= speed;
@@ -97,6 +106,13 @@ public class Player extends Entity{
             }
         }
     
+    }
+    
+    public void pickUpObject(int i){
+        if(i != -1){
+            Action a = gp.getObj()[i];
+            if(a.executeAction()) gp.getObj()[i] = null;
+        }
     }
     
     public void draw(Graphics2D g2){
@@ -134,7 +150,6 @@ public class Player extends Entity{
             default:
                 break;
         }
-        
         g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
     }
 
@@ -143,5 +158,14 @@ public class Player extends Entity{
     }
     public int getScreenY() {
         return screenY;
+    }
+    public int getQtdKeys() {
+        return qtdKeys;
+    }
+    public void addKeys(int value){
+        qtdKeys += value;
+    }
+    public void removeKeys(int value){
+        qtdKeys -= value;
     }
 }
