@@ -5,4 +5,4 @@ Project of an RPG game implemented by Harllem Nascimento for Study of Java Swing
 
 <img src="https://i.ibb.co/26Cy22C/example.png" />
 
-<body>Project created based on JAVA RPG GAME - Blue Boy Adventure from <a href = "https://www.tutorialspoint.com">RyiSnow</a></body>
+<body>Project created based on JAVA RPG GAME - Blue Boy Adventure from <a href = "https://www.youtube.com/channel/UCS94AD0gxLakurK-6jnqV1w">RyiSnow</a></body>
