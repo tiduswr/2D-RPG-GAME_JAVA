@@ -23,8 +23,11 @@ public class OBJ_Door extends SuperObject{
         super.executeAction();
         if(gp.getPlayer().getQtdKeys() > 0){
             gp.getPlayer().removeKeys(1);
+            gp.getGameUI().showMessage("Door Openned!");
             gp.playSoundEffect(5);
             return true;
+        }else{
+            gp.getGameUI().showMessage("You need a Key!");
         }
         return false;
     }

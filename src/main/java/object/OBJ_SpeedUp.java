@@ -20,6 +20,7 @@ public class OBJ_SpeedUp extends SuperObject{
     public boolean executeAction() {
         super.executeAction();
         gp.getPlayer().setSpeed(gp.getPlayer().getSpeed() + 1);
+        gp.getGameUI().showMessage("Player Speed Increased!");
         gp.playSoundEffect(7);
         return true;
     }

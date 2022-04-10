@@ -21,6 +21,7 @@ public class OBJ_Key extends SuperObject{
         super.executeAction();
         gp.getPlayer().addKeys(1);
         gp.playSoundEffect(6);
+        gp.getGameUI().showMessage("You got a Key!");
         System.out.println(gp.getPlayer().getQtdKeys());
         return true;
     }

@@ -17,5 +17,10 @@ public class OBJ_Chest extends SuperObject{
             Logger.getLogger(OBJ_Key.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+    @Override
+    public boolean executeAction() {
+       gp.getGameUI().setGameFinished(true);
+       gp.playSoundEffect(4);
+       return true;
+    }
 }
