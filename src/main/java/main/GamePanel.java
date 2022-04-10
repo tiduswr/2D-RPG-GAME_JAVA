@@ -20,6 +20,7 @@ public final class GamePanel extends JPanel implements Runnable{
     final int screenHeight = tileSize * maxScreenRow;// 576 Pixels
     
     private KeyHandler keyH = new KeyHandler();
+    private CollisionChecker cChecker = new CollisionChecker(this);
     private Thread gameThread;
     private Player player = new Player(this, keyH);
     private TileManager tileM = new TileManager(this);
@@ -136,5 +137,11 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     public int getWorldHeight() {
         return worldHeight;
+    }
+    public CollisionChecker getcChecker() {
+        return cChecker;
+    }
+    public TileManager getTileM() {
+        return tileM;
     }
 }

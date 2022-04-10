@@ -2,6 +2,7 @@ package entity;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -22,6 +23,9 @@ public class Player extends Entity{
         
         this.screenX = gp.getScreenWidth()/2 - (gp.getTileSize()/2);
         this.screenY = gp.getScreenHeight()/2 - (gp.getTileSize()/2);
+        
+        //Rectangle that define the pixels of Collision in Player
+        solidArea = new Rectangle(8, 16, 32, 32);
         
         setDefaultValues();
         getPlayerImages();
@@ -51,22 +55,36 @@ public class Player extends Entity{
     
     public void update(){
         
-        if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed){
+        if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed){            
             //Get user input
             if(keyH.upPressed){
                 direction = "up";
-                worldY -= speed;
             }else if(keyH.downPressed){
                 direction = "down";
-                worldY += speed;
             }else if(keyH.leftPressed){
                 direction = "left";
-                worldX -= speed;
             }else if(keyH.rightPressed){
                 direction = "right";
-                worldX += speed;
             }
-
+            
+            //Check Collision
+            collisionOn = false;
+            gp.getcChecker().checkTile(this);
+            switch(direction){
+                case "up":
+                    if(!collisionOn) worldY -= speed;
+                    break;
+                case "down":
+                   if(!collisionOn) worldY += speed;
+                   break;
+                case "left":
+                    if(!collisionOn) worldX -= speed;
+                    break;
+                case "right":
+                    if(!collisionOn) worldX += speed;
+                    break;
+            }
+            
             //Update sprites
             spriteCounter++;
             if(spriteCounter > 12){

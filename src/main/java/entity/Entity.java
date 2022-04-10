@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public class Entity {
@@ -7,6 +8,8 @@ public class Entity {
     
     protected BufferedImage u1, u2, l1, l2, r1, r2, d1, d2;
     protected String direction;
+    protected Rectangle solidArea;
+    protected boolean collisionOn = false;
     
     protected int spriteCounter = 0;
     public int spriteNum = 1;
@@ -29,4 +32,17 @@ public class Entity {
     public void setSpeed(int speed) {
         this.speed = speed;
     }
+    public Rectangle getSolidArea() {
+        return solidArea;
+    }
+    public boolean isCollisionOn() {
+        return collisionOn;
+    }
+    public void setCollisionOn(boolean collisionOn) {
+        this.collisionOn = collisionOn;
+    }
+    public String getDirection() {
+        return direction;
+    }
+    
 }

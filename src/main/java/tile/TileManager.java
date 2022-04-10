@@ -23,26 +23,37 @@ public final class TileManager {
         loadMap("/maps/world01.txt");
     }
     
+    public int getMapTileNum(int row, int col){
+        return mapTileNum[row][col];
+    }
+    
+    public Tile getTile(int tileNum){
+        return tile[tileNum];
+    }
+    
     public void getTileImage(){
         
         try {
             tile[0] = new Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png"));
+            tile[0].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png")));
             
             tile[1] = new Tile();
-            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png"));
+            tile[1].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png")));
+            tile[1].setCollision(true);
             
             tile[2] = new Tile();
-            tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/water.png"));
+            tile[2].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/water.png")));
+            tile[2].setCollision(true);
             
             tile[3] = new Tile();
-            tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png"));
-           
+            tile[3].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png")));
+            
             tile[4] = new Tile();
-            tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
+            tile[4].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png")));
+            tile[4].setCollision(true);
             
             tile[5] = new Tile();
-            tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png"));
+            tile[5].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png")));
         } catch (IOException ex) {
             Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, ex);
         }
