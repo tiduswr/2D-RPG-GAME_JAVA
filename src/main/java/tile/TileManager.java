@@ -1,7 +1,6 @@
 package tile;
 
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,10 +18,10 @@ public final class TileManager {
     
     public TileManager(GamePanel gp){
         this.gp = gp;
-        tile = new Tile[10];
+        tile = new Tile[50];
         mapTileNum = new int[gp.getMaxWorldCol()][gp.getMaxWorldRow()];
         getTileImage();
-        loadMap("/maps/world01.txt");
+        loadMap("/maps/worldMapv2.txt");
     }
     
     public int getMapTileNum(int row, int col){
@@ -34,12 +33,40 @@ public final class TileManager {
     }
     
     public void getTileImage(){
-        makeTile(0, "grass.png", false);
-        makeTile(1, "wall.png", true);
-        makeTile(2, "water.png", true);
-        makeTile(3, "earth.png", false);
-        makeTile(4, "tree.png", true);
-        makeTile(5, "sand.png", false);
+        
+        makeTile(0, "grass00.png", false);
+        makeTile(1, "grass01.png", false);
+        makeTile(2, "water00.png", true);
+        makeTile(3, "water01.png", true);
+        makeTile(4, "water02.png", true);
+        makeTile(5, "water03.png", true);
+        makeTile(6, "water04.png", true);
+        makeTile(7, "water05.png", true);
+        makeTile(8, "water06.png", true);
+        makeTile(9, "water07.png", true);
+        makeTile(10, "water08.png", true);
+        makeTile(11, "water09.png", true);
+        makeTile(12, "water10.png", true);
+        makeTile(13, "water11.png", true);
+        makeTile(14, "water12.png", true);
+        makeTile(15, "water13.png", true);
+        makeTile(16, "road00.png", false);
+        makeTile(17, "road01.png", false);
+        makeTile(18, "road02.png", false);
+        makeTile(19, "road03.png", false);
+        makeTile(20, "road04.png", false);
+        makeTile(21, "road05.png", false);
+        makeTile(22, "road06.png", false);
+        makeTile(23, "road07.png", false);
+        makeTile(24, "road08.png", false);
+        makeTile(25, "road09.png", false);
+        makeTile(26, "road10.png", false);
+        makeTile(27, "road11.png", false);
+        makeTile(28, "road12.png", false);
+        makeTile(29, "earth.png", false);
+        makeTile(30, "wall.png", true);
+        makeTile(31, "tree.png", true);
+        
     }
     
     private void makeTile(int index, String imgName, boolean collision){

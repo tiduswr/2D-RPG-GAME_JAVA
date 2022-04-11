@@ -15,7 +15,7 @@ import tile.Tile;
 import tile.TileManager;
 
 public class Player extends Entity{
-    private GamePanel gp;
+    
     private KeyHandler keyH;
     private int qtdKeys = 0;
     private int standCounter = 0;
@@ -23,7 +23,7 @@ public class Player extends Entity{
     private final int screenX, screenY;
     
     public Player(GamePanel gp, KeyHandler keyH){
-        this.gp = gp;
+        super(gp);
         this.keyH = keyH;
         
         this.screenX = gp.getScreenWidth()/2 - (gp.getTileSize()/2);

@@ -6,16 +6,22 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+import main.GamePanel;
 
 public class Entity {
     protected int worldX, worldY, speed;
     
+    protected GamePanel gp;
     protected BufferedImage u1, u2, l1, l2, r1, r2, d1, d2;
     protected String direction;
     protected Rectangle solidArea;
-    private int solidAreaDefaultX, solidAreaDefaultY;
+    protected int solidAreaDefaultX, solidAreaDefaultY;
     protected boolean collisionOn = false;
     protected Stroke collisionRectStroke = new BasicStroke(2);
+    
+    public Entity(GamePanel gp){
+        this.gp = gp;
+    }
     
     protected int spriteCounter = 0;
     public int spriteNum = 1;
@@ -70,6 +76,6 @@ public class Entity {
         g2.setColor(Color.red);
         g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         g2.setStroke(oldStroke);
-        g2.drawString("X: " + worldX + " Y: " + worldY, screenX, screenY - 1);
+        g2.drawString("X: " + worldX/gp.getTileSize() + " Y: " + worldY/gp.getTileSize(), screenX, screenY - 1);
     }
 }

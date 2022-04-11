@@ -16,13 +16,13 @@ public class AssetSetter {
     public void setObject(){
         spawnObject(new OBJ_Key(gp), 23, 7, 0);
         spawnObject(new OBJ_Key(gp), 23, 40, 1);
-        spawnObject(new OBJ_Key(gp), 37, 7, 2);
+        spawnObject(new OBJ_Key(gp), 37, 8, 2);
         
-        spawnObject(new OBJ_Door(gp), 10, 11, 3);
+        spawnObject(new OBJ_Door(gp), 10, 12, 3);
         spawnObject(new OBJ_Door(gp), 8, 28, 4);
-        spawnObject(new OBJ_Door(gp), 12, 22, 5);
+        spawnObject(new OBJ_Door(gp), 12, 23, 5);
         
-        spawnObject(new OBJ_Chest(gp), 10, 7, 6);
+        spawnObject(new OBJ_Chest(gp), 10, 8, 6);
         
         spawnObject(new OBJ_SpeedUp(gp), 37, 42, 7);
     }
