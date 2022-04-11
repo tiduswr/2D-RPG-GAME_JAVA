@@ -36,6 +36,7 @@ public final class GamePanel extends JPanel implements Runnable{
     private CollisionChecker cChecker = new CollisionChecker(this);
     private TileManager tileM = new TileManager(this);
     private UI ui = new UI(this);
+    private boolean showCollision = true;
     
     //Player Sttings
     private Player player = new Player(this, keyH);
@@ -197,5 +198,8 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     public Thread setGameThread(Thread value) {
         return gameThread = value;
+    }
+    public boolean showCollision(){
+        return showCollision;
     }
 }

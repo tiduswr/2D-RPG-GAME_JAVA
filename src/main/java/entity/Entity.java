@@ -1,6 +1,10 @@
 package entity;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 
 public class Entity {
@@ -11,6 +15,7 @@ public class Entity {
     protected Rectangle solidArea;
     private int solidAreaDefaultX, solidAreaDefaultY;
     protected boolean collisionOn = false;
+    protected Stroke collisionRectStroke = new BasicStroke(2);
     
     protected int spriteCounter = 0;
     public int spriteNum = 1;
@@ -56,5 +61,15 @@ public class Entity {
     }
     public void setSolidAreaDefaultY(int solidAreaDefaultY) {
         this.solidAreaDefaultY = solidAreaDefaultY;
+    }
+    
+    protected void drawCollision(Graphics2D g2, int screenX, int screenY){
+        //Desenha a colisão
+        Stroke oldStroke = g2.getStroke();
+        g2.setStroke(collisionRectStroke);
+        g2.setColor(Color.red);
+        g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+        g2.setStroke(oldStroke);
+        g2.drawString("X: " + worldX + " Y: " + worldY, screenX, screenY - 1);
     }
 }

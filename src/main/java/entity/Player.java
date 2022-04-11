@@ -1,7 +1,10 @@
 package entity;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -15,6 +18,7 @@ public class Player extends Entity{
     private GamePanel gp;
     private KeyHandler keyH;
     private int qtdKeys = 0;
+    private int standCounter = 0;
     
     private final int screenX, screenY;
     
@@ -108,6 +112,12 @@ public class Player extends Entity{
                 }
                 spriteCounter = 0;
             }
+        }else{
+            standCounter++;
+            if(standCounter == 20){
+                standCounter = 0;
+                spriteNum = 1;
+            }
         }
     
     }
@@ -155,8 +165,9 @@ public class Player extends Entity{
                 break;
         }
         g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+        if (gp.showCollision()) drawCollision(g2, screenX, screenY);
     }
-
+    
     public int getScreenX() {
         return screenX;
     }

@@ -1,8 +1,11 @@
 package object;
 
 import entity.Player;
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
 
@@ -14,6 +17,7 @@ public class SuperObject implements Action{
     protected Rectangle solidArea;
     protected GamePanel gp;
     private int solidAreaDefaultX, solidAreaDefaultY;
+    private final Stroke collisionRectStroke;
     
     public SuperObject(GamePanel gp){
         this.gp = gp;
@@ -21,6 +25,7 @@ public class SuperObject implements Action{
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
         collision = false;
+        collisionRectStroke = new BasicStroke(2);
     }
     
     public void draw(Graphics2D g2){
@@ -32,6 +37,7 @@ public class SuperObject implements Action{
             worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() && 
             worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()){
             g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+            if(gp.showCollision()) drawCollision(g2, screenX, screenY);
         }
     }
     
@@ -74,4 +80,13 @@ public class SuperObject implements Action{
         return false;
     }
     
+    private void drawCollision(Graphics2D g2, int screenX, int screenY){
+        //Desenha a colisão
+        Stroke oldStroke = g2.getStroke();
+        g2.setStroke(collisionRectStroke);
+        g2.setColor(Color.red);
+        g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+        g2.setStroke(oldStroke);
+        g2.drawString("X: " + worldX + " Y: " + worldY, screenX, screenY - 1);
+    }
 }
