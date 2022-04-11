@@ -3,6 +3,6 @@ Project of an RPG game implemented by Harllem Nascimento for Study of Java Swing
 
 - Print Example:
 
-<img src="https://i.ibb.co/26Cy22C/example.png" />
+<img src="https://i.ibb.co/Rgc2wMV/example.png" />
 
 <body>Project created based on JAVA RPG GAME - Blue Boy Adventure from <a href = "https://www.youtube.com/channel/UCS94AD0gxLakurK-6jnqV1w">RyiSnow</a></body>
