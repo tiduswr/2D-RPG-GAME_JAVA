@@ -103,5 +103,7 @@ public class UI {
     public void setGameFinished(boolean gameFinished) {
         this.gameFinished = gameFinished;
     }
-    
+    public Font getFontArial40(){
+        return this.arial_40;
+    }
 }

@@ -1,6 +1,7 @@
 package tile;
 
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import main.GamePanel;
+import main.UtilityTool;
 
 public final class TileManager {
     protected GamePanel gp;
@@ -32,31 +34,26 @@ public final class TileManager {
     }
     
     public void getTileImage(){
+        makeTile(0, "grass.png", false);
+        makeTile(1, "wall.png", true);
+        makeTile(2, "water.png", true);
+        makeTile(3, "earth.png", false);
+        makeTile(4, "tree.png", true);
+        makeTile(5, "sand.png", false);
+    }
+    
+    private void makeTile(int index, String imgName, boolean collision){
+        UtilityTool uTool = new UtilityTool();
         
         try {
-            tile[0] = new Tile();
-            tile[0].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png")));
-            
-            tile[1] = new Tile();
-            tile[1].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/wall.png")));
-            tile[1].setCollision(true);
-            
-            tile[2] = new Tile();
-            tile[2].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/water.png")));
-            tile[2].setCollision(true);
-            
-            tile[3] = new Tile();
-            tile[3].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/earth.png")));
-            
-            tile[4] = new Tile();
-            tile[4].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png")));
-            tile[4].setCollision(true);
-            
-            tile[5] = new Tile();
-            tile[5].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png")));
+            tile[index] = new Tile();
+            tile[index].setImage(ImageIO.read(getClass().getResourceAsStream("/tiles/" + imgName)));
+            tile[index].setImage(uTool.scaleImage(tile[index].image, gp.getTileSize(), gp.getTileSize()));
+            tile[index].setCollision(collision);
         } catch (IOException ex) {
             Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
     public void loadMap(String mapName){
@@ -105,7 +102,7 @@ public final class TileManager {
                 worldX - gp.getTileSize() < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() && 
                 worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() && 
                 worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()){
-                g2.drawImage(tile[tileNum].image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+                g2.drawImage(tile[tileNum].image, screenX, screenY, null);
             }
             worldCol++;
             

@@ -3,6 +3,7 @@ package main;
 import entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
@@ -36,7 +37,6 @@ public final class GamePanel extends JPanel implements Runnable{
     private CollisionChecker cChecker = new CollisionChecker(this);
     private TileManager tileM = new TileManager(this);
     private UI ui = new UI(this);
-    private boolean showCollision = true;
     
     //Player Sttings
     private Player player = new Player(this, keyH);
@@ -103,9 +103,12 @@ public final class GamePanel extends JPanel implements Runnable{
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        
         Graphics2D g2 = (Graphics2D) g;
         
+        //Debug
+        long drawStart = 0;
+        if(getKeyH().debugMode()) drawStart = System.nanoTime();
+                
         //TILE
         tileM.draw(g2);
         
@@ -121,6 +124,21 @@ public final class GamePanel extends JPanel implements Runnable{
         
         //UI
         ui.draw(g2);
+        
+        //Debug
+        if(getKeyH().debugMode()){
+            long drawEnd = System.nanoTime();
+            long passed = drawEnd - drawStart;
+            
+            Font oldFont = g2.getFont();
+            Color oldColor = g2.getColor();
+            g2.setColor(Color.red);
+            g2.setFont(getGameUI().getFontArial40());
+            g2.setFont(g2.getFont().deriveFont(20F));
+            g2.drawString("Draw Time: " +passed, 10, screenHeight - 10);
+            g2.setFont(oldFont);
+            g2.setColor(oldColor);
+        }
         
         g2.dispose();
     }
@@ -198,8 +216,5 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     public Thread setGameThread(Thread value) {
         return gameThread = value;
-    }
-    public boolean showCollision(){
-        return showCollision;
     }
 }

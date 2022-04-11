@@ -1,10 +1,7 @@
 package entity;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -12,7 +9,10 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
+import main.UtilityTool;
 import object.Action;
+import tile.Tile;
+import tile.TileManager;
 
 public class Player extends Entity{
     private GamePanel gp;
@@ -50,18 +50,28 @@ public class Player extends Entity{
     }
     
     private void getPlayerImages(){
+        u1 = makePlayerSprite("u1.png");
+        u2 = makePlayerSprite("u2.png");
+        l1 = makePlayerSprite("l1.png");
+        l2 = makePlayerSprite("l2.png");
+        r1 = makePlayerSprite("r1.png");
+        r2 = makePlayerSprite("r2.png");
+        d1 = makePlayerSprite("d1.png");
+        d2 = makePlayerSprite("d2.png");
+    }
+    
+    public BufferedImage makePlayerSprite(String imgName){
+        UtilityTool uTool = new UtilityTool();
+        BufferedImage scaledImage = null;
+        
         try {
-            u1 = ImageIO.read(getClass().getResourceAsStream("/player/u1.png"));
-            u2 = ImageIO.read(getClass().getResourceAsStream("/player/u2.png"));
-            l1 = ImageIO.read(getClass().getResourceAsStream("/player/l1.png"));
-            l2 = ImageIO.read(getClass().getResourceAsStream("/player/l2.png"));
-            r1 = ImageIO.read(getClass().getResourceAsStream("/player/r1.png"));
-            r2 = ImageIO.read(getClass().getResourceAsStream("/player/r2.png"));
-            d1 = ImageIO.read(getClass().getResourceAsStream("/player/d1.png"));
-            d2 = ImageIO.read(getClass().getResourceAsStream("/player/d2.png"));
+            scaledImage = ImageIO.read(getClass().getResourceAsStream("/player/" + imgName));
+            scaledImage = uTool.scaleImage(scaledImage, gp.getTileSize(), gp.getTileSize());
         } catch (IOException ex) {
-            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        return scaledImage;
     }
     
     public void update(){
@@ -164,8 +174,8 @@ public class Player extends Entity{
             default:
                 break;
         }
-        g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
-        if (gp.showCollision()) drawCollision(g2, screenX, screenY);
+        g2.drawImage(image, screenX, screenY, null);
+        if (gp.getKeyH().debugMode()) drawCollision(g2, screenX, screenY);
     }
     
     public int getScreenX() {

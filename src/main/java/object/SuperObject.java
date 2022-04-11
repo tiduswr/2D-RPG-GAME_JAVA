@@ -37,7 +37,7 @@ public class SuperObject implements Action{
             worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() && 
             worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()){
             g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
-            if(gp.showCollision()) drawCollision(g2, screenX, screenY);
+            if(gp.getKeyH().debugMode()) drawCollision(g2, screenX, screenY);
         }
     }
     
