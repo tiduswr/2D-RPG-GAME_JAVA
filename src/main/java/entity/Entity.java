@@ -2,6 +2,7 @@ package entity;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
@@ -72,10 +73,13 @@ public class Entity {
     protected void drawCollision(Graphics2D g2, int screenX, int screenY){
         //Desenha a colisão
         Stroke oldStroke = g2.getStroke();
+        Font oldFont = g2.getFont();
         g2.setStroke(collisionRectStroke);
         g2.setColor(Color.red);
         g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         g2.setStroke(oldStroke);
+        g2.setFont(gp.getGameUI().getFontArial40().deriveFont(12F));
         g2.drawString("X: " + worldX/gp.getTileSize() + " Y: " + worldY/gp.getTileSize(), screenX, screenY - 1);
+        g2.setFont(g2.getFont());
     }
 }

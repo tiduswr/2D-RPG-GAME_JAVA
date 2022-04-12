@@ -28,6 +28,7 @@ public class Player extends Entity{
         
         this.screenX = gp.getScreenWidth()/2 - (gp.getTileSize()/2);
         this.screenY = gp.getScreenHeight()/2 - (gp.getTileSize()/2);
+        speed = 240/gp.getFPS();
         
         //Rectangle that define the pixels of Collision in Player
         solidArea = new Rectangle();
@@ -45,7 +46,6 @@ public class Player extends Entity{
     private void setDefaultValues(){
         worldX = gp.getTileSize() * 23;
         worldY = gp.getTileSize() * 21;
-        speed = 4;
         direction = "down";
     }
     
@@ -114,7 +114,7 @@ public class Player extends Entity{
             
             //Update sprites
             spriteCounter++;
-            if(spriteCounter > 12){
+            if(spriteCounter > (int) 12/(60/gp.getFPS())){
                 if(spriteNum == 1){
                     spriteNum = 2;
                 }else if(spriteNum == 2){

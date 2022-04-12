@@ -3,7 +3,6 @@ package main;
 import entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
@@ -27,7 +26,11 @@ public final class GamePanel extends JPanel implements Runnable{
     private final int maxWorldRow = 50;
     
     //FPS
-    private final int FPS = 60;
+    private final int FPS = 30;
+    private int fpsCounter;
+    
+    //DEBUG   
+    private Debug debug = new Debug(this);
     
     //System Game
     private Thread gameThread;
@@ -88,7 +91,7 @@ public final class GamePanel extends JPanel implements Runnable{
             }
             
             if(timer >= 1000000000){
-                System.out.println("FPS: " + drawCount);
+                fpsCounter = drawCount;
                 drawCount = 0;
                 timer = 0;
             }
@@ -128,16 +131,7 @@ public final class GamePanel extends JPanel implements Runnable{
         //Debug
         if(getKeyH().debugMode()){
             long drawEnd = System.nanoTime();
-            long passed = drawEnd - drawStart;
-            
-            Font oldFont = g2.getFont();
-            Color oldColor = g2.getColor();
-            g2.setColor(Color.red);
-            g2.setFont(getGameUI().getFontArial40());
-            g2.setFont(g2.getFont().deriveFont(20F));
-            g2.drawString("Draw Time: " +passed, 10, screenHeight - 10);
-            g2.setFont(oldFont);
-            g2.setColor(oldColor);
+            debug.draw(g2, drawStart, drawEnd);
         }
         
         g2.dispose();
@@ -216,5 +210,8 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     public Thread setGameThread(Thread value) {
         return gameThread = value;
+    }
+    public int getFpsCounter() {
+        return fpsCounter;
     }
 }

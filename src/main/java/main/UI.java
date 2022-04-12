@@ -78,7 +78,7 @@ public class UI {
             g2.drawImage(keyImage, gp.getTileSize()/2, gp.getTileSize()/2, gp.getTileSize(), gp.getTileSize(), null);
             g2.drawString("x " + gp.getPlayer().getQtdKeys(), 74, 65);
             
-            //Draw time
+            //Draw game time
             playTime += (double)1/gp.getFPS();
             g2.drawString("Time: " + dFormat.format(playTime), gp.getTileSize()*11, 65);
             
