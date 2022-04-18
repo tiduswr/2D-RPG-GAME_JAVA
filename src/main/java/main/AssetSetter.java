@@ -1,9 +1,5 @@
 package main;
 
-import object.OBJ_Chest;
-import object.OBJ_Door;
-import object.OBJ_Key;
-import object.OBJ_SpeedUp;
 import object.SuperObject;
 
 public class AssetSetter {
@@ -14,17 +10,7 @@ public class AssetSetter {
     }
     
     public void setObject(){
-        spawnObject(new OBJ_Key(gp), 23, 7, 0);
-        spawnObject(new OBJ_Key(gp), 23, 40, 1);
-        spawnObject(new OBJ_Key(gp), 37, 8, 2);
         
-        spawnObject(new OBJ_Door(gp), 10, 12, 3);
-        spawnObject(new OBJ_Door(gp), 8, 28, 4);
-        spawnObject(new OBJ_Door(gp), 12, 23, 5);
-        
-        spawnObject(new OBJ_Chest(gp), 10, 8, 6);
-        
-        spawnObject(new OBJ_SpeedUp(gp), 37, 42, 7);
     }
     
     private void spawnObject(SuperObject obj, int row, int col, int index){

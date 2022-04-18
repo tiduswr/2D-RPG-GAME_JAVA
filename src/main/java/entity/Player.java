@@ -11,7 +11,6 @@ import main.GamePanel;
 import main.KeyHandler;
 import main.UtilityTool;
 import object.Action;
-import tile.Tile;
 import tile.TileManager;
 
 public class Player extends Entity{
@@ -76,15 +75,15 @@ public class Player extends Entity{
     
     public void update(){
         
-        if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed){            
+        if(keyH.isUpPressed() || keyH.isDownPressed() || keyH.isLeftPressed() || keyH.isRightPressed()){            
             //Get user input
-            if(keyH.upPressed){
+            if(keyH.isUpPressed()){
                 direction = "up";
-            }else if(keyH.downPressed){
+            }else if(keyH.isDownPressed()){
                 direction = "down";
-            }else if(keyH.leftPressed){
+            }else if(keyH.isLeftPressed()){
                 direction = "left";
-            }else if(keyH.rightPressed){
+            }else if(keyH.isRightPressed()){
                 direction = "right";
             }
             

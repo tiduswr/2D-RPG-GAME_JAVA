@@ -26,7 +26,7 @@ public final class GamePanel extends JPanel implements Runnable{
     private final int maxWorldRow = 50;
     
     //FPS
-    private final int FPS = 30;
+    private final int FPS = 60;
     private int fpsCounter;
     
     //DEBUG   
@@ -36,15 +36,18 @@ public final class GamePanel extends JPanel implements Runnable{
     private Thread gameThread;
     private Sound music = new Sound();
     private Sound soundEffect = new Sound();
-    private KeyHandler keyH = new KeyHandler();
+    private KeyHandler keyH = new KeyHandler(this);
     private CollisionChecker cChecker = new CollisionChecker(this);
     private TileManager tileM = new TileManager(this);
     private UI ui = new UI(this);
     
-    //Player Sttings
+    //Entity and Object Settings
     private Player player = new Player(this, keyH);
     private AssetSetter assetSetter = new AssetSetter(this);
     private SuperObject obj[] = new SuperObject[10]; //Pode ser mostrados até 10 objetos por vez no jogo
+    
+    //Game State
+    public GameState gameState;
     
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -63,6 +66,7 @@ public final class GamePanel extends JPanel implements Runnable{
     public void setupGame(){
         assetSetter.setObject();
         playMusic(0);
+        gameState = GameState.PLAY_STATE;
     }
     
     @Override
@@ -100,7 +104,12 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     
     public void update(){
-        player.update();
+        if(gameState == GameState.PLAY_STATE){
+            player.update();
+        }
+        if(gameState == GameState.PAUSE_STATE){
+            //Nothing
+        }
     }
     
     @Override
@@ -214,4 +223,13 @@ public final class GamePanel extends JPanel implements Runnable{
     public int getFpsCounter() {
         return fpsCounter;
     }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+    
 }
