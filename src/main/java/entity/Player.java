@@ -89,7 +89,7 @@ public class Player extends Entity{
             
             //Check Tile Collision
             collisionOn = false;
-            //aaaadgp.getcChecker().checkTile(this);
+            gp.getcChecker().checkTile(this);
             
             //Check object collision
             int objIndex = gp.getcChecker().checkObject(this, true);
