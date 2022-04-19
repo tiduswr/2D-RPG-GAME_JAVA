@@ -89,7 +89,7 @@ public class Player extends Entity{
             
             //Check Tile Collision
             collisionOn = false;
-            gp.getcChecker().checkTile(this);
+            //aaaadgp.getcChecker().checkTile(this);
             
             //Check object collision
             int objIndex = gp.getcChecker().checkObject(this, true);
@@ -173,8 +173,29 @@ public class Player extends Entity{
             default:
                 break;
         }
-        g2.drawImage(image, screenX, screenY, null);
-        if (gp.getKeyH().debugMode()) drawCollision(g2, screenX, screenY);
+        
+        //Check location of player to draw a tile
+        //Implemented to dont show blank tiles of map
+        int x = screenX;
+        int y = screenY;
+        if(screenX > worldX){
+            x = worldX;
+        }
+        if(screenY > worldY){
+            y = worldY;
+        }
+        int rightOffset = gp.getScreenWidth() - getScreenX();
+        if(rightOffset > gp.getWorldWidth() - getWorldX()){
+            x = gp.getScreenWidth() - (gp.getWorldWidth() - worldX);
+        }
+        int bottomOffset = gp.getScreenHeight() - getScreenY();
+        if(bottomOffset > gp.getWorldHeight() - getWorldY()){
+            y = gp.getScreenHeight() - (gp.getWorldHeight() - worldY);
+        }
+        
+        //Draw player
+        g2.drawImage(image, x, y, null);
+        if (gp.getKeyH().debugMode()) drawCollision(g2, x, y);
     }
     
     public int getScreenX() {

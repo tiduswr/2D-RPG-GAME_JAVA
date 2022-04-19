@@ -125,11 +125,37 @@ public final class TileManager {
             int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
             int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
             
+            //Stop move the camera to prevent blank tiles
+            if(gp.getPlayer().getScreenX() > gp.getPlayer().getWorldX()){
+                screenX = worldX;
+            }
+            if(gp.getPlayer().getScreenY() > gp.getPlayer().getWorldY()){
+                screenY = worldY;
+            }
+            int rightOffset = gp.getScreenWidth() - gp.getPlayer().getScreenX();
+            if(rightOffset > gp.getWorldWidth() - gp.getPlayer().getWorldX()){
+                screenX = gp.getScreenWidth() - (gp.getWorldWidth() - worldX);
+            }
+            int bottomOffset = gp.getScreenHeight() - gp.getPlayer().getScreenY();
+            if(bottomOffset > gp.getWorldHeight() - gp.getPlayer().getWorldY()){
+                screenY = gp.getScreenHeight() - (gp.getWorldHeight() - worldY);
+            }
+            
+            //Draw tiles conditions
             if(worldX + gp.getTileSize() > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
                 worldX - gp.getTileSize() < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() && 
                 worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() && 
                 worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()){
+                
                 g2.drawImage(tile[tileNum].image, screenX, screenY, null);
+            
+            }else if(gp.getPlayer().getScreenX() > gp.getPlayer().getWorldX() || 
+                gp.getPlayer().getScreenY() > gp.getPlayer().getWorldY() ||
+                rightOffset > gp.getWorldWidth() - gp.getPlayer().getWorldX() ||
+                bottomOffset > gp.getWorldHeight() - gp.getPlayer().getWorldY()){
+                
+                g2.drawImage(tile[tileNum].image, screenX, screenY, null);
+                
             }
             worldCol++;
             

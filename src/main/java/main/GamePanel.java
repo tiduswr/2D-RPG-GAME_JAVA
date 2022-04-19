@@ -24,6 +24,8 @@ public final class GamePanel extends JPanel implements Runnable{
     //World Settings
     private final int maxWorldCol = 50;
     private final int maxWorldRow = 50;
+    private final int worldWidth = tileSize * maxWorldCol;
+    private final int worldHeight = tileSize * maxWorldRow;
     
     //FPS
     private final int FPS = 60;
@@ -230,6 +232,14 @@ public final class GamePanel extends JPanel implements Runnable{
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    public int getWorldWidth() {
+        return worldWidth;
+    }
+
+    public int getWorldHeight() {
+        return worldHeight;
     }
     
 }
