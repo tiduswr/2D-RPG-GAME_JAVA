@@ -31,10 +31,10 @@ public abstract class Entity {
     public Entity(GamePanel gp){
         this.gp = gp;
         solidArea = new Rectangle();
-        solidArea.x = 0;
-        solidArea.y = 0;
-        solidArea.width = gp.getTileSize();
-        solidArea.height = gp.getTileSize();
+        solidArea.x = 8;
+        solidArea.y = 12;
+        solidArea.width = 32;
+        solidArea.height = 32;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
     }
