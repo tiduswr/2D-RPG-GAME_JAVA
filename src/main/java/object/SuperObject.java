@@ -10,7 +10,7 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
 
-public class SuperObject implements Action{
+public abstract class SuperObject implements Action{
     protected BufferedImage image;
     protected String name;
     protected boolean collision;

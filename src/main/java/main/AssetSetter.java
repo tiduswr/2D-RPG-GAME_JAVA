@@ -1,5 +1,7 @@
 package main;
 
+import entity.NPC_BlackMage;
+import entity.NPC_WhiteMage;
 import object.SuperObject;
 
 public class AssetSetter {
@@ -18,4 +20,10 @@ public class AssetSetter {
         gp.getObj()[index].setWorldX(row * gp.getTileSize());
         gp.getObj()[index].setWorldY(col * gp.getTileSize());
     }
+    
+    public void setNPCS(){
+        gp.getNpcs()[0] = new NPC_BlackMage(gp, 21, 21);
+        gp.getNpcs()[1] = new NPC_WhiteMage(gp, 26, 21);
+    }
+    
 }

@@ -3,15 +3,9 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import main.GamePanel;
 import main.KeyHandler;
-import main.UtilityTool;
 import object.Action;
-import tile.TileManager;
 
 public class Player extends Entity{
     
@@ -39,7 +33,7 @@ public class Player extends Entity{
         setSolidAreaDefaultY(solidArea.y);
         
         setDefaultValues();
-        getPlayerImages();
+        getImages();
     }
     
     private void setDefaultValues(){
@@ -48,33 +42,19 @@ public class Player extends Entity{
         direction = "down";
     }
     
-    private void getPlayerImages(){
-        u1 = makePlayerSprite("u1.png");
-        u2 = makePlayerSprite("u2.png");
-        l1 = makePlayerSprite("l1.png");
-        l2 = makePlayerSprite("l2.png");
-        r1 = makePlayerSprite("r1.png");
-        r2 = makePlayerSprite("r2.png");
-        d1 = makePlayerSprite("d1.png");
-        d2 = makePlayerSprite("d2.png");
+    private void getImages(){
+        u1 = makePlayerSprite("player/u1.png");
+        u2 = makePlayerSprite("player/u2.png");
+        l1 = makePlayerSprite("player/l1.png");
+        l2 = makePlayerSprite("player/l2.png");
+        r1 = makePlayerSprite("player/r1.png");
+        r2 = makePlayerSprite("player/r2.png");
+        d1 = makePlayerSprite("player/d1.png");
+        d2 = makePlayerSprite("player/d2.png");
     }
     
-    public BufferedImage makePlayerSprite(String imgName){
-        UtilityTool uTool = new UtilityTool();
-        BufferedImage scaledImage = null;
-        
-        try {
-            scaledImage = ImageIO.read(getClass().getResourceAsStream("/player/" + imgName));
-            scaledImage = uTool.scaleImage(scaledImage, gp.getTileSize(), gp.getTileSize());
-        } catch (IOException ex) {
-            Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return scaledImage;
-    }
-    
+    @Override
     public void update(){
-        
         if(keyH.isUpPressed() || keyH.isDownPressed() || keyH.isLeftPressed() || keyH.isRightPressed()){            
             //Get user input
             if(keyH.isUpPressed()){
@@ -87,40 +67,18 @@ public class Player extends Entity{
                 direction = "right";
             }
             
-            //Check Tile Collision
-            collisionOn = false;
-            gp.getcChecker().checkTile(this);
+            checkTileCollision();            
             
             //Check object collision
-            int objIndex = gp.getcChecker().checkObject(this, true);
+            int objIndex = checkObjectCollision();
             pickUpObject(objIndex);
-                    
-            //Only move if collisionOn is true
-            switch(direction){
-                case "up":
-                    if(!collisionOn) worldY -= speed;
-                    break;
-                case "down":
-                   if(!collisionOn) worldY += speed;
-                   break;
-                case "left":
-                    if(!collisionOn) worldX -= speed;
-                    break;
-                case "right":
-                    if(!collisionOn) worldX += speed;
-                    break;
-            }
             
-            //Update sprites
-            spriteCounter++;
-            if(spriteCounter > (int) 12/(60/gp.getFPS())){
-                if(spriteNum == 1){
-                    spriteNum = 2;
-                }else if(spriteNum == 2){
-                    spriteNum = 1;
-                }
-                spriteCounter = 0;
-            }
+            //CheckNPC Collision
+            int npcIndex = gp.getcChecker().checkEntity(this, gp.getNpcs());
+            interactNpcIndex(npcIndex);
+            
+            checkDirection();
+            controlSpriteAnimationSpeed();
         }else{
             standCounter++;
             if(standCounter == 20){
@@ -131,6 +89,17 @@ public class Player extends Entity{
     
     }
     
+    private void interactNpcIndex(int i){
+        if(i != -1){
+            //do stuff here
+        }
+    }
+    
+    @Override
+    protected int checkObjectCollision(){
+        return gp.getcChecker().checkObject(this, true);
+    }
+    
     public void pickUpObject(int i){
         if(i != -1){
             Action a = gp.getObj()[i];
@@ -138,41 +107,9 @@ public class Player extends Entity{
         }
     }
     
+    @Override
     public void draw(Graphics2D g2){
-        BufferedImage image = null;
-        
-        switch(direction){
-            case "up":
-                if(spriteNum == 1){
-                    image = u1;
-                }else if(spriteNum == 2){
-                    image = u2;
-                }
-                break;
-            case "down":
-                if(spriteNum == 1){
-                    image = d1;
-                }else if(spriteNum == 2){
-                    image = d2;
-                }
-                break;
-            case "left":
-                if(spriteNum == 1){
-                    image = l1;
-                }else if(spriteNum == 2){
-                    image = l2;
-                }
-                break;
-            case "right":
-                if(spriteNum == 1){
-                    image = r1;
-                }else if(spriteNum == 2){
-                    image = r2;
-                }
-                break;
-            default:
-                break;
-        }
+        BufferedImage image = getSpriteDirection();
         
         //Check location of player to draw a tile
         //Implemented to dont show blank tiles of map

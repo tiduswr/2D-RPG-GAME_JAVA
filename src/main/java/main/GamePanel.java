@@ -1,5 +1,6 @@
 package main;
 
+import entity.Entity;
 import entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -47,6 +48,7 @@ public final class GamePanel extends JPanel implements Runnable{
     private Player player = new Player(this, keyH);
     private AssetSetter assetSetter = new AssetSetter(this);
     private SuperObject obj[] = new SuperObject[10]; //Pode ser mostrados até 10 objetos por vez no jogo
+    private Entity[] npcs = new Entity[10];
     
     //Game State
     public GameState gameState;
@@ -67,6 +69,7 @@ public final class GamePanel extends JPanel implements Runnable{
     
     public void setupGame(){
         assetSetter.setObject();
+        assetSetter.setNPCS();
         playMusic(0);
         gameState = GameState.PLAY_STATE;
     }
@@ -107,7 +110,15 @@ public final class GamePanel extends JPanel implements Runnable{
     
     public void update(){
         if(gameState == GameState.PLAY_STATE){
+            //Player
             player.update();
+            
+            //NPC
+            for(Entity e : npcs){
+                if(e != null){
+                    e.update();
+                }
+            }
         }
         if(gameState == GameState.PAUSE_STATE){
             //Nothing
@@ -130,6 +141,13 @@ public final class GamePanel extends JPanel implements Runnable{
         for(SuperObject o : obj){
             if(o != null){
                 o.draw(g2);
+            }
+        }
+        
+        //NPC
+        for(Entity e : npcs){
+            if(e != null){
+                e.draw(g2);
             }
         }
         
@@ -240,6 +258,10 @@ public final class GamePanel extends JPanel implements Runnable{
 
     public int getWorldHeight() {
         return worldHeight;
+    }
+
+    public Entity[] getNpcs() {
+        return npcs;
     }
     
 }

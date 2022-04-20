@@ -128,4 +128,110 @@ public class CollisionChecker {
         }
         return index;
     }
+    
+    //NPC or Monster Collision
+    public int checkEntity(Entity e, Entity[] target){
+        int i = 0;
+        int index = -1;
+        
+        for(Entity t : target){
+            if(t != null && t != e){
+                //Get entity solid area position
+                e.getSolidArea().x = e.getWorldX() + e.getSolidArea().x;
+                e.getSolidArea().y = e.getWorldY() + e.getSolidArea().y;
+                
+                //Get object solid area pos
+                t.getSolidArea().x = t.getWorldX() + t.getSolidArea().x;
+                t.getSolidArea().y = t.getWorldY() + t.getSolidArea().y;
+                
+                switch(e.getDirection()){
+                    case "up":
+                        e.getSolidArea().y -= e.getSpeed();
+                        if(e.getSolidArea().intersects(t.getSolidArea())){
+                            e.setCollisionOn(true);
+                            index = i;
+                        }
+                        break;
+                    case "down":
+                        e.getSolidArea().y += e.getSpeed();
+                        if(e.getSolidArea().intersects(t.getSolidArea())){
+                            e.setCollisionOn(true);
+                            index = i;
+                        }
+                        break;
+                    case "left":
+                        e.getSolidArea().x -= e.getSpeed();
+                        if(e.getSolidArea().intersects(t.getSolidArea())){
+                            e.setCollisionOn(true);
+                            index = i;
+                        }
+                        break;
+                    case "right":
+                        e.getSolidArea().x += e.getSpeed();
+                        if(e.getSolidArea().intersects(t.getSolidArea())){
+                            e.setCollisionOn(true);
+                            index = i;
+                        }
+                        break;
+                }                
+                
+                //Reset solid area position
+                e.getSolidArea().x = e.getSolidAreaDefaultX();
+                e.getSolidArea().y = e.getSolidAreaDefaultY();
+                t.getSolidArea().x = t.getSolidAreaDefaultX();
+                t.getSolidArea().y = t.getSolidAreaDefaultY();
+                
+            }
+            i++;
+        }
+        return index;
+    }
+    
+    public void checkPlayer(Entity e){
+        if(e != null){
+            Entity t = gp.getPlayer();
+            
+            //Get entity solid area position
+            e.getSolidArea().x = e.getWorldX() + e.getSolidArea().x;
+            e.getSolidArea().y = e.getWorldY() + e.getSolidArea().y;
+
+            //Get object solid area pos
+            t.getSolidArea().x = t.getWorldX() + t.getSolidArea().x;
+            t.getSolidArea().y = t.getWorldY() + t.getSolidArea().y;
+
+            switch(e.getDirection()){
+                case "up":
+                    e.getSolidArea().y -= e.getSpeed();
+                    if(e.getSolidArea().intersects(t.getSolidArea())){
+                        e.setCollisionOn(true);
+                    }
+                    break;
+                case "down":
+                    e.getSolidArea().y += e.getSpeed();
+                    if(e.getSolidArea().intersects(t.getSolidArea())){
+                        e.setCollisionOn(true);
+                    }
+                    break;
+                case "left":
+                    e.getSolidArea().x -= e.getSpeed();
+                    if(e.getSolidArea().intersects(t.getSolidArea())){
+                        e.setCollisionOn(true);
+                    }
+                    break;
+                case "right":
+                    e.getSolidArea().x += e.getSpeed();
+                    if(e.getSolidArea().intersects(t.getSolidArea())){
+                        e.setCollisionOn(true);
+                    }
+                    break;
+            }                
+
+            //Reset solid area position
+            e.getSolidArea().x = e.getSolidAreaDefaultX();
+            e.getSolidArea().y = e.getSolidAreaDefaultY();
+            t.getSolidArea().x = t.getSolidAreaDefaultX();
+            t.getSolidArea().y = t.getSolidAreaDefaultY();
+        }
+    }
+    
 }

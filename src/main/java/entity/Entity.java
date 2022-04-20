@@ -7,9 +7,15 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import main.GamePanel;
+import main.UtilityTool;
+import tile.TileManager;
 
-public class Entity {
+public abstract class Entity {
     protected int worldX, worldY, speed;
     
     protected GamePanel gp;
@@ -19,9 +25,144 @@ public class Entity {
     protected int solidAreaDefaultX, solidAreaDefaultY;
     protected boolean collisionOn = false;
     protected Stroke collisionRectStroke = new BasicStroke(2);
+    protected int actionLockCounter;
     
     public Entity(GamePanel gp){
         this.gp = gp;
+        solidArea = new Rectangle();
+        solidArea.x = 8;
+        solidArea.y = 12;
+        solidArea.width = 32;
+        solidArea.height = 32;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
+    }
+    
+    public BufferedImage makePlayerSprite(String imgPath){
+        UtilityTool uTool = new UtilityTool();
+        BufferedImage scaledImage = null;
+        
+        try {
+            scaledImage = ImageIO.read(getClass().getResourceAsStream("/" + imgPath));
+            scaledImage = uTool.scaleImage(scaledImage, gp.getTileSize(), gp.getTileSize());
+        } catch (IOException ex) {
+            Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return scaledImage;
+    }
+    
+    public void setAction(){}
+    public void update(){
+        setAction();
+        
+        //Check tile Collision
+        checkTileCollision();
+        //Check object collision
+        checkObjectCollision();
+        //Check Player Collision
+        gp.getcChecker().checkPlayer(this);
+        //Check NPC collision
+        gp.getcChecker().checkEntity(this, gp.getNpcs());
+        
+        checkDirection();
+        controlSpriteAnimationSpeed();
+    }
+    
+    protected int checkObjectCollision(){
+        return gp.getcChecker().checkObject(this, false);
+    }
+    
+    protected void checkTileCollision(){
+        //Check Tile Collision
+        collisionOn = false;
+        gp.getcChecker().checkTile(this);
+    }
+    
+    protected void controlSpriteAnimationSpeed(){
+        //Update sprites
+        spriteCounter++;
+        if(spriteCounter > (int) 12/(60/gp.getFPS())){
+            if(spriteNum == 1){
+                spriteNum = 2;
+            }else if(spriteNum == 2){
+                spriteNum = 1;
+            }
+            spriteCounter = 0;
+        }
+    }
+    
+    protected void checkDirection(){
+        //Only move if collisionOn is true
+        if(!collisionOn){
+            switch(direction){
+                case "up":
+                    worldY -= speed;
+                    break;
+                case "down":
+                   worldY += speed;
+                   break;
+                case "left":
+                    worldX -= speed;
+                    break;
+                case "right":
+                    worldX += speed;
+                    break;
+            }
+        }
+    }
+    
+    public void draw(Graphics2D g2){
+        int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
+        int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
+
+        if(worldX + gp.getTileSize() > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
+            worldX - gp.getTileSize() < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() && 
+            worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() && 
+            worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()){
+            
+            BufferedImage image = getSpriteDirection();
+            
+            g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+            if(gp.getKeyH().debugMode()) drawCollision(g2, screenX, screenY);
+        }
+    }
+    
+    protected BufferedImage getSpriteDirection(){
+        BufferedImage image = null;
+        switch(direction){
+            case "up":
+                if(spriteNum == 1){
+                    image = u1;
+                }else if(spriteNum == 2){
+                    image = u2;
+                }
+                break;
+            case "down":
+                if(spriteNum == 1){
+                    image = d1;
+                }else if(spriteNum == 2){
+                    image = d2;
+                }
+                break;
+            case "left":
+                if(spriteNum == 1){
+                    image = l1;
+                }else if(spriteNum == 2){
+                    image = l2;
+                }
+                break;
+            case "right":
+                if(spriteNum == 1){
+                    image = r1;
+                }else if(spriteNum == 2){
+                    image = r2;
+                }
+                break;
+            default:
+                break;
+        }
+        return image;
     }
     
     protected int spriteCounter = 0;
