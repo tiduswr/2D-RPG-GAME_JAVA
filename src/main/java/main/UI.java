@@ -5,12 +5,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.Stroke;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import tile.TileManager;
 
 public class UI {
     private GamePanel gp;
@@ -29,15 +31,30 @@ public class UI {
     private Stroke dialogStroke = new BasicStroke(5);
     private String currentDialog = "";
     
+    //Title Screen
+    private int titleCounter = 0;
+    private BufferedImage logo;
+    
     public UI(GamePanel gp){
-        this.gp = gp;
+        UtilityTool uTool = new UtilityTool();
         try {
-            InputStream is = getClass().getResourceAsStream("/font/FreePixel.ttf");
-            freePixel_40 = Font.createFont(Font.TRUETYPE_FONT, is);
-        } catch (FontFormatException | IOException ex) {
-            freePixel_40 = new Font("Arial", Font.PLAIN, 40);
+            this.gp = gp;
+            try {
+                InputStream is = getClass().getResourceAsStream("/font/FreePixel.ttf");
+                freePixel_40 = Font.createFont(Font.TRUETYPE_FONT, is);
+            } catch (FontFormatException | IOException ex) {
+                freePixel_40 = new Font("Arial", Font.PLAIN, 40);
+                Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            //Read Logo
+            logo = null;
+            logo = ImageIO.read(getClass().getResourceAsStream("/title/crystal.png"));
+            logo = uTool.scaleImage(logo, gp.getTileSize(), gp.getTileSize());
+        } catch (IOException ex) {
             Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
     public void showMessage(String text){
@@ -59,11 +76,37 @@ public class UI {
             case DIALOG_STATE:
                 drawDialogScreen();
                 break;
+            case TITLE_STATE:
+                drawTitleScreen();
+                break;
         }
         
     }
     
-    public void drawDialogScreen(){
+    private void drawTitleScreen(){
+        //Draw Title
+        String title = "FINAL FANTASY FAN";
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 80F));
+        g2.setColor(Color.white);
+        
+        int x = getXForCenteredText(title);
+        int y = gp.getTileSize(); y += titleCounter;
+        
+        //Animated Title
+        if(titleCounter < gp.getTileSize()*2){
+            g2.drawString(title, x, y);
+            titleCounter++;
+        }else{
+            g2.drawString(title, x, y);
+        }
+        
+        //Draw logo
+        x = gp.getScreenWidth()/2 - gp.getTileSize();
+        y = gp.getTileSize()*4;
+        g2.drawImage(logo, x, y, gp.getTileSize()*2, gp.getTileSize()*2, null);
+    }
+    
+    private void drawDialogScreen(){
         Color oldColor = g2.getColor();
         Stroke oldStr = g2.getStroke();
         
@@ -88,7 +131,7 @@ public class UI {
         g2.setStroke(oldStr);
     }
     
-    public void drawSubWindow(int x, int y, int width, int height){
+    private void drawSubWindow(int x, int y, int width, int height){
         //Draw dialog area
         g2.setColor(dialogBlack);
         g2.fillRoundRect(x, y, width, height, 35, 35);
@@ -99,7 +142,7 @@ public class UI {
         g2.drawRoundRect(x+5, y+5, width-10, height-10, 25, 25);
     }
     
-    public void drawPauseScreen(){
+    private void drawPauseScreen(){
         String text = "PAUSED";
         Font oldFont = g2.getFont();
         Color oldColor = g2.getColor();
@@ -114,7 +157,7 @@ public class UI {
         g2.setColor(oldColor);
     }
     
-    public int getXForCenteredText(String text){
+    private int getXForCenteredText(String text){
         int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
         return gp.getWidth()/2 - length/2;
     }

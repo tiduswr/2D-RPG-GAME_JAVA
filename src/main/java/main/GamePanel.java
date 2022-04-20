@@ -70,8 +70,8 @@ public final class GamePanel extends JPanel implements Runnable{
     public void setupGame(){
         assetSetter.setObject();
         assetSetter.setNPCS();
-        playMusic(0);
-        gameState = GameState.PLAY_STATE;
+        //playMusic(0);
+        gameState = GameState.TITLE_STATE;
     }
     
     @Override
@@ -133,34 +133,40 @@ public final class GamePanel extends JPanel implements Runnable{
         //Debug
         long drawStart = 0;
         if(getKeyH().debugMode()) drawStart = System.nanoTime();
-                
-        //TILE
-        tileM.draw(g2);
         
-        //OBJECT
-        for(SuperObject o : obj){
-            if(o != null){
-                o.draw(g2);
+        //Tile Screen
+        if(gameState == GameState.TITLE_STATE){
+            //UI
+            ui.draw(g2);
+        }else{
+            //TILE
+            tileM.draw(g2);
+
+            //OBJECT
+            for(SuperObject o : obj){
+                if(o != null){
+                    o.draw(g2);
+                }
             }
-        }
-        
-        //NPC
-        for(Entity e : npcs){
-            if(e != null){
-                e.draw(g2);
+
+            //NPC
+            for(Entity e : npcs){
+                if(e != null){
+                    e.draw(g2);
+                }
             }
-        }
-        
-        //PLAYER
-        player.draw(g2);
-        
-        //UI
-        ui.draw(g2);
-        
-        //Debug
-        if(getKeyH().debugMode()){
-            long drawEnd = System.nanoTime();
-            debug.draw(g2, drawStart, drawEnd);
+
+            //PLAYER
+            player.draw(g2);
+
+            //UI
+            ui.draw(g2);
+
+            //Debug
+            if(getKeyH().debugMode()){
+                long drawEnd = System.nanoTime();
+                debug.draw(g2, drawStart, drawEnd);
+            }
         }
         
         g2.dispose();
