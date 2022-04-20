@@ -12,6 +12,7 @@ public class NPC_WhiteMage extends Entity{
         this.direction = "down";
         speed = 1;
         getImages();
+        createDialogues();
     }
     
     private void getImages(){
@@ -23,6 +24,15 @@ public class NPC_WhiteMage extends Entity{
         r2 = makePlayerSprite("npc/whiteMage_r2.png");
         d1 = makePlayerSprite("npc/whiteMage_d1.png");
         d2 = makePlayerSprite("npc/whiteMage_d2.png");
+    }
+    
+    private void createDialogues(){
+        dialogues = new String[4];
+        
+        dialogues[0] = "Que Hydalin te abençoe!";
+        dialogues[1] = "Você percebeu que eu fico batendo \na cara na parede direto?";
+        dialogues[2] = "O Mago Negro fica olhando pra \nmim direto";
+        dialogues[3] = "Eu posso te curar se você precisar!";
     }
     
     @Override
@@ -45,4 +55,15 @@ public class NPC_WhiteMage extends Entity{
             actionLockCounter = 0;
         }
     }
+    
+    @Override
+    public void speak(){
+        super.speak();
+        
+        Random rand = new Random();
+        int i = rand.nextInt(dialogues.length);
+        
+        gp.getGameUI().setCurrentDialog(dialogues[i]);
+    }
+    
 }

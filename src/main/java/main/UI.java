@@ -1,10 +1,10 @@
 package main;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.text.DecimalFormat;
-import object.OBJ_Key;
+import java.awt.Stroke;
 
 public class UI {
     private GamePanel gp;
@@ -17,9 +17,11 @@ public class UI {
     private int messageCounter = 0;
     private boolean gameFinished = false;
     
-    //Timer
-    private double playTime;
-    private DecimalFormat dFormat = new DecimalFormat("#0.0");
+    //ui
+    private Color dialogBlack = new Color(0,0,0, 210);
+    private Color dialogWhite = new Color(255, 255, 255);
+    private Stroke dialogStroke = new BasicStroke(5);
+    private String currentDialog = "";
     
     public UI(GamePanel gp){
         this.gp = gp;
@@ -43,8 +45,47 @@ public class UI {
             case PAUSE_STATE:
                 drawPauseScreen();
                 break;
+            case DIALOG_STATE:
+                drawDialogScreen();
+                break;
         }
         
+    }
+    
+    public void drawDialogScreen(){
+        Color oldColor = g2.getColor();
+        Stroke oldStr = g2.getStroke();
+        
+        int x = gp.getTileSize()*2, 
+            y = gp.getTileSize()/2, 
+            width = gp.getScreenWidth() - gp.getTileSize()*4, 
+            height = gp.getScreenHeight() - gp.getTileSize()*8;
+        drawSubWindow(x, y, width, height);
+        
+        //Draw message
+        x += gp.getTileSize();
+        y += gp.getTileSize();
+        g2.setColor(Color.white);
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 28f));
+        
+        for(String line : currentDialog.split("\n")){
+            g2.drawString(line, x, y);
+            y += 40;
+        }
+        
+        g2.setColor(oldColor);
+        g2.setStroke(oldStr);
+    }
+    
+    public void drawSubWindow(int x, int y, int width, int height){
+        //Draw dialog area
+        g2.setColor(dialogBlack);
+        g2.fillRoundRect(x, y, width, height, 35, 35);
+        
+        //Draw border
+        g2.setColor(dialogWhite);
+        g2.setStroke(dialogStroke);
+        g2.drawRoundRect(x+5, y+5, width-10, height-10, 25, 25);
     }
     
     public void drawPauseScreen(){
@@ -76,4 +117,13 @@ public class UI {
     public Font getFontArial40(){
         return this.arial_40;
     }
+
+    public String getCurrentDialog() {
+        return currentDialog;
+    }
+
+    public void setCurrentDialog(String currentDialog) {
+        this.currentDialog = currentDialog;
+    }
+    
 }

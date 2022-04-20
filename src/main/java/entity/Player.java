@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
+import main.GameState;
 import main.KeyHandler;
 import object.Action;
 
@@ -90,9 +91,11 @@ public class Player extends Entity{
     }
     
     private void interactNpcIndex(int i){
-        if(i != -1){
-            //do stuff here
+        if(i != -1 && gp.getKeyH().iszPressed()){
+            gp.setGameState(GameState.DIALOG_STATE);
+            gp.getNpcs()[i].speak();
         }
+        gp.getKeyH().setzPressed(false);
     }
     
     @Override

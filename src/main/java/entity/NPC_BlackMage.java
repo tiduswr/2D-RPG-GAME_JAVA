@@ -12,6 +12,16 @@ public class NPC_BlackMage extends Entity{
         this.direction = "down";
         speed = 1;
         getImages();
+        createDialogues();
+    }
+    
+    private void createDialogues(){
+        dialogues = new String[4];
+        
+        dialogues[0] = "Olá Warrior of Darkness!";
+        dialogues[1] = "Porque estamos aqui?";
+        dialogues[2] = "A Maga Branca é bem gata não\nacha?";
+        dialogues[3] = "To com fome :(";
     }
     
     private void getImages(){
@@ -45,4 +55,15 @@ public class NPC_BlackMage extends Entity{
             actionLockCounter = 0;
         }
     }
+    
+    @Override
+    public void speak(){
+        super.speak();
+        
+        Random rand = new Random();
+        int i = rand.nextInt(dialogues.length);
+        
+        gp.getGameUI().setCurrentDialog(dialogues[i]);
+    }
+    
 }

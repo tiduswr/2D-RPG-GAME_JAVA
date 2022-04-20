@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -26,14 +27,15 @@ public abstract class Entity {
     protected boolean collisionOn = false;
     protected Stroke collisionRectStroke = new BasicStroke(2);
     protected int actionLockCounter;
+    protected String[] dialogues;
     
     public Entity(GamePanel gp){
         this.gp = gp;
         solidArea = new Rectangle();
-        solidArea.x = 8;
-        solidArea.y = 12;
-        solidArea.width = 32;
-        solidArea.height = 32;
+        solidArea.x = 0;
+        solidArea.y = 0;
+        solidArea.width = gp.getTileSize();
+        solidArea.height = gp.getTileSize();
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
     }
@@ -53,6 +55,29 @@ public abstract class Entity {
     }
     
     public void setAction(){}
+    public void speak(){
+    
+        switch(gp.getPlayer().getDirection()){
+            case "up":
+                direction = "down";
+                break;
+            case "down":
+                direction = "up";
+                break;
+            case "left":
+                direction = "right";
+                break;
+            case "right":
+                direction = "left";
+                break;
+        }
+        
+        Random rand = new Random();
+        int i = rand.nextInt(dialogues.length);
+        
+        gp.getGameUI().setCurrentDialog(dialogues[i]);
+    
+    };
     public void update(){
         setAction();
         
