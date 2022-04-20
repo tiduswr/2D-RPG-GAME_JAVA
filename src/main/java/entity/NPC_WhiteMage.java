@@ -32,7 +32,7 @@ public class NPC_WhiteMage extends Entity{
         dialogues[0] = "Que Hydalin te abençoe!";
         dialogues[1] = "Você percebeu que eu fico batendo \na cara na parede direto?";
         dialogues[2] = "O Mago Negro fica olhando pra \nmim direto";
-        dialogues[3] = "Eu posso te curar se você precisar!";
+        dialogues[3] = "Eu posso te curar se você\nprecisar!";
     }
     
     @Override

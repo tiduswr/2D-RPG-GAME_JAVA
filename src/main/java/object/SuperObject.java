@@ -89,7 +89,7 @@ public abstract class SuperObject implements Action{
         g2.setColor(Color.red);
         g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         g2.setStroke(oldStroke);
-        g2.setFont(gp.getGameUI().getFontArial40().deriveFont(12F));
+        g2.setFont(gp.getGameUI().getfreePixel_40().deriveFont(12F));
         g2.drawString("X: " + worldX/gp.getTileSize() + " Y: " + worldY/gp.getTileSize(), screenX, screenY - 1);
         g2.setFont(g2.getFont());
     }

@@ -3,12 +3,18 @@ package main;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Stroke;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UI {
     private GamePanel gp;
-    private Font arial_40, arial_80B;
+    private Font freePixel_40;
     private Graphics2D g2;
     
     //Messages
@@ -25,8 +31,13 @@ public class UI {
     
     public UI(GamePanel gp){
         this.gp = gp;
-        this.arial_40 = new Font("Arial", Font.PLAIN, 40);
-        arial_80B = new Font("Arial", Font.BOLD, 80);
+        try {
+            InputStream is = getClass().getResourceAsStream("/font/FreePixel.ttf");
+            freePixel_40 = Font.createFont(Font.TRUETYPE_FONT, is);
+        } catch (FontFormatException | IOException ex) {
+            freePixel_40 = new Font("Arial", Font.PLAIN, 40);
+            Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void showMessage(String text){
@@ -36,7 +47,7 @@ public class UI {
     
     public void draw(Graphics2D g2){
         this.g2 = g2;
-        g2.setFont(arial_40);
+        g2.setFont(freePixel_40);
         
         
         switch(gp.getGameState()){
@@ -66,7 +77,7 @@ public class UI {
         x += gp.getTileSize();
         y += gp.getTileSize();
         g2.setColor(Color.white);
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 28f));
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 28f));
         
         for(String line : currentDialog.split("\n")){
             g2.drawString(line, x, y);
@@ -114,8 +125,8 @@ public class UI {
     public void setGameFinished(boolean gameFinished) {
         this.gameFinished = gameFinished;
     }
-    public Font getFontArial40(){
-        return this.arial_40;
+    public Font getfreePixel_40(){
+        return this.freePixel_40;
     }
 
     public String getCurrentDialog() {
@@ -125,5 +136,4 @@ public class UI {
     public void setCurrentDialog(String currentDialog) {
         this.currentDialog = currentDialog;
     }
-    
 }

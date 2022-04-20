@@ -8,7 +8,6 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -71,11 +70,6 @@ public abstract class Entity {
                 direction = "left";
                 break;
         }
-        
-        Random rand = new Random();
-        int i = rand.nextInt(dialogues.length);
-        
-        gp.getGameUI().setCurrentDialog(dialogues[i]);
     
     };
     public void update(){
@@ -244,7 +238,7 @@ public abstract class Entity {
         g2.setColor(Color.red);
         g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         g2.setStroke(oldStroke);
-        g2.setFont(gp.getGameUI().getFontArial40().deriveFont(12F));
+        g2.setFont(gp.getGameUI().getfreePixel_40().deriveFont(12F));
         g2.drawString("X: " + worldX/gp.getTileSize() + " Y: " + worldY/gp.getTileSize(), screenX, screenY - 1);
         g2.setFont(g2.getFont());
     }

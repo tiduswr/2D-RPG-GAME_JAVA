@@ -33,7 +33,7 @@ public class Debug {
         Font oldFont = g2.getFont();
         Color oldColor = g2.getColor();
         g2.setColor(Color.white);
-        g2.setFont(gp.getGameUI().getFontArial40());
+        g2.setFont(gp.getGameUI().getfreePixel_40());
         g2.setFont(g2.getFont().deriveFont(20F));
         
         //Draw drawing time
