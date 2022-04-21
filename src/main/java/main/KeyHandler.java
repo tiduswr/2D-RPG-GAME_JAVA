@@ -56,6 +56,16 @@ public class KeyHandler implements KeyListener{
             if(code == KeyEvent.VK_Z){
                 gp.setGameState(GameState.PLAY_STATE);
             }
+        }else if(gp.getGameState() == GameState.TITLE_STATE){
+            if(code == KeyEvent.VK_UP){
+                gp.getGameUI().upTitleCommand();
+            }
+            if(code == KeyEvent.VK_DOWN){
+                gp.getGameUI().downTitleCommand();
+            }
+            if(code == KeyEvent.VK_ENTER){
+                gp.getGameUI().executeMenuAction();
+            }
         }
     }
 

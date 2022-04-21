@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import tile.TileManager;
+import javax.swing.SwingUtilities;
 
 public class UI {
     private GamePanel gp;
@@ -33,7 +33,9 @@ public class UI {
     
     //Title Screen
     private int titleCounter = 0;
-    private BufferedImage logo;
+    private BufferedImage logo, cursor;
+    private Stroke titleStroke = new BasicStroke(4);
+    private int titleCommand, qtdTitleCommands = 3;
     
     public UI(GamePanel gp){
         UtilityTool uTool = new UtilityTool();
@@ -48,9 +50,11 @@ public class UI {
             }
             
             //Read Logo
-            logo = null;
             logo = ImageIO.read(getClass().getResourceAsStream("/title/crystal.png"));
             logo = uTool.scaleImage(logo, gp.getTileSize(), gp.getTileSize());
+            //Read cursor
+            cursor = ImageIO.read(getClass().getResourceAsStream("/title/cursor.png"));
+            cursor = uTool.scaleImage(cursor, gp.getTileSize(), gp.getTileSize());
         } catch (IOException ex) {
             Logger.getLogger(UI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -85,25 +89,86 @@ public class UI {
     
     private void drawTitleScreen(){
         //Draw Title
-        String title = "FINAL FANTASY FAN";
+        String text = "FINAL FANTASY FAN";
+        Color oldColor = g2.getColor();
+        Stroke oldStroke = g2.getStroke();
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 80F));
-        g2.setColor(Color.white);
-        
-        int x = getXForCenteredText(title);
-        int y = gp.getTileSize(); y += titleCounter;
+        g2.setColor(Color.black);
+        g2.setStroke(titleStroke);
         
         //Animated Title
+        int x = getXForCenteredText(text);
+        int y = gp.getTileSize(); y += titleCounter;
+        g2.setColor(Color.gray);
+        g2.drawString(text, x-3, y+3);
+        g2.setColor(Color.black);
+        g2.drawString(text, x, y);
+        g2.drawLine(x + 5, y + 9, x + g2.getFontMetrics(g2.getFont()).stringWidth(text) - 5, y + 9);
         if(titleCounter < gp.getTileSize()*2){
-            g2.drawString(title, x, y);
             titleCounter++;
-        }else{
-            g2.drawString(title, x, y);
+        }else{        
+            //Draw logo
+            x = gp.getScreenWidth()/2 - gp.getTileSize();
+            y = gp.getTileSize()*4;
+            g2.drawImage(logo, x, y, gp.getTileSize()*2, gp.getTileSize()*2, null);
+
+            //Menu Options
+            g2.setFont(g2.getFont().deriveFont(Font.BOLD, 48F));
+
+            text = "NEW GAME";
+            x = getXForCenteredText(text);
+            y += gp.getTileSize()*3.5;
+            g2.drawString(text, x, y);
+            //Draw cursor
+            if(titleCommand == 0){
+                g2.drawImage(cursor, x-gp.getTileSize() - 10, y-gp.getTileSize(), gp.getTileSize(), gp.getTileSize(), null);
+            }
+            
+            text = "LOAD";
+            x = getXForCenteredText(text);
+            y += gp.getTileSize();
+            g2.drawString(text, x, y);
+            //Draw cursor
+            if(titleCommand == 1){
+                g2.drawImage(cursor, x-gp.getTileSize() - 10, y-gp.getTileSize(), gp.getTileSize(), gp.getTileSize(), null); 
+            }
+            
+            text = "QUIT";
+            x = getXForCenteredText(text);
+            y += gp.getTileSize();
+            g2.drawString(text, x, y);
+            //Draw cursor
+            if(titleCommand == 2){
+                g2.drawImage(cursor, x-gp.getTileSize() - 10, y-gp.getTileSize(), gp.getTileSize(), gp.getTileSize(), null); 
+            }
         }
-        
-        //Draw logo
-        x = gp.getScreenWidth()/2 - gp.getTileSize();
-        y = gp.getTileSize()*4;
-        g2.drawImage(logo, x, y, gp.getTileSize()*2, gp.getTileSize()*2, null);
+        g2.setStroke(oldStroke);
+        g2.setColor(oldColor);
+    }
+    
+    private void cancelTitleLogoAnimation(){
+        if(titleCounter < gp.getTileSize()*2) titleCounter = gp.getTileSize()*2;
+    }
+    
+    public void executeMenuAction(){
+        cancelTitleLogoAnimation();
+        switch(titleCommand){
+            case 0:
+                gp.playSoundEffect("selected", 1);
+                gp.setGameState(GameState.PLAY_STATE);
+                gp.stopMusic();
+                gp.playMusic("worldTheme");
+                break;
+            case 1:
+                
+                break;
+            case 2:
+                gp.playSoundEffect("selected", 1);
+                gp.setGameThread(null);
+                SwingUtilities.getWindowAncestor(gp).dispose();
+                gp.stopMusic();
+                break;
+        }
     }
     
     private void drawDialogScreen(){
@@ -179,4 +244,17 @@ public class UI {
     public void setCurrentDialog(String currentDialog) {
         this.currentDialog = currentDialog;
     }
+
+    public void upTitleCommand() {
+        cancelTitleLogoAnimation();
+        gp.playSoundEffect("cursor", 0.3f);
+         if(titleCommand > 0) titleCommand--;
+    }
+
+    public void downTitleCommand() {
+        cancelTitleLogoAnimation();
+        gp.playSoundEffect("cursor", 0.3f);
+        if(titleCommand < qtdTitleCommands - 1) titleCommand++;
+    }
+    
 }

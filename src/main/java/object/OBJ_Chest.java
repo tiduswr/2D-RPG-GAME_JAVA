@@ -20,7 +20,7 @@ public class OBJ_Chest extends SuperObject{
     @Override
     public boolean executeAction() {
        gp.getGameUI().setGameFinished(true);
-       gp.playSoundEffect(4);
+       gp.playSoundEffect("chestUnlock",1);
        return true;
     }
 }

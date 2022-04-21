@@ -55,7 +55,7 @@ public final class GamePanel extends JPanel implements Runnable{
     
     public GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.black);
+        this.setBackground(Color.white);
         this.setDoubleBuffered(true);
         this.addKeyListener(keyH);
         this.setFocusable(true);
@@ -70,7 +70,6 @@ public final class GamePanel extends JPanel implements Runnable{
     public void setupGame(){
         assetSetter.setObject();
         assetSetter.setNPCS();
-        //playMusic(0);
         gameState = GameState.TITLE_STATE;
     }
     
@@ -173,8 +172,8 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     
     //Sound Handlers
-    public void playMusic(int i){
-        music.setFile(i);
+    public void playMusic(String file){
+        music.setFile(file);
         music.play();
         music.loop();
     }
@@ -183,8 +182,9 @@ public final class GamePanel extends JPanel implements Runnable{
         music.stop();
     }
     
-    public void playSoundEffect(int i){
-        soundEffect.setFile(i);
+    public void playSoundEffect(String file, float vol){
+        soundEffect.setFile(file);
+        soundEffect.volume(vol);
         soundEffect.play();
     }
     

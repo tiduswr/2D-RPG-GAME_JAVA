@@ -1,29 +1,36 @@
 package main;
 
 import java.net.URL;
+import java.util.HashMap;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 public class Sound {
     private Clip clip;
-    private URL soundURL[] = new URL[30];
+    private final HashMap<String, URL> soundURL;
     
     public Sound(){
-        soundURL[0] = getClass().getResource("/sound/worldTheme.wav");
-        soundURL[1] = getClass().getResource("/sound/fanfarreSlim.wav");
-        soundURL[2] = getClass().getResource("/sound/coin.wav");
-        soundURL[3] = getClass().getResource("/sound/cure.wav");
-        soundURL[4] = getClass().getResource("/sound/chestUnlock.wav");
-        soundURL[5] = getClass().getResource("/sound/doorUnlock.wav");
-        soundURL[6] = getClass().getResource("/sound/keyGet.wav");
-        soundURL[7] = getClass().getResource("/sound/speedUp.wav");
-        soundURL[8] = getClass().getResource("/sound/teleport.wav");
+        this.soundURL = new HashMap<>();
+        
+        this.soundURL.put("worldTheme", getClass().getResource("/sound/worldTheme.wav"));
+        this.soundURL.put("fanfarreSlim", getClass().getResource("/sound/fanfarreSlim.wav"));
+        this.soundURL.put("coin", getClass().getResource("/sound/coin.wav"));
+        this.soundURL.put("cure", getClass().getResource("/sound/cure.wav"));
+        this.soundURL.put("chestUnlock", getClass().getResource("/sound/chestUnlock.wav"));
+        this.soundURL.put("doorUnlock", getClass().getResource("/sound/doorUnlock.wav"));
+        this.soundURL.put("keyGet", getClass().getResource("/sound/keyGet.wav"));
+        this.soundURL.put("speedUp", getClass().getResource("/sound/speedUp.wav"));
+        this.soundURL.put("teleport", getClass().getResource("/sound/teleport.wav"));
+        this.soundURL.put("prelude", getClass().getResource("/sound/prelude.wav"));
+        this.soundURL.put("cursor", getClass().getResource("/sound/cursor.wav"));
+        this.soundURL.put("selected", getClass().getResource("/sound/selected.wav"));
     }
     
-    public void setFile(int i){
+    public void setFile(String file){
         try{
-            AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL[i]);
+            AudioInputStream ais = AudioSystem.getAudioInputStream(soundURL.get(file));
             clip = AudioSystem.getClip();
             clip.open(ais);
         }catch(Exception e){
@@ -39,4 +46,12 @@ public class Sound {
     public void stop(){
         clip.stop();
     }
+    
+    public void volume(float volume){
+        if (volume > 0f && volume < 1f){
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);        
+            gainControl.setValue(20f * (float) Math.log10(volume));
+        }
+    }
+    
 }

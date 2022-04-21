@@ -20,7 +20,7 @@ public class OBJ_Key extends SuperObject{
     public boolean executeAction() {
         super.executeAction();
         gp.getPlayer().addKeys(1);
-        gp.playSoundEffect(6);
+        gp.playSoundEffect("keyGet",1);
         gp.getGameUI().showMessage("You got a Key!");
         return true;
     }

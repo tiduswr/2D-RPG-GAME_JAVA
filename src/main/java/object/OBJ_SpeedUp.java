@@ -23,7 +23,7 @@ public class OBJ_SpeedUp extends SuperObject{
         
         gp.getPlayer().setSpeed(gp.getPlayer().getSpeed() + (int) Math.ceil(newSpeed));
         gp.getGameUI().showMessage("Player Speed Increased!");
-        gp.playSoundEffect(7);
+        gp.playSoundEffect("speedUp",1);
         return true;
     }
 }
