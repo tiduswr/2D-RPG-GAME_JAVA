@@ -81,6 +81,9 @@ public class Player extends Entity{
             int npcIndex = gp.getcChecker().checkEntity(this, gp.getNpcs());
             interactNpcIndex(npcIndex);
             
+            //Check Event Collision
+            gp.geteHandler().checkEvent();
+            
             checkDirection();
             controlSpriteAnimationSpeed();
         }else{
@@ -98,7 +101,6 @@ public class Player extends Entity{
             gp.setGameState(GameState.DIALOG_STATE);
             gp.getNpcs()[i].speak();
         }
-        gp.getKeyH().setzPressed(false);
     }
     
     @Override
@@ -155,6 +157,15 @@ public class Player extends Entity{
     }
     public void removeKeys(int value){
         qtdKeys -= value;
+    }
+    
+    //Teste functions
+    public void doDamage(int value){
+        if(life > 0) life -= value;
+    }
+    
+    public void resetLife(){
+        this.life = maxLife;
     }
     
 }

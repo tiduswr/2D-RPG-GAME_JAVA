@@ -1,5 +1,6 @@
 package main;
 
+import Event.EventHandler;
 import entity.Entity;
 import entity.Player;
 import java.awt.Color;
@@ -51,6 +52,7 @@ public final class GamePanel extends JPanel implements Runnable{
     private CollisionChecker cChecker = new CollisionChecker(this);
     private TileManager tileM = new TileManager(this);
     private UI ui = new UI(this);
+    private EventHandler eHandler = new EventHandler(this);
     
     //Game State
     public GameState gameState;
@@ -157,18 +159,19 @@ public final class GamePanel extends JPanel implements Runnable{
                     e.draw(g2);
                 }
             }
-
+            
             //PLAYER
             player.draw(g2);
-
-            //UI
-            ui.draw(g2);
-
+            
             //Debug
             if(getKeyH().debugMode()){
                 long drawEnd = System.nanoTime();
                 debug.draw(g2, drawStart, drawEnd);
+                eHandler.draw(g2);
             }
+            
+            //UI
+            ui.draw(g2);
         }
         
         g2.dispose();
@@ -271,6 +274,14 @@ public final class GamePanel extends JPanel implements Runnable{
 
     public Entity[] getNpcs() {
         return npcs;
+    }
+
+    public EventHandler geteHandler() {
+        return eHandler;
+    }
+
+    public void seteHandler(EventHandler eHandler) {
+        this.eHandler = eHandler;
     }
     
 }
