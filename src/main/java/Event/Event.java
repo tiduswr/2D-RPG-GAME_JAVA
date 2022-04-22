@@ -3,7 +3,7 @@ package Event;
 public abstract class Event {
     private int eventCol, eventRow;
     private String reqDirection;
-
+    
     public Event(int eventCol, int eventRow, String reqDirection) {
         this.eventCol = eventCol;
         this.eventRow = eventRow;
@@ -35,5 +35,4 @@ public abstract class Event {
     public void setReqDirection(String reqDirection) {
         this.reqDirection = reqDirection;
     }
-    
 }
