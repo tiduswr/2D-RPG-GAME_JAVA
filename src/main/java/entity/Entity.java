@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import main.GamePanel;
-import main.UtilityTool;
+import util.UtilityTool;
 import tile.TileManager;
 
 public abstract class Entity {
@@ -26,7 +26,10 @@ public abstract class Entity {
     protected boolean collisionOn = false;
     protected Stroke collisionRectStroke = new BasicStroke(2);
     protected int actionLockCounter;
+    
+    //Char stats
     protected String[] dialogues;
+    protected int maxLife, life;
     
     public Entity(GamePanel gp){
         this.gp = gp;
@@ -242,4 +245,13 @@ public abstract class Entity {
         g2.drawString("X: " + worldX/gp.getTileSize() + " Y: " + worldY/gp.getTileSize(), screenX, screenY - 1);
         g2.setFont(g2.getFont());
     }
+
+    public int getMaxLife() {
+        return maxLife;
+    }
+
+    public int getLife() {
+        return life;
+    }
+    
 }

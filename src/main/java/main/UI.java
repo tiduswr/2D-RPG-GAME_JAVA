@@ -1,5 +1,7 @@
 package main;
 
+import entity.LifeBar;
+import util.UtilityTool;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -35,10 +37,15 @@ public class UI {
     private int titleCounter = 0;
     private BufferedImage logo, cursor;
     private Stroke titleStroke = new BasicStroke(4);
+    private Stroke screenBorderStroke = new BasicStroke(10);
     private int titleCommand, qtdTitleCommands = 3;
+    
+    //LifeBar
+    private LifeBar lifeBar;
     
     public UI(GamePanel gp){
         UtilityTool uTool = new UtilityTool();
+        lifeBar = new LifeBar(gp, gp.getPlayer(), 0, 0);
         try {
             this.gp = gp;
             try {
@@ -73,6 +80,7 @@ public class UI {
         
         switch(gp.getGameState()){
             case PLAY_STATE:
+                lifeBar.draw(g2);
                 break;
             case PAUSE_STATE:
                 drawPauseScreen();
@@ -104,6 +112,11 @@ public class UI {
         g2.setColor(Color.black);
         g2.drawString(text, x, y);
         g2.drawLine(x + 5, y + 9, x + g2.getFontMetrics(g2.getFont()).stringWidth(text) - 5, y + 9);
+        
+        //Draw Border Screen
+        g2.setStroke(screenBorderStroke);
+        g2.drawRoundRect(0, 0, gp.getWidth(), gp.getHeight(), 30, 30);
+        
         if(titleCounter < gp.getTileSize()*2){
             titleCounter++;
         }else{        

@@ -13,7 +13,6 @@ public class Player extends Entity{
     private KeyHandler keyH;
     private int qtdKeys = 0;
     private int standCounter = 0;
-    
     private final int screenX, screenY;
     
     public Player(GamePanel gp, KeyHandler keyH){
@@ -41,6 +40,10 @@ public class Player extends Entity{
         worldX = gp.getTileSize() * 23;
         worldY = gp.getTileSize() * 21;
         direction = "down";
+        
+        //Life
+        maxLife = 6;
+        life = maxLife;
     }
     
     private void getImages(){
@@ -153,4 +156,5 @@ public class Player extends Entity{
     public void removeKeys(int value){
         qtdKeys -= value;
     }
+    
 }

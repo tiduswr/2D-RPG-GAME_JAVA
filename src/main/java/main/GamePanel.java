@@ -35,20 +35,22 @@ public final class GamePanel extends JPanel implements Runnable{
     //DEBUG   
     private Debug debug = new Debug(this);
     
-    //System Game
-    private Thread gameThread;
-    private Sound music = new Sound();
-    private Sound soundEffect = new Sound();
+    //INPUT
     private KeyHandler keyH = new KeyHandler(this);
-    private CollisionChecker cChecker = new CollisionChecker(this);
-    private TileManager tileM = new TileManager(this);
-    private UI ui = new UI(this);
     
     //Entity and Object Settings
     private Player player = new Player(this, keyH);
     private AssetSetter assetSetter = new AssetSetter(this);
     private SuperObject obj[] = new SuperObject[10]; //Pode ser mostrados até 10 objetos por vez no jogo
     private Entity[] npcs = new Entity[10];
+    
+    //System Game
+    private Thread gameThread;
+    private Sound music = new Sound();
+    private Sound soundEffect = new Sound();
+    private CollisionChecker cChecker = new CollisionChecker(this);
+    private TileManager tileM = new TileManager(this);
+    private UI ui = new UI(this);
     
     //Game State
     public GameState gameState;
@@ -71,6 +73,7 @@ public final class GamePanel extends JPanel implements Runnable{
         assetSetter.setObject();
         assetSetter.setNPCS();
         gameState = GameState.TITLE_STATE;
+        playMusic("prelude");
     }
     
     @Override
