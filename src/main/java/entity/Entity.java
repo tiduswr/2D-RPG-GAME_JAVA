@@ -11,11 +11,13 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import main.Drawnable;
 import main.GamePanel;
+import main.WorldLocation;
 import util.UtilityTool;
 import tile.TileManager;
 
-public abstract class Entity {
+public abstract class Entity implements Drawnable{
     protected int worldX, worldY, speed;
     
     protected GamePanel gp;
@@ -134,6 +136,7 @@ public abstract class Entity {
         }
     }
     
+    @Override
     public void draw(Graphics2D g2){
         int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
         int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
@@ -258,4 +261,9 @@ public abstract class Entity {
         solidArea.y = solidAreaDefaultY;
     }
     
+    @Override
+    public int compareTo(Object o) {
+        WorldLocation ext = (WorldLocation) o;
+        return Integer.compare(getWorldY(), ext.getWorldY());
+    }
 }

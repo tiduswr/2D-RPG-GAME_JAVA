@@ -1,4 +1,4 @@
-package Event;
+package event;
 
 import java.awt.Color;
 import java.awt.Font;

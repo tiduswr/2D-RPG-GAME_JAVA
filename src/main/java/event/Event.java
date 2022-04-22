@@ -1,4 +1,4 @@
-package Event;
+package event;
 
 public abstract class Event {
     private int eventCol, eventRow;

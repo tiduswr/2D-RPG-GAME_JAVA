@@ -1,6 +1,5 @@
 package object;
 
-import entity.Player;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -8,17 +7,19 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+import main.Drawnable;
 import main.GamePanel;
+import main.WorldLocation;
 
-public abstract class SuperObject implements Action{
+public abstract class SuperObject implements Action, Drawnable{
     protected BufferedImage image;
     protected String name;
     protected boolean collision;
     protected int worldX, worldY;
     protected Rectangle solidArea;
     protected GamePanel gp;
-    private int solidAreaDefaultX, solidAreaDefaultY;
-    private final Stroke collisionRectStroke;
+    protected int solidAreaDefaultX, solidAreaDefaultY;
+    protected final Stroke collisionRectStroke;
     
     public SuperObject(GamePanel gp){
         this.gp = gp;
@@ -29,6 +30,7 @@ public abstract class SuperObject implements Action{
         collisionRectStroke = new BasicStroke(2);
     }
     
+    @Override
     public void draw(Graphics2D g2){
         int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
         int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
@@ -93,4 +95,11 @@ public abstract class SuperObject implements Action{
         g2.drawString("X: " + worldX/gp.getTileSize() + " Y: " + worldY/gp.getTileSize(), screenX, screenY - 1);
         g2.setFont(g2.getFont());
     }
+    
+    @Override
+    public int compareTo(Object o) {
+        WorldLocation ext = (WorldLocation) o;
+        return Integer.compare(getWorldY(), ext.getWorldY());
+    }
+    
 }

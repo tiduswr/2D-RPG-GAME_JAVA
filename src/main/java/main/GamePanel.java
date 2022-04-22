@@ -1,12 +1,14 @@
 package main;
 
-import Event.EventHandler;
+import event.EventHandler;
 import entity.Entity;
 import entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.JPanel;
 import object.SuperObject;
 import tile.TileManager;
@@ -44,6 +46,7 @@ public final class GamePanel extends JPanel implements Runnable{
     private AssetSetter assetSetter = new AssetSetter(this);
     private SuperObject obj[] = new SuperObject[10]; //Pode ser mostrados até 10 objetos por vez no jogo
     private Entity[] npcs = new Entity[10];
+    private ArrayList<Drawnable> renderOrder = new ArrayList<>();
     
     //System Game
     private Thread gameThread;
@@ -76,6 +79,22 @@ public final class GamePanel extends JPanel implements Runnable{
         assetSetter.setNPCS();
         gameState = GameState.TITLE_STATE;
         playMusic("prelude");
+        
+        //Make renderOrder arraylist
+        //Add player
+        renderOrder.add(player);
+        //Add objects
+        for(SuperObject o : obj){
+            if(o != null){
+                renderOrder.add(o);
+            }
+        }
+        //Add NPCS
+        for(Entity e : npcs){
+            if(e != null){
+                renderOrder.add(e);
+            }
+        }
     }
     
     @Override
@@ -145,23 +164,12 @@ public final class GamePanel extends JPanel implements Runnable{
         }else{
             //TILE
             tileM.draw(g2);
-
-            //OBJECT
-            for(SuperObject o : obj){
-                if(o != null){
-                    o.draw(g2);
-                }
-            }
-
-            //NPC
-            for(Entity e : npcs){
-                if(e != null){
-                    e.draw(g2);
-                }
-            }
             
-            //PLAYER
-            player.draw(g2);
+            //Draw Entities and Objects
+            Collections.sort(renderOrder);
+            renderOrder.forEach(d -> {
+                d.draw(g2);
+            });
             
             //Debug
             if(getKeyH().debugMode()){

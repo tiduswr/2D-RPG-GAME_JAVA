@@ -17,6 +17,14 @@ public class OBJ_Door extends SuperObject{
             Logger.getLogger(OBJ_Key.class.getName()).log(Level.SEVERE, null, ex);
         }
         collision = true;
+        
+        solidArea.x = 0;
+        solidArea.y = 16;
+        solidArea.width = 48;
+        solidArea.height = 32;
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
+        
     }
     @Override
     public boolean executeAction() {
