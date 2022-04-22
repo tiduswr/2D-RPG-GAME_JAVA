@@ -22,16 +22,7 @@ public class Player extends Entity{
         this.screenX = gp.getScreenWidth()/2 - (gp.getTileSize()/2);
         this.screenY = gp.getScreenHeight()/2 - (gp.getTileSize()/2);
         speed = 240/gp.getFPS();
-        
-        //Rectangle that define the pixels of Collision in Player
-        solidArea = new Rectangle();
-        solidArea.x = 8;
-        solidArea.y = 12;
-        solidArea.width = 32;
-        solidArea.height = 32;
-        setSolidAreaDefaultX(solidArea.x);
-        setSolidAreaDefaultY(solidArea.y);
-        
+                
         setDefaultValues();
         getImages();
     }

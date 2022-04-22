@@ -2,7 +2,6 @@ package main;
 
 import entity.NPC_BlackMage;
 import entity.NPC_WhiteMage;
-import object.OBJ_Door;
 import object.SuperObject;
 
 public class AssetSetter {
@@ -13,7 +12,6 @@ public class AssetSetter {
     }
     
     public void setObject(){
-        spawnObject(new OBJ_Door(gp), 21, 22, 0);
     }
     
     private void spawnObject(SuperObject obj, int row, int col, int index){
