@@ -6,24 +6,24 @@ import main.GamePanel;
 public class NPC_WhiteMage extends Entity{
     
     public NPC_WhiteMage(GamePanel gp, int row, int col){
-        super(gp);
+        super(gp, EntityType.NPC);
         this.worldX = gp.getTileSize()*row;
         this.worldY = gp.getTileSize()*col;
         this.direction = "down";
-        speed = 1;
+        name = "White Mage";
         getImages();
         createDialogues();
     }
     
     private void getImages(){
-        u1 = makePlayerSprite("npc/whiteMage_u1.png");
-        u2 = makePlayerSprite("npc/whiteMage_u2.png");
-        l1 = makePlayerSprite("npc/whiteMage_l1.png");
-        l2 = makePlayerSprite("npc/whiteMage_l2.png");
-        r1 = makePlayerSprite("npc/whiteMage_r1.png");
-        r2 = makePlayerSprite("npc/whiteMage_r2.png");
-        d1 = makePlayerSprite("npc/whiteMage_d1.png");
-        d2 = makePlayerSprite("npc/whiteMage_d2.png");
+        u1 = makeSprite("npc/whiteMage_u1.png");
+        u2 = makeSprite("npc/whiteMage_u2.png");
+        l1 = makeSprite("npc/whiteMage_l1.png");
+        l2 = makeSprite("npc/whiteMage_l2.png");
+        r1 = makeSprite("npc/whiteMage_r1.png");
+        r2 = makeSprite("npc/whiteMage_r2.png");
+        d1 = makeSprite("npc/whiteMage_d1.png");
+        d2 = makeSprite("npc/whiteMage_d2.png");
     }
     
     private void createDialogues(){

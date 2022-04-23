@@ -6,11 +6,11 @@ import main.GamePanel;
 public class NPC_BlackMage extends Entity{
     
     public NPC_BlackMage(GamePanel gp, int row, int col){
-        super(gp);
+        super(gp, EntityType.NPC);
         this.worldX = gp.getTileSize()*row;
         this.worldY = gp.getTileSize()*col;
         this.direction = "down";
-        speed = 1;
+        name = "Black Mage";
         getImages();
         createDialogues();
     }
@@ -25,14 +25,14 @@ public class NPC_BlackMage extends Entity{
     }
     
     private void getImages(){
-        u1 = makePlayerSprite("npc/blackMage_u1.png");
-        u2 = makePlayerSprite("npc/blackMage_u2.png");
-        l1 = makePlayerSprite("npc/blackMage_l1.png");
-        l2 = makePlayerSprite("npc/blackMage_l2.png");
-        r1 = makePlayerSprite("npc/blackMage_r1.png");
-        r2 = makePlayerSprite("npc/blackMage_r2.png");
-        d1 = makePlayerSprite("npc/blackMage_d1.png");
-        d2 = makePlayerSprite("npc/blackMage_d2.png");
+        u1 = makeSprite("npc/blackMage_u1.png");
+        u2 = makeSprite("npc/blackMage_u2.png");
+        l1 = makeSprite("npc/blackMage_l1.png");
+        l2 = makeSprite("npc/blackMage_l2.png");
+        r1 = makeSprite("npc/blackMage_r1.png");
+        r2 = makeSprite("npc/blackMage_r2.png");
+        d1 = makeSprite("npc/blackMage_d1.png");
+        d2 = makeSprite("npc/blackMage_d2.png");
     }
     
     @Override

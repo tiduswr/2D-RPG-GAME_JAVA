@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -28,13 +29,24 @@ public abstract class Entity implements Drawnable{
     protected boolean collisionOn = false;
     protected Stroke collisionRectStroke = new BasicStroke(2);
     protected int actionLockCounter;
+    protected String name;
+    
+    //Entity Type Handler
+    protected EntityType type;
+    
+    //Invincible Handler
+    protected int invincibleCounter = 0;
+    protected boolean invincible = false;
     
     //Char stats
     protected String[] dialogues;
     protected int maxLife, life;
     
-    public Entity(GamePanel gp){
+    public Entity(GamePanel gp, EntityType type){
+        this.type = type;
         this.gp = gp;
+        this.direction = "down";
+        speed = 60/gp.getFPS();
         solidArea = new Rectangle();
         solidArea.x = 8;
         solidArea.y = 16;
@@ -44,7 +56,7 @@ public abstract class Entity implements Drawnable{
         solidAreaDefaultY = solidArea.y;
     }
     
-    public BufferedImage makePlayerSprite(String imgPath){
+    public BufferedImage makeSprite(String imgPath){
         UtilityTool uTool = new UtilityTool();
         BufferedImage scaledImage = null;
         
@@ -84,10 +96,18 @@ public abstract class Entity implements Drawnable{
         checkTileCollision();
         //Check object collision
         checkObjectCollision();
-        //Check Player Collision
-        gp.getcChecker().checkPlayer(this);
         //Check NPC collision
         gp.getcChecker().checkEntity(this, gp.getNpcs());
+        //Check Monsters collision
+        gp.getcChecker().checkEntity(this, gp.getMonsters());
+        //Check Player Collision
+        if(gp.getcChecker().checkPlayer(this) && this.type == EntityType.MONSTER){
+            if(!gp.getPlayer().isInvincible()){
+                //Damage teste on collision
+                gp.getPlayer().doDamage(1);
+                gp.getPlayer().setInvincible(true);
+            }
+        }
         
         checkDirection();
         controlSpriteAnimationSpeed();
@@ -149,6 +169,7 @@ public abstract class Entity implements Drawnable{
             BufferedImage image = getSpriteDirection();
             
             g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+            
             if(gp.getKeyH().debugMode()) drawCollision(g2, screenX, screenY);
         }
     }
@@ -205,13 +226,15 @@ public abstract class Entity implements Drawnable{
     
     protected int spriteCounter = 0;
     public int spriteNum = 1;
-
+    
+    @Override
     public int getWorldX() {
         return worldX;
     }
     public void setWorldX(int worldX) {
         this.worldX = worldX;
     }
+    @Override
     public int getWorldY() {
         return worldY;
     }
@@ -261,9 +284,32 @@ public abstract class Entity implements Drawnable{
         solidArea.y = solidAreaDefaultY;
     }
     
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public EntityType getType() {
+        return type;
+    }
+
+    public boolean isInvincible() {
+        return invincible;
+    }
+
+    public void setInvincible(boolean invincible) {
+        this.invincible = invincible;
+    }
+    
     @Override
     public int compareTo(Object o) {
         WorldLocation ext = (WorldLocation) o;
         return Integer.compare(getWorldY(), ext.getWorldY());
     }
+    
+    public enum EntityType{MONSTER, NPC, PLAYER;}
+    
 }

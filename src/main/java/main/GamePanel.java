@@ -46,6 +46,7 @@ public final class GamePanel extends JPanel implements Runnable{
     private AssetSetter assetSetter = new AssetSetter(this);
     private SuperObject obj[] = new SuperObject[10]; //Pode ser mostrados até 10 objetos por vez no jogo
     private Entity[] npcs = new Entity[10];
+    private Entity[] monsters = new Entity[20];
     private ArrayList<Drawnable> renderOrder = new ArrayList<>();
     
     //System Game
@@ -77,6 +78,7 @@ public final class GamePanel extends JPanel implements Runnable{
     public void setupGame(){
         assetSetter.setObject();
         assetSetter.setNPCS();
+        assetSetter.spawnMonsters();
         gameState = GameState.TITLE_STATE;
         playMusic("prelude");
         
@@ -93,6 +95,12 @@ public final class GamePanel extends JPanel implements Runnable{
         for(Entity e : npcs){
             if(e != null){
                 renderOrder.add(e);
+            }
+        }
+        //Add Mosnters
+        for(Entity m : monsters){
+            if(m != null){
+                renderOrder.add(m);
             }
         }
     }
@@ -142,6 +150,14 @@ public final class GamePanel extends JPanel implements Runnable{
                     e.update();
                 }
             }
+            
+            //MONSTERS
+            for(Entity m : monsters){
+                if(m != null){
+                    m.update();
+                }
+            }
+            
         }
         if(gameState == GameState.PAUSE_STATE){
             //Nothing
@@ -290,6 +306,10 @@ public final class GamePanel extends JPanel implements Runnable{
 
     public void seteHandler(EventHandler eHandler) {
         this.eHandler = eHandler;
+    }
+
+    public Entity[] getMonsters() {
+        return monsters;
     }
     
 }

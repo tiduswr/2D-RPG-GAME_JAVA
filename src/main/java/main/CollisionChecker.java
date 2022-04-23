@@ -71,52 +71,19 @@ public class CollisionChecker {
                 o.getSolidArea().y = o.getWorldY() + o.getSolidArea().y;
                 
                 switch(e.getDirection()){
-                    case "up":
-                        e.getSolidArea().y -= e.getSpeed();
-                        if(e.getSolidArea().intersects(o.getSolidArea())){
-                            if(o.isCollision()){
-                                e.setCollisionOn(true);
-                            }
-                            if(player){
-                                index = i;
-                            }
-                        }
-                        break;
-                    case "down":
-                        e.getSolidArea().y += e.getSpeed();
-                        if(e.getSolidArea().intersects(o.getSolidArea())){
-                            if(o.isCollision()){
-                                e.setCollisionOn(true);
-                            }
-                            if(player){
-                                index = i;
-                            }
-                        }
-                        break;
-                    case "left":
-                        e.getSolidArea().x -= e.getSpeed();
-                        if(e.getSolidArea().intersects(o.getSolidArea())){
-                            if(o.isCollision()){
-                                e.setCollisionOn(true);
-                            }
-                            if(player){
-                                index = i;
-                            }
-                        }
-                        break;
-                    case "right":
-                        e.getSolidArea().x += e.getSpeed();
-                        if(e.getSolidArea().intersects(o.getSolidArea())){
-                            if(o.isCollision()){
-                                e.setCollisionOn(true);
-                            }
-                            if(player){
-                                index = i;
-                            }
-                        }
-                        break;
+                    case "up": e.getSolidArea().y -= e.getSpeed(); break;
+                    case "down": e.getSolidArea().y += e.getSpeed(); break;
+                    case "left": e.getSolidArea().x -= e.getSpeed(); break;
+                    case "right": e.getSolidArea().x += e.getSpeed(); break;
                 }                
-                
+                if(e.getSolidArea().intersects(o.getSolidArea())){
+                    if(o.isCollision()){
+                        e.setCollisionOn(true);
+                    }
+                    if(player){
+                        index = i;
+                    }
+                }
                 //Reset solid area position
                 e.getSolidArea().x = e.getSolidAreaDefaultX();
                 e.getSolidArea().y = e.getSolidAreaDefaultY();
@@ -130,11 +97,11 @@ public class CollisionChecker {
     }
     
     //NPC or Monster Collision
-    public int checkEntity(Entity e, Entity[] target){
+    public int checkEntity(Entity e, Entity[] targets){
         int i = 0;
         int index = -1;
         
-        for(Entity t : target){
+        for(Entity t : targets){
             if(t != null && t != e){
                 //Get entity solid area position
                 e.getSolidArea().x = e.getWorldX() + e.getSolidArea().x;
@@ -145,35 +112,15 @@ public class CollisionChecker {
                 t.getSolidArea().y = t.getWorldY() + t.getSolidArea().y;
                 
                 switch(e.getDirection()){
-                    case "up":
-                        e.getSolidArea().y -= e.getSpeed();
-                        if(e.getSolidArea().intersects(t.getSolidArea())){
-                            e.setCollisionOn(true);
-                            index = i;
-                        }
-                        break;
-                    case "down":
-                        e.getSolidArea().y += e.getSpeed();
-                        if(e.getSolidArea().intersects(t.getSolidArea())){
-                            e.setCollisionOn(true);
-                            index = i;
-                        }
-                        break;
-                    case "left":
-                        e.getSolidArea().x -= e.getSpeed();
-                        if(e.getSolidArea().intersects(t.getSolidArea())){
-                            e.setCollisionOn(true);
-                            index = i;
-                        }
-                        break;
-                    case "right":
-                        e.getSolidArea().x += e.getSpeed();
-                        if(e.getSolidArea().intersects(t.getSolidArea())){
-                            e.setCollisionOn(true);
-                            index = i;
-                        }
-                        break;
-                }                
+                    case "up": e.getSolidArea().y -= e.getSpeed(); break;
+                    case "down": e.getSolidArea().y += e.getSpeed(); break;
+                    case "left": e.getSolidArea().x -= e.getSpeed(); break;
+                    case "right": e.getSolidArea().x += e.getSpeed(); break;
+                }          
+                if(e.getSolidArea().intersects(t.getSolidArea()) && t != e){
+                    e.setCollisionOn(true);
+                    index = i;
+                }
                 
                 //Reset solid area position
                 e.getSolidArea().x = e.getSolidAreaDefaultX();
@@ -187,7 +134,8 @@ public class CollisionChecker {
         return index;
     }
     
-    public void checkPlayer(Entity e){
+    public boolean checkPlayer(Entity e){
+        boolean contact = false;
         if(e != null){
             Entity t = gp.getPlayer();
             
@@ -201,37 +149,26 @@ public class CollisionChecker {
 
             switch(e.getDirection()){
                 case "up":
-                    e.getSolidArea().y -= e.getSpeed();
-                    if(e.getSolidArea().intersects(t.getSolidArea())){
-                        e.setCollisionOn(true);
-                    }
-                    break;
+                    e.getSolidArea().y -= e.getSpeed(); break;
                 case "down":
-                    e.getSolidArea().y += e.getSpeed();
-                    if(e.getSolidArea().intersects(t.getSolidArea())){
-                        e.setCollisionOn(true);
-                    }
-                    break;
+                    e.getSolidArea().y += e.getSpeed(); break;
                 case "left":
-                    e.getSolidArea().x -= e.getSpeed();
-                    if(e.getSolidArea().intersects(t.getSolidArea())){
-                        e.setCollisionOn(true);
-                    }
-                    break;
+                    e.getSolidArea().x -= e.getSpeed(); break;
                 case "right":
-                    e.getSolidArea().x += e.getSpeed();
-                    if(e.getSolidArea().intersects(t.getSolidArea())){
-                        e.setCollisionOn(true);
-                    }
-                    break;
+                    e.getSolidArea().x += e.getSpeed(); break;
             }                
-
+            if(e.getSolidArea().intersects(t.getSolidArea())){
+                e.setCollisionOn(true);
+                contact = true;
+            }            
+            
             //Reset solid area position
             e.getSolidArea().x = e.getSolidAreaDefaultX();
             e.getSolidArea().y = e.getSolidAreaDefaultY();
             t.getSolidArea().x = t.getSolidAreaDefaultX();
             t.getSolidArea().y = t.getSolidAreaDefaultY();
         }
+        return contact;
     }
     
 }

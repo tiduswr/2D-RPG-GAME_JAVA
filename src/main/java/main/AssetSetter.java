@@ -2,6 +2,7 @@ package main;
 
 import entity.NPC_BlackMage;
 import entity.NPC_WhiteMage;
+import monster.MON_GreenSlime;
 import object.SuperObject;
 
 public class AssetSetter {
@@ -23,6 +24,11 @@ public class AssetSetter {
     public void setNPCS(){
         gp.getNpcs()[0] = new NPC_BlackMage(gp, 21, 21);
         gp.getNpcs()[1] = new NPC_WhiteMage(gp, 26, 21);
+    }
+    
+    public void spawnMonsters(){
+        gp.getMonsters()[0] = new MON_GreenSlime(gp, 23, 36);
+        gp.getMonsters()[1] = new MON_GreenSlime(gp, 23, 37);
     }
     
 }

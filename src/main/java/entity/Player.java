@@ -1,7 +1,7 @@
 package entity;
 
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import main.GamePanel;
 import main.GameState;
@@ -16,11 +16,12 @@ public class Player extends Entity{
     private final int screenX, screenY;
     
     public Player(GamePanel gp, KeyHandler keyH){
-        super(gp);
+        super(gp, EntityType.PLAYER);
         this.keyH = keyH;
         
         this.screenX = gp.getScreenWidth()/2 - (gp.getTileSize()/2);
         this.screenY = gp.getScreenHeight()/2 - (gp.getTileSize()/2);
+        name = "Sam";
         speed = 240/gp.getFPS();
                 
         setDefaultValues();
@@ -38,14 +39,14 @@ public class Player extends Entity{
     }
     
     private void getImages(){
-        u1 = makePlayerSprite("player/u1.png");
-        u2 = makePlayerSprite("player/u2.png");
-        l1 = makePlayerSprite("player/l1.png");
-        l2 = makePlayerSprite("player/l2.png");
-        r1 = makePlayerSprite("player/r1.png");
-        r2 = makePlayerSprite("player/r2.png");
-        d1 = makePlayerSprite("player/d1.png");
-        d2 = makePlayerSprite("player/d2.png");
+        u1 = makeSprite("player/u1.png");
+        u2 = makeSprite("player/u2.png");
+        l1 = makeSprite("player/l1.png");
+        l2 = makeSprite("player/l2.png");
+        r1 = makeSprite("player/r1.png");
+        r2 = makeSprite("player/r2.png");
+        d1 = makeSprite("player/d1.png");
+        d2 = makeSprite("player/d2.png");
     }
     
     @Override
@@ -68,9 +69,13 @@ public class Player extends Entity{
             int objIndex = checkObjectCollision();
             pickUpObject(objIndex);
             
-            //CheckNPC Collision
+            //Chec kNPC Collision
             int npcIndex = gp.getcChecker().checkEntity(this, gp.getNpcs());
             interactNpcIndex(npcIndex);
+            
+            //CheckMonster Collision
+            int monsterIndex = gp.getcChecker().checkEntity(this, gp.getMonsters());
+            interactMonsterIndex(monsterIndex);
             
             //Check Event Collision
             gp.geteHandler().checkEvent();
@@ -84,13 +89,30 @@ public class Player extends Entity{
                 spriteNum = 1;
             }
         }
-    
+        
+        //Invincible damage frame
+        if(invincible){
+            invincibleCounter++;
+            if(invincibleCounter > gp.getFPS()){
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
     }
     
     private void interactNpcIndex(int i){
         if(i != -1 && gp.getKeyH().iszPressed()){
             gp.setGameState(GameState.DIALOG_STATE);
             gp.getNpcs()[i].speak();
+        }
+    }
+    
+    private void interactMonsterIndex(int monsterIndex) {
+        if(monsterIndex != -1){
+            if(!invincible){
+                doDamage(1);
+                invincible = true;
+            }
         }
     }
     
@@ -130,7 +152,14 @@ public class Player extends Entity{
         }
         
         //Draw player
+        //Transparence if Invincible
+        if(invincible && invincibleCounter%20 == 0){
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.1f));
+        }
         g2.drawImage(image, x, y, null);
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+        
+        //Draw collision
         if (gp.getKeyH().debugMode()) drawCollision(g2, x, y);
     }
     
@@ -149,6 +178,8 @@ public class Player extends Entity{
     public void removeKeys(int value){
         qtdKeys -= value;
     }
+    
+    
     
     //Teste functions
     public void doDamage(int value){
