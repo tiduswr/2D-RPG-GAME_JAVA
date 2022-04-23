@@ -37,23 +37,23 @@ public class MON_GreenSlime extends Entity{
     
     @Override
     public void setAction(){
-        actionLockCounter++;
-        
-        if(actionLockCounter == 120){
-            Random rand = new Random();
-            int i = rand.nextInt(100)+1;
-
-            if(i <=25){
-                direction = "up";
-            }else if(i > 25 && i <= 50){
-                direction = "down";
-            }else if(i > 50 && i <= 75){
-                direction = "left";
-            }else if(i > 75 && i <= 100){
-                direction = "right";
-            }
-            actionLockCounter = 0;
-        }
+//        actionLockCounter++;
+//        
+//        if(actionLockCounter == 120){
+//            Random rand = new Random();
+//            int i = rand.nextInt(100)+1;
+//
+//            if(i <=25){
+//                direction = "up";
+//            }else if(i > 25 && i <= 50){
+//                direction = "down";
+//            }else if(i > 50 && i <= 75){
+//                direction = "left";
+//            }else if(i > 75 && i <= 100){
+//                direction = "right";
+//            }
+//            actionLockCounter = 0;
+//        }
     }
     
 }

@@ -19,17 +19,29 @@ import util.UtilityTool;
 import tile.TileManager;
 
 public abstract class Entity implements Drawnable{
-    protected int worldX, worldY, speed;
     
-    protected GamePanel gp;
+    protected GamePanel gp;    
+    
+    //Entity sprites
     protected BufferedImage u1, u2, l1, l2, r1, r2, d1, d2;
-    protected String direction;
-    protected Rectangle solidArea;
+    protected BufferedImage atkU1, atkU2, atkL1, atkL2, atkR1, atkR2, atkD1, atkD2;
+    
+    //Collision check and localization
+    protected int worldX, worldY, speed;
+    protected Rectangle solidArea, attackArea = new Rectangle(0, 0, 0, 0);
     protected int solidAreaDefaultX, solidAreaDefaultY;
     protected boolean collisionOn = false;
     protected Stroke collisionRectStroke = new BasicStroke(2);
+    
+    //Attacking
+    protected boolean attacking = false;
+    
+    //IA
     protected int actionLockCounter;
+    
+    //Entity Basic
     protected String name;
+    protected String direction;
     
     //Entity Type Handler
     protected EntityType type;
@@ -57,12 +69,16 @@ public abstract class Entity implements Drawnable{
     }
     
     public BufferedImage makeSprite(String imgPath){
+        return makeSprite(imgPath, gp.getTileSize(), gp.getTileSize());
+    }
+    
+    public BufferedImage makeSprite(String imgPath, int width, int height){
         UtilityTool uTool = new UtilityTool();
         BufferedImage scaledImage = null;
         
         try {
             scaledImage = ImageIO.read(getClass().getResourceAsStream("/" + imgPath));
-            scaledImage = uTool.scaleImage(scaledImage, gp.getTileSize(), gp.getTileSize());
+            scaledImage = uTool.scaleImage(scaledImage, width, height);
         } catch (IOException ex) {
             Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -111,6 +127,15 @@ public abstract class Entity implements Drawnable{
         
         checkDirection();
         controlSpriteAnimationSpeed();
+        
+        //Invincible damage frame
+        if(invincible){
+            invincibleCounter++;
+            if(invincibleCounter > gp.getFPS()-(gp.getFPS()*0.2)){
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
     }
     
     protected int checkObjectCollision(){
@@ -160,15 +185,18 @@ public abstract class Entity implements Drawnable{
     public void draw(Graphics2D g2){
         int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
         int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
-
+        
         if(worldX + gp.getTileSize() > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
             worldX - gp.getTileSize() < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() && 
             worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() && 
             worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()){
             
             BufferedImage image = getSpriteDirection();
-            
+            if(invincible){
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+            }
             g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
             
             if(gp.getKeyH().debugMode()) drawCollision(g2, screenX, screenY);
         }
@@ -184,40 +212,47 @@ public abstract class Entity implements Drawnable{
         g2.setStroke(oldStroke);
         g2.setFont(gp.getGameUI().getfreePixel_40().deriveFont(12F));
         g2.drawString("X: " + worldX/gp.getTileSize() + " Y: " + worldY/gp.getTileSize(), screenX, screenY - 1);
-        g2.setFont(g2.getFont());
+        g2.setFont(oldFont);
     }
     
     protected BufferedImage getSpriteDirection(){
         BufferedImage image = null;
         switch(direction){
             case "up":
-                if(spriteNum == 1){
-                    image = u1;
-                }else if(spriteNum == 2){
-                    image = u2;
+                if(attacking){
+                    if(spriteNum == 1){image = atkU1;}
+                    else if(spriteNum == 2){image = atkU2;}
+                }else{
+                    if(spriteNum == 1){image = u1;}
+                    else if(spriteNum == 2){image = u2;}
                 }
                 break;
             case "down":
-                if(spriteNum == 1){
-                    image = d1;
-                }else if(spriteNum == 2){
-                    image = d2;
+                if(attacking){
+                    if(spriteNum == 1){image = atkD1;}
+                    else if(spriteNum == 2){image = atkD2;}
+                }else{
+                    if(spriteNum == 1){image = d1;}
+                    else if(spriteNum == 2){image = d2;}
                 }
                 break;
             case "left":
-                if(spriteNum == 1){
-                    image = l1;
-                }else if(spriteNum == 2){
-                    image = l2;
+                if(attacking){
+                    if(spriteNum == 1){image = atkL1;}
+                    else if(spriteNum == 2){image = atkL2;}
+                }else{
+                    if(spriteNum == 1){image = l1;}
+                    else if(spriteNum == 2){image = l2;}
                 }
                 break;
             case "right":
-                if(spriteNum == 1){
-                    image = r1;
-                }else if(spriteNum == 2){
-                    image = r2;
+                if(attacking){
+                    if(spriteNum == 1){image = atkR1;}
+                    else if(spriteNum == 2){image = atkR2;}
+                }else{
+                    if(spriteNum == 1){image = r1;}
+                    else if(spriteNum == 2){image = r2;}
                 }
-                break;
             default:
                 break;
         }
@@ -302,6 +337,27 @@ public abstract class Entity implements Drawnable{
 
     public void setInvincible(boolean invincible) {
         this.invincible = invincible;
+    }
+
+    public boolean isAttacking() {
+        return attacking;
+    }
+
+    public void setAttacking(boolean attacking) {
+        this.attacking = attacking;
+    }
+
+    public Rectangle getAttackArea() {
+        return attackArea;
+    }
+
+    public void setAttackArea(Rectangle attackArea) {
+        this.attackArea = attackArea;
+    }
+    
+    //Teste functions
+    public void doDamage(int value){
+        if(life > 0) life -= value;
     }
     
     @Override
