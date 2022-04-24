@@ -10,27 +10,38 @@ import java.awt.image.BufferedImage;
 import main.GamePanel;
 import main.GameState;
 import main.KeyHandler;
-import object.Action;
+import interfaces.Action;
+import object.OBJ_Equipment;
+import object.SuperObject;
+import object.OBJ_GreatSword;
+import object.OBJ_WoodShield;
 
 public class Player extends Entity{
     
     private KeyHandler keyH;
     private int qtdKeys = 0;
-    private int standCounter = 0;
     private final int screenX, screenY;
+    private boolean atkCanceled = false;
+    
+    //Equips
+    private OBJ_Equipment curWeapon, curShield;
     
     public Player(GamePanel gp, KeyHandler keyH){
         super(gp, EntityType.PLAYER);
+        //Configurations
         this.keyH = keyH;
-        
         this.screenX = gp.getScreenWidth()/2 - (gp.getTileSize()/2);
         this.screenY = gp.getScreenHeight()/2 - (gp.getTileSize()/2);
-        name = "Sam";
-        speed = 240/gp.getFPS();
-                
+        
+        //Basic stats
+        stats.name = "Sam";
+        stats.speed = 240/gp.getFPS();
+        
+        //SetDefault Values
         setDefaultValues();
-        getImages();
-        greatSwordSprites();
+        getDefaultImages();
+        
+        //Configure lifebar
         lifeBar = new LifeBar(gp, 56, this, 0, 0);
         lifeBar.setDisplay(true);
     }
@@ -40,12 +51,32 @@ public class Player extends Entity{
         worldY = gp.getTileSize() * 21;
         direction = Direction.DOWN;
         
-        //Life
-        maxLife = 6;
-        life = maxLife;
+        //Stats
+        stats.maxLife = 6;
+        stats.life = stats.maxLife;
+        stats.str = 1;
+        stats.dex = 1;
+        stats.exp = 0;
+        stats.nextLvlExp = 5;
+        stats.gil = 0;
+        
+        //Default Weapons
+        OBJ_GreatSword defaultSword = new OBJ_GreatSword(gp);
+        TimedAnimation[] arr = defaultSword.greatSwordSprites(attackArea);
+        atkUp = arr[0];
+        atkDown = arr[1];
+        atkLeft = arr[2];
+        atkRight = arr[3];
+        
+        curWeapon = defaultSword;
+        curShield = new OBJ_WoodShield(gp);
+        
+        //Calculate attack and defense
+        stats.atk = stats.calculateAtk(curWeapon);
+        stats.def = stats.calculateDef(curWeapon);
     }
     
-    private void getImages(){
+    private void getDefaultImages(){
         //Animations
         up = new TimedAnimation(new BufferedImage[]{makeSprite("player/u1.png"),
                                                     makeSprite("player/u2.png")}, 12/(60/gp.getFPS()), 20);
@@ -57,25 +88,7 @@ public class Player extends Entity{
                                                        makeSprite("player/r2.png")}, 12/(60/gp.getFPS()), 20);
     }
     
-    private void greatSwordSprites(){
-        //HITBOX
-        attackArea.width = 36;
-        attackArea.height = 36;
-        
-        //Animations
-        atkUp = new TimedAnimation(
-                new BufferedImage[]{makeSprite("player/atk_u1.png", gp.getTileSize(), gp.getTileSize()*2)
-                                    ,makeSprite("player/atk_u2.png", gp.getTileSize(), gp.getTileSize()*2)}, 15, 20);
-        atkDown = new TimedAnimation(
-                new BufferedImage[]{makeSprite("player/atk_d1.png", gp.getTileSize(), gp.getTileSize()*2)
-                                    ,makeSprite("player/atk_d2.png", gp.getTileSize(), gp.getTileSize()*2)}, 15, 20);
-        atkLeft = new TimedAnimation(
-                new BufferedImage[]{makeSprite("player/atk_l1.png", gp.getTileSize()*2, gp.getTileSize())
-                                    ,makeSprite("player/atk_l2.png", gp.getTileSize()*2, gp.getTileSize())}, 15, 20);
-        atkRight = new TimedAnimation(
-                new BufferedImage[]{makeSprite("player/atk_r1.png", gp.getTileSize()*2, gp.getTileSize())
-                                    ,makeSprite("player/atk_r2.png", gp.getTileSize()*2, gp.getTileSize())}, 15, 20);
-    }
+    
     
     @Override
     public void update(){
@@ -124,6 +137,12 @@ public class Player extends Entity{
             down.updateSprite();
             left.updateSprite();
             right.updateSprite();
+            
+            if(gp.getKeyH().iszPressed() && !atkCanceled){
+                gp.playSoundEffect("noHitWeapon", 0.6f);
+                attacking = true;
+            }
+            atkCanceled = false;
         }else{
             up.resetAnimation();
             down.resetAnimation();
@@ -144,11 +163,9 @@ public class Player extends Entity{
     private void interactNpcIndex(int i){
         if(gp.getKeyH().iszPressed()){
             if(i != -1){
+                atkCanceled = true;
                 gp.setGameState(GameState.DIALOG_STATE);
                 gp.getNpcs()[i].speak();
-            }else{
-                gp.playSoundEffect("noHitWeapon", 0.4f);
-                gp.getPlayer().setAttacking(true);
             }
         }
     }
@@ -223,16 +240,16 @@ public class Player extends Entity{
         if(!collisionOn && !gp.getKeyH().iszPressed()){
             switch(direction){
                 case UP:
-                    worldY -= speed;
+                    worldY -= stats.speed;
                     break;
                 case DOWN:
-                   worldY += speed;
+                   worldY += stats.speed;
                    break;
                 case LEFT:
-                    worldX -= speed;
+                    worldX -= stats.speed;
                     break;
                 case RIGHT:
-                    worldX += speed;
+                    worldX += stats.speed;
                     break;
             }
         }
@@ -327,15 +344,38 @@ public class Player extends Entity{
         qtdKeys -= value;
     }
     public void resetLife(){
-        this.life = maxLife;
+        stats.life = stats.maxLife;
     }
+    public boolean isAtkCanceled() {
+        return atkCanceled;
+    }
+    public void setAtkCanceled(boolean atkCanceled) {
+        this.atkCanceled = atkCanceled;
+    }
+
+    public OBJ_Equipment getCurWeapon() {
+        return curWeapon;
+    }
+
+    public void setCurWeapon(OBJ_Equipment curWeapon) {
+        this.curWeapon = curWeapon;
+    }
+
+    public OBJ_Equipment getCurShield() {
+        return curShield;
+    }
+
+    public void setCurShield(OBJ_Equipment curShield) {
+        this.curShield = curShield;
+    }
+    
     @Override
     //Teste functions
     public void doDamage(int value){
         //Basic validations of every Entity
         if(!isInvincible()){
             setInvincible(true);
-            if(life > 0) life -= value;
+            if(stats.life > 0) stats.life -= value;
         }
     }
 }

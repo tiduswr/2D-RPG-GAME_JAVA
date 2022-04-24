@@ -29,25 +29,25 @@ public class CollisionChecker {
         
         switch(e.getDirection()){
             case UP:
-                eTRow = (eTWorldY - e.getSpeed())/gp.getTileSize();
+                eTRow = (eTWorldY - e.getStats().getSpeed())/gp.getTileSize();
                 t1 = gp.getTileM().getMapTileNum(eLCol, eTRow);
                 t2 = gp.getTileM().getMapTileNum(eRCol, eTRow);
                 e.setCollisionOn(gp.getTileM().getTile(t1).isCollision() || gp.getTileM().getTile(t2).isCollision());
                 break;
             case DOWN:
-                eBRow = (eBWorldY + e.getSpeed())/gp.getTileSize();
+                eBRow = (eBWorldY + e.getStats().getSpeed())/gp.getTileSize();
                 t1 = gp.getTileM().getMapTileNum(eLCol, eBRow);
                 t2 = gp.getTileM().getMapTileNum(eRCol, eBRow);
                 e.setCollisionOn(gp.getTileM().getTile(t1).isCollision() || gp.getTileM().getTile(t2).isCollision());
                 break;
             case LEFT:
-                eLCol = (eLWorldX - e.getSpeed())/gp.getTileSize();
+                eLCol = (eLWorldX - e.getStats().getSpeed())/gp.getTileSize();
                 t1 = gp.getTileM().getMapTileNum(eLCol, eTRow);
                 t2 = gp.getTileM().getMapTileNum(eLCol, eBRow);
                 e.setCollisionOn(gp.getTileM().getTile(t1).isCollision() || gp.getTileM().getTile(t2).isCollision());
                 break;
             case RIGHT:
-                eRCol = (eRWorldX + e.getSpeed())/gp.getTileSize();
+                eRCol = (eRWorldX + e.getStats().getSpeed())/gp.getTileSize();
                 t1 = gp.getTileM().getMapTileNum(eRCol, eTRow);
                 t2 = gp.getTileM().getMapTileNum(eRCol, eBRow);
                 e.setCollisionOn(gp.getTileM().getTile(t1).isCollision() || gp.getTileM().getTile(t2).isCollision());
@@ -71,10 +71,10 @@ public class CollisionChecker {
                 o.getSolidArea().y = o.getWorldY() + o.getSolidArea().y;
                 
                 switch(e.getDirection()){
-                    case UP: e.getSolidArea().y -= e.getSpeed(); break;
-                    case DOWN: e.getSolidArea().y += e.getSpeed(); break;
-                    case LEFT: e.getSolidArea().x -= e.getSpeed(); break;
-                    case RIGHT: e.getSolidArea().x += e.getSpeed(); break;
+                    case UP: e.getSolidArea().y -= e.getStats().getSpeed(); break;
+                    case DOWN: e.getSolidArea().y += e.getStats().getSpeed(); break;
+                    case LEFT: e.getSolidArea().x -= e.getStats().getSpeed(); break;
+                    case RIGHT: e.getSolidArea().x += e.getStats().getSpeed(); break;
                 }                
                 if(e.getSolidArea().intersects(o.getSolidArea())){
                     if(o.isCollision()){
@@ -112,10 +112,10 @@ public class CollisionChecker {
                 t.getSolidArea().y = t.getWorldY() + t.getSolidArea().y;
                 
                 switch(e.getDirection()){
-                    case UP: e.getSolidArea().y -= e.getSpeed(); break;
-                    case DOWN: e.getSolidArea().y += e.getSpeed(); break;
-                    case LEFT: e.getSolidArea().x -= e.getSpeed(); break;
-                    case RIGHT: e.getSolidArea().x += e.getSpeed(); break;
+                    case UP: e.getSolidArea().y -= e.getStats().getSpeed(); break;
+                    case DOWN: e.getSolidArea().y += e.getStats().getSpeed(); break;
+                    case LEFT: e.getSolidArea().x -= e.getStats().getSpeed(); break;
+                    case RIGHT: e.getSolidArea().x += e.getStats().getSpeed(); break;
                 }          
                 if(e.getSolidArea().intersects(t.getSolidArea()) && t != e){
                     e.setCollisionOn(true);
@@ -149,13 +149,13 @@ public class CollisionChecker {
 
             switch(e.getDirection()){
                 case UP:
-                    e.getSolidArea().y -= e.getSpeed(); break;
+                    e.getSolidArea().y -= e.getStats().getSpeed(); break;
                 case DOWN:
-                    e.getSolidArea().y += e.getSpeed(); break;
+                    e.getSolidArea().y += e.getStats().getSpeed(); break;
                 case LEFT:
-                    e.getSolidArea().x -= e.getSpeed(); break;
+                    e.getSolidArea().x -= e.getStats().getSpeed(); break;
                 case RIGHT:
-                    e.getSolidArea().x += e.getSpeed(); break;
+                    e.getSolidArea().x += e.getStats().getSpeed(); break;
             }                
             if(e.getSolidArea().intersects(t.getSolidArea())){
                 e.setCollisionOn(true);

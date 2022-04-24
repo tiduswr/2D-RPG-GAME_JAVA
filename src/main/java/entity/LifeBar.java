@@ -91,7 +91,7 @@ public class LifeBar {
     }
     
     private float calculateLifeBarSize(){
-        return (float)e.getLife()/e.getMaxLife();
+        return (float)e.getStats().getLife()/e.getStats().getMaxLife();
     }
 
     public boolean isDisplay() {

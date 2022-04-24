@@ -24,29 +24,7 @@ public class KeyHandler implements KeyListener{
         int code = e.getKeyCode();
         
         if(gp.getGameState() == GameState.PLAY_STATE){
-            if(code == KeyEvent.VK_UP){
-                upPressed = true;
-            }
-            if(code == KeyEvent.VK_DOWN){
-                downPressed = true;
-            }
-            if(code == KeyEvent.VK_LEFT){
-                leftPressed = true;
-            }
-            if(code == KeyEvent.VK_RIGHT){
-                rightPressed = true;
-            }
-            if(code == KeyEvent.VK_Z){
-                zPressed = true;
-            }
-            //Debug
-            if(code == KeyEvent.VK_F1){
-                debug = debug == false;
-            }
-            //Pause
-            if(code == KeyEvent.VK_P){
-                gp.setGameState(GameState.PAUSE_STATE);
-            }
+            playState(code);
         }else if(gp.getGameState() == GameState.PAUSE_STATE){
             //Pause
             if(code == KeyEvent.VK_P){
@@ -56,19 +34,56 @@ public class KeyHandler implements KeyListener{
             if(code == KeyEvent.VK_Z){
                 gp.setGameState(GameState.PLAY_STATE);
             }
+        }else if(gp.getGameState() == GameState.STATUS_WINDOW_STATE){
+            if(code == KeyEvent.VK_C){
+                gp.setGameState(GameState.PLAY_STATE);
+            }
         }else if(gp.getGameState() == GameState.TITLE_STATE){
-            if(code == KeyEvent.VK_UP){
-                gp.getGameUI().upTitleCommand();
-            }
-            if(code == KeyEvent.VK_DOWN){
-                gp.getGameUI().downTitleCommand();
-            }
-            if(code == KeyEvent.VK_ENTER){
-                gp.getGameUI().executeMenuAction();
-            }
+            titleState(code);
         }
     }
-
+    
+    public void titleState(int code){
+        if(code == KeyEvent.VK_UP){
+            gp.getGameUI().getTitleScreen().upTitleCommand();
+        }
+        if(code == KeyEvent.VK_DOWN){
+            gp.getGameUI().getTitleScreen().downTitleCommand();
+        }
+        if(code == KeyEvent.VK_ENTER){
+            gp.getGameUI().getTitleScreen().executeMenuAction();
+        }
+    }
+    
+    public void playState(int code){
+        if(code == KeyEvent.VK_UP){
+            upPressed = true;
+        }
+        if(code == KeyEvent.VK_DOWN){
+            downPressed = true;
+        }
+        if(code == KeyEvent.VK_LEFT){
+            leftPressed = true;
+        }
+        if(code == KeyEvent.VK_RIGHT){
+            rightPressed = true;
+        }
+        if(code == KeyEvent.VK_Z){
+            zPressed = true;
+        }
+        if(code == KeyEvent.VK_C){
+            gp.setGameState(GameState.STATUS_WINDOW_STATE);
+        }
+        //Debug
+        if(code == KeyEvent.VK_F1){
+            debug = debug == false;
+        }
+        //Pause
+        if(code == KeyEvent.VK_P){
+            gp.setGameState(GameState.PAUSE_STATE);
+        }
+    }
+    
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();

@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import main.Drawnable;
+import interfaces.Drawnable;
 import main.GamePanel;
-import main.WorldLocation;
-import monster.DyingAnimation;
+import interfaces.WorldLocation;
+import entity.monster.DyingAnimation;
 import util.UtilityTool;
 import tile.TileManager;
 
@@ -31,7 +31,7 @@ public abstract class Entity implements Drawnable{
     protected DyingAnimation dyeAnim = new DyingAnimation(40);
     
     //Collision check and localization
-    protected int worldX, worldY, speed;
+    protected int worldX, worldY;
     protected Rectangle solidArea, attackArea = new Rectangle(0, 0, 0, 0);
     protected int solidAreaDefaultX, solidAreaDefaultY;
     protected boolean collisionOn = false;
@@ -44,27 +44,30 @@ public abstract class Entity implements Drawnable{
     protected int actionLockCounter;
     
     //Entity Basic
-    protected String name;
     protected Direction direction;
     protected boolean dying = false, alive = true;
     protected LifeBar lifeBar;
-    
-    //Entity Type Handler
-    protected EntityType type;
+    protected String[] dialogues;
     
     //Invincible Handler
     protected int invincibleCounter = 0;
     protected boolean invincible = false;
     
     //Char stats
-    protected String[] dialogues;
-    protected int maxLife, life;
+    protected Stats stats;
     
     public Entity(GamePanel gp, EntityType type){
-        this.type = type;
         this.gp = gp;
+
+        //Stats
+        stats = new Stats();
+        stats.type = type;
+        stats.speed = 60/gp.getFPS();
+        
+        //Direction
         this.direction = Direction.DOWN;
-        speed = 60/gp.getFPS();
+        
+        //Hitbox
         solidArea = new Rectangle();
         solidArea.x = 8;
         solidArea.y = 16;
@@ -134,7 +137,7 @@ public abstract class Entity implements Drawnable{
             gp.getcChecker().checkEntity(this, gp.getMonsters());
             
             //Check Player Collision
-            if(gp.getcChecker().checkPlayer(this) && this.type == EntityType.MONSTER){
+            if(gp.getcChecker().checkPlayer(this) && stats.type == EntityType.MONSTER){
                 if(!gp.getPlayer().isInvincible()){
                     //Damage teste on collision
                     gp.playSoundEffect("receiveDamage", 0.4f);
@@ -172,8 +175,8 @@ public abstract class Entity implements Drawnable{
             setInvincible(true);
             damageReaction();
             if(lifeBar != null) lifeBar.setDisplay(true);
-            if(life > 0) life -= value;
-            if(life <= 0 && this.getType() == EntityType.MONSTER){
+            if(stats.life > 0) stats.life -= value;
+            if(stats.life <= 0 && stats.getType() == EntityType.MONSTER){
                 dying = true;
             }
         }
@@ -194,16 +197,16 @@ public abstract class Entity implements Drawnable{
         if(!collisionOn){
             switch(direction){
                 case UP:
-                    worldY -= speed;
+                    worldY -= stats.speed;
                     break;
                 case DOWN:
-                   worldY += speed;
+                   worldY += stats.speed;
                    break;
                 case LEFT:
-                    worldX -= speed;
+                    worldX -= stats.speed;
                     break;
                 case RIGHT:
-                    worldX += speed;
+                    worldX += stats.speed;
                     break;
             }
         }
@@ -302,12 +305,6 @@ public abstract class Entity implements Drawnable{
     public void setWorldY(int worldY) {
         this.worldY = worldY;
     }
-    public int getSpeed() {
-        return speed;
-    }
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
     public Rectangle getSolidArea() {
         return solidArea;
     }
@@ -332,29 +329,14 @@ public abstract class Entity implements Drawnable{
     public void setSolidAreaDefaultY(int solidAreaDefaultY) {
         this.solidAreaDefaultY = solidAreaDefaultY;
     }
-    public int getMaxLife() {
-        return maxLife;
-    }
-
-    public int getLife() {
-        return life;
-    }
     
     public void resetSolidArea(){
         solidArea.x = solidAreaDefaultX;
         solidArea.y = solidAreaDefaultY;
     }
-    
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public EntityType getType() {
-        return type;
+    public Stats getStats() {
+        return stats;
     }
 
     public boolean isInvincible() {

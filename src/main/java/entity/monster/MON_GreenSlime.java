@@ -1,4 +1,4 @@
-package monster;
+package entity.monster;
 
 import animation.TimedAnimation;
 import entity.Entity;
@@ -9,10 +9,10 @@ import main.GamePanel;
 public class MON_GreenSlime extends Entity{
     public MON_GreenSlime(GamePanel gp, int col, int row){
         super(gp, EntityType.MONSTER);
-        name = "GreenSlime";
-        speed = 60/gp.getFPS();
-        maxLife = 4;
-        life = maxLife;
+        stats.setName("GreenSlime");
+        stats.setSpeed(60/gp.getFPS());
+        stats.setMaxLife(4);
+        stats.setLife(stats.getMaxLife());
         worldX = col*gp.getTileSize();
         worldY = row*gp.getTileSize();
         

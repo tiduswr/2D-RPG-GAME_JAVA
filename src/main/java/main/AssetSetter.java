@@ -2,7 +2,7 @@ package main;
 
 import entity.NPC_BlackMage;
 import entity.NPC_WhiteMage;
-import monster.MON_GreenSlime;
+import entity.monster.MON_GreenSlime;
 import object.SuperObject;
 
 public class AssetSetter {

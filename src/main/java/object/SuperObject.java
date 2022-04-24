@@ -1,5 +1,6 @@
 package object;
 
+import interfaces.Action;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -7,9 +8,15 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
-import main.Drawnable;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import interfaces.Drawnable;
 import main.GamePanel;
-import main.WorldLocation;
+import interfaces.WorldLocation;
+import tile.TileManager;
+import util.UtilityTool;
 
 public abstract class SuperObject implements Action, Drawnable{
     protected BufferedImage image;
@@ -44,6 +51,24 @@ public abstract class SuperObject implements Action, Drawnable{
         }
     }
     
+    public BufferedImage makeSprite(String imgPath){
+        return makeSprite(imgPath, gp.getTileSize(), gp.getTileSize());
+    }
+    
+    public BufferedImage makeSprite(String imgPath, int width, int height){
+        UtilityTool uTool = new UtilityTool();
+        BufferedImage scaledImage = null;
+        
+        try {
+            scaledImage = ImageIO.read(getClass().getResourceAsStream("/" + imgPath));
+            scaledImage = uTool.scaleImage(scaledImage, width, height);
+        } catch (IOException ex) {
+            Logger.getLogger(TileManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return scaledImage;
+    }
+    
     public BufferedImage getImage() {
         return image;
     }
@@ -53,9 +78,11 @@ public abstract class SuperObject implements Action, Drawnable{
     public boolean isCollision() {
         return collision;
     }
+    @Override
     public int getWorldX() {
         return worldX;
     }
+    @Override
     public int getWorldY() {
         return worldY;
     }

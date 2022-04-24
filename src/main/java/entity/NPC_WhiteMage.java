@@ -12,7 +12,7 @@ public class NPC_WhiteMage extends Entity{
         this.worldX = gp.getTileSize()*row;
         this.worldY = gp.getTileSize()*col;
         this.direction = Direction.DOWN;
-        name = "White Mage";
+        stats.name = "White Mage";
         getImages();
         createDialogues();
     }

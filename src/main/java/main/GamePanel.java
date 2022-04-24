@@ -1,5 +1,7 @@
 package main;
 
+import ui.UI;
+import interfaces.Drawnable;
 import event.EventHandler;
 import entity.Entity;
 import entity.Player;

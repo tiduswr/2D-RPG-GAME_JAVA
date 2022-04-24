@@ -49,6 +49,7 @@ public final class EventHandler {
             @Override
             public void execute() {
                 if(gp.getKeyH().iszPressed()){
+                    gp.getPlayer().setAtkCanceled(true);
                     gp.getGameUI().setCurrentDialog("Você bebeu da fonte...\nVocê se sente recuperado!");
                     gp.setGameState(GameState.DIALOG_STATE);
                     gp.getPlayer().resetLife();

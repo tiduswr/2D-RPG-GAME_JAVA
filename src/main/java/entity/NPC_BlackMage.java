@@ -12,7 +12,7 @@ public class NPC_BlackMage extends Entity{
         this.worldX = gp.getTileSize()*row;
         this.worldY = gp.getTileSize()*col;
         this.direction = Direction.DOWN;
-        name = "Black Mage";
+        stats.name = "Black Mage";
         getImages();
         createDialogues();
     }
