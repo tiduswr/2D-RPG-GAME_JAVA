@@ -1,10 +1,12 @@
 package event;
 
+import entity.Entity.Direction;
+
 public abstract class Event {
     private int eventCol, eventRow;
-    private String reqDirection;
+    private Direction reqDirection;
     
-    public Event(int eventCol, int eventRow, String reqDirection) {
+    public Event(int eventCol, int eventRow, Direction reqDirection) {
         this.eventCol = eventCol;
         this.eventRow = eventRow;
         this.reqDirection = reqDirection;
@@ -28,11 +30,11 @@ public abstract class Event {
         this.eventRow = eventRow;
     }
 
-    public String getReqDirection() {
+    public Direction getReqDirection() {
         return reqDirection;
     }
 
-    public void setReqDirection(String reqDirection) {
+    public void setReqDirection(Direction reqDirection) {
         this.reqDirection = reqDirection;
     }
 }

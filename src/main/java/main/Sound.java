@@ -26,6 +26,9 @@ public class Sound {
         this.soundURL.put("prelude", getClass().getResource("/sound/prelude.wav"));
         this.soundURL.put("cursor", getClass().getResource("/sound/cursor.wav"));
         this.soundURL.put("selected", getClass().getResource("/sound/selected.wav"));
+        this.soundURL.put("doDamage", getClass().getResource("/sound/doDamage.wav"));
+        this.soundURL.put("receiveDamage", getClass().getResource("/sound/receiveDamage.wav"));
+        this.soundURL.put("noHitWeapon", getClass().getResource("/sound/notHitWeapon.wav"));
     }
     
     public void setFile(String file){

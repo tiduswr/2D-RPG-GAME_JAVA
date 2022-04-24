@@ -1,5 +1,6 @@
 package event;
 
+import entity.Entity.Direction;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -33,7 +34,7 @@ public final class EventHandler {
         }
         
         //Event test
-        Event damageTeste = new Event(24, 20, "any"){
+        Event damageTeste = new Event(24, 20, Direction.ANY){
             @Override
             public void execute() {
                 gp.setGameState(GameState.DIALOG_STATE);
@@ -44,7 +45,7 @@ public final class EventHandler {
         };
         addEvent(damageTeste, "damageTeste");
         
-        Event healingTeste = new Event(23, 12, "up"){
+        Event healingTeste = new Event(23, 12, Direction.UP){
             @Override
             public void execute() {
                 if(gp.getKeyH().iszPressed()){
@@ -57,7 +58,7 @@ public final class EventHandler {
         };
         addEvent(healingTeste, "healingTeste");
         
-        Event teleportTeste = new Event(27, 16, "right"){
+        Event teleportTeste = new Event(27, 16, Direction.RIGHT){
             @Override
             public void execute() {
                 gp.getGameUI().setCurrentDialog("Você teleportou!");
@@ -136,8 +137,8 @@ public final class EventHandler {
             checked.y += e.getEventRow()*gp.getTileSize();
 
             if(gp.getPlayer().getSolidArea().intersects(checked)){
-                if(gp.getPlayer().getDirection().equalsIgnoreCase(e.getReqDirection()) 
-                        || e.getReqDirection().equalsIgnoreCase("any")){
+                if(gp.getPlayer().getDirection() == e.getReqDirection() 
+                        || e.getReqDirection() == Direction.ANY){
                     hit = true;
                     previousEventX = gp.getPlayer().getWorldX();
                     previousEventY = gp.getPlayer().getWorldY();

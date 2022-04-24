@@ -1,6 +1,8 @@
 package monster;
 
+import animation.TimedAnimation;
 import entity.Entity;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 import main.GamePanel;
 
@@ -25,35 +27,42 @@ public class MON_GreenSlime extends Entity{
     }
     
     private void getImages(){
-        u1 = makeSprite("monsters/slime_u1.png");
-        u2 = makeSprite("monsters/slime_u2.png");
-        l1 = makeSprite("monsters/slime_l1.png");
-        l2 = makeSprite("monsters/slime_l2.png");
-        r1 = makeSprite("monsters/slime_r1.png");
-        r2 = makeSprite("monsters/slime_r2.png");
-        d1 = makeSprite("monsters/slime_d1.png");
-        d2 = makeSprite("monsters/slime_d2.png");
+        //Animations
+        up = new TimedAnimation(new BufferedImage[]{makeSprite("monsters/slime_u1.png"),
+            makeSprite("monsters/slime_u2.png")}, 12/(60/gp.getFPS()), 20);
+        down = new TimedAnimation(new BufferedImage[]{makeSprite("monsters/slime_d1.png"),
+            makeSprite("monsters/slime_d2.png")}, 12/(60/gp.getFPS()), 20);
+        left = new TimedAnimation(new BufferedImage[]{makeSprite("monsters/slime_l1.png"),
+            makeSprite("monsters/slime_l2.png")}, 12/(60/gp.getFPS()), 20);
+        right = new TimedAnimation(new BufferedImage[]{makeSprite("monsters/slime_r1.png"),
+            makeSprite("monsters/slime_r2.png")}, 12/(60/gp.getFPS()), 20);
     }
     
     @Override
     public void setAction(){
-//        actionLockCounter++;
-//        
-//        if(actionLockCounter == 120){
-//            Random rand = new Random();
-//            int i = rand.nextInt(100)+1;
-//
-//            if(i <=25){
-//                direction = "up";
-//            }else if(i > 25 && i <= 50){
-//                direction = "down";
-//            }else if(i > 50 && i <= 75){
-//                direction = "left";
-//            }else if(i > 75 && i <= 100){
-//                direction = "right";
-//            }
-//            actionLockCounter = 0;
-//        }
+        actionLockCounter++;
+        
+        if(actionLockCounter == 120){
+            Random rand = new Random();
+            int i = rand.nextInt(100)+1;
+
+            if(i <=25){
+                direction = Direction.UP;
+            }else if(i > 25 && i <= 50){
+                direction = Direction.DOWN;
+            }else if(i > 50 && i <= 75){
+                direction = Direction.LEFT;
+            }else if(i > 75 && i <= 100){
+                direction = Direction.RIGHT;
+            }
+            actionLockCounter = 0;
+        }
+    }
+    
+    @Override
+    public void damageReaction(){
+        actionLockCounter = 0;
+        direction = gp.getPlayer().getDirection();
     }
     
 }

@@ -1,5 +1,6 @@
 package entity;
 
+import animation.TimedAnimation;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
@@ -30,12 +31,14 @@ public class Player extends Entity{
         setDefaultValues();
         getImages();
         greatSwordSprites();
+        lifeBar = new LifeBar(gp, 56, this, 0, 0);
+        lifeBar.setDisplay(true);
     }
     
     private void setDefaultValues(){
         worldX = gp.getTileSize() * 23;
         worldY = gp.getTileSize() * 21;
-        direction = "down";
+        direction = Direction.DOWN;
         
         //Life
         maxLife = 6;
@@ -43,44 +46,60 @@ public class Player extends Entity{
     }
     
     private void getImages(){
-        u1 = makeSprite("player/u1.png");
-        u2 = makeSprite("player/u2.png");
-        l1 = makeSprite("player/l1.png");
-        l2 = makeSprite("player/l2.png");
-        r1 = makeSprite("player/r1.png");
-        r2 = makeSprite("player/r2.png");
-        d1 = makeSprite("player/d1.png");
-        d2 = makeSprite("player/d2.png");
+        //Animations
+        up = new TimedAnimation(new BufferedImage[]{makeSprite("player/u1.png"),
+                                                    makeSprite("player/u2.png")}, 12/(60/gp.getFPS()), 20);
+        down = new TimedAnimation(new BufferedImage[]{makeSprite("player/d1.png"),
+                                                      makeSprite("player/d2.png")}, 12/(60/gp.getFPS()), 20);
+        left = new TimedAnimation(new BufferedImage[]{makeSprite("player/l1.png"),
+                                                      makeSprite("player/l2.png")}, 12/(60/gp.getFPS()), 20);
+        right = new TimedAnimation(new BufferedImage[]{makeSprite("player/r1.png"),
+                                                       makeSprite("player/r2.png")}, 12/(60/gp.getFPS()), 20);
     }
     
     private void greatSwordSprites(){
-        atkU1 = makeSprite("player/atk_u1.png", gp.getTileSize(), gp.getTileSize()*2);
-        atkU2 = makeSprite("player/atk_u2.png", gp.getTileSize(), gp.getTileSize()*2);
-        atkL1 = makeSprite("player/atk_l1.png", gp.getTileSize()*2, gp.getTileSize());
-        atkL2 = makeSprite("player/atk_l2.png", gp.getTileSize()*2, gp.getTileSize());
-        atkR1 = makeSprite("player/atk_r1.png", gp.getTileSize()*2, gp.getTileSize());
-        atkR2 = makeSprite("player/atk_r2.png", gp.getTileSize()*2, gp.getTileSize());
-        atkD1 = makeSprite("player/atk_d1.png", gp.getTileSize(), gp.getTileSize()*2);
-        atkD2 = makeSprite("player/atk_d2.png", gp.getTileSize(), gp.getTileSize()*2);
+        //HITBOX
         attackArea.width = 36;
         attackArea.height = 36;
+        
+        //Animations
+        atkUp = new TimedAnimation(
+                new BufferedImage[]{makeSprite("player/atk_u1.png", gp.getTileSize(), gp.getTileSize()*2)
+                                    ,makeSprite("player/atk_u2.png", gp.getTileSize(), gp.getTileSize()*2)}, 15, 20);
+        atkDown = new TimedAnimation(
+                new BufferedImage[]{makeSprite("player/atk_d1.png", gp.getTileSize(), gp.getTileSize()*2)
+                                    ,makeSprite("player/atk_d2.png", gp.getTileSize(), gp.getTileSize()*2)}, 15, 20);
+        atkLeft = new TimedAnimation(
+                new BufferedImage[]{makeSprite("player/atk_l1.png", gp.getTileSize()*2, gp.getTileSize())
+                                    ,makeSprite("player/atk_l2.png", gp.getTileSize()*2, gp.getTileSize())}, 15, 20);
+        atkRight = new TimedAnimation(
+                new BufferedImage[]{makeSprite("player/atk_r1.png", gp.getTileSize()*2, gp.getTileSize())
+                                    ,makeSprite("player/atk_r2.png", gp.getTileSize()*2, gp.getTileSize())}, 15, 20);
     }
     
     @Override
     public void update(){
         if(attacking){
-            playerAttack();
+            TimedAnimation atk = null;
+            switch(direction){
+                case UP: atk = atkUp; break;
+                case DOWN: atk = atkDown; break;
+                case LEFT: atk = atkLeft; break;
+                case RIGHT: atk = atkRight; break;
+            }
+            if(atk != null) playerAttack(atk);
         }else if(keyH.isUpPressed() || keyH.isDownPressed() || keyH.isLeftPressed() || keyH.isRightPressed() || 
                 keyH.iszPressed()){            
+            
             //Get user input
             if(keyH.isUpPressed()){
-                direction = "up";
+                direction = Direction.UP;
             }else if(keyH.isDownPressed()){
-                direction = "down";
+                direction = Direction.DOWN;
             }else if(keyH.isLeftPressed()){
-                direction = "left";
+                direction = Direction.LEFT;
             }else if(keyH.isRightPressed()){
-                direction = "right";
+                direction = Direction.RIGHT;
             }
             
             checkTileCollision();            
@@ -101,13 +120,15 @@ public class Player extends Entity{
             gp.geteHandler().checkEvent();
             
             checkDirection();
-            controlSpriteAnimationSpeed();
+            up.updateSprite();
+            down.updateSprite();
+            left.updateSprite();
+            right.updateSprite();
         }else{
-            standCounter++;
-            if(standCounter == 20){
-                standCounter = 0;
-                spriteNum = 1;
-            }
+            up.resetAnimation();
+            down.resetAnimation();
+            left.resetAnimation();
+            right.resetAnimation();
         }
         
         //Invincible damage frame
@@ -126,6 +147,7 @@ public class Player extends Entity{
                 gp.setGameState(GameState.DIALOG_STATE);
                 gp.getNpcs()[i].speak();
             }else{
+                gp.playSoundEffect("noHitWeapon", 0.4f);
                 gp.getPlayer().setAttacking(true);
             }
         }
@@ -133,8 +155,9 @@ public class Player extends Entity{
     
     private void interactMonsterIndex(int monsterIndex) {
         if(monsterIndex != -1){
-            if(!invincible){
+            if(!invincible && !gp.getMonsters()[monsterIndex].isDying()){
                 doDamage(1);
+                gp.playSoundEffect("receiveDamage", 0.4f);
                 invincible = true;
             }
         }
@@ -142,24 +165,14 @@ public class Player extends Entity{
     
     private void damageMonster(int i) {
         if(i != -1){
-            //Monster damage example
-            if(!gp.getMonsters()[i].isInvincible()){
-                gp.getMonsters()[i].doDamage(1);
-                gp.getMonsters()[i].setInvincible(true);
-                if(gp.getMonsters()[i].getLife() <= 0){
-                    gp.removeMonster(i);
-                }
-            }
+            if(!gp.getMonsters()[i].isInvincible()) gp.playSoundEffect("doDamage", 0.4f);
+            gp.getMonsters()[i].doDamage(1);
         }
     }
     
-    private void playerAttack() {
-        spriteCounter++;
-        if(spriteCounter <= 15){
-            spriteNum = 1;
-        }else if(spriteCounter > 15 && spriteCounter <= 30){
-            spriteNum = 2;
-            
+    private void playerAttack(TimedAnimation atk) {
+        atk.updateSprite();
+        if(atk.getCurentSpriteIndex() == 1 && atk.getSpriteCounter() < atk.getFRAMES()){
             //Check Collision
             int curWorldX = worldX;
             int curWorldY = worldY;
@@ -168,10 +181,10 @@ public class Player extends Entity{
             
             //Move solid area to check collision temporary
             switch(direction){
-                case "up": worldY -= attackArea.height; break;
-                case "down": worldY += attackArea.height; break;
-                case "left": worldX -= attackArea.width; break;
-                case "right": worldX += attackArea.width; break;
+                case UP: worldY -= attackArea.height; break;
+                case DOWN: worldY += attackArea.height; break;
+                case LEFT: worldX -= attackArea.width; break;
+                case RIGHT: worldX += attackArea.width; break;
             }
             solidArea.width = attackArea.width;
             solidArea.height = attackArea.height;
@@ -186,10 +199,9 @@ public class Player extends Entity{
             solidArea.width = curSoldAreaWidth;
             solidArea.height = curSoldAreaHeight;
             
-        }else if(spriteCounter >= 45){
-            spriteNum = 1;
-            spriteCounter = 0;
+        }else if(atk.getCurentSpriteIndex() == 1 && atk.getSpriteCounter() == atk.getFRAMES()){
             attacking = false;
+            atk.forceReset();
         }
     }
     
@@ -210,16 +222,16 @@ public class Player extends Entity{
         //Only move if collisionOn is true
         if(!collisionOn && !gp.getKeyH().iszPressed()){
             switch(direction){
-                case "up":
+                case UP:
                     worldY -= speed;
                     break;
-                case "down":
+                case DOWN:
                    worldY += speed;
                    break;
-                case "left":
+                case LEFT:
                     worldX -= speed;
                     break;
-                case "right":
+                case RIGHT:
                     worldX += speed;
                     break;
             }
@@ -254,10 +266,10 @@ public class Player extends Entity{
         int tempScreenY = screenY;
         if(attacking){
             switch(direction){
-                case "up":
+                case UP:
                     tempScreenY -= gp.getTileSize();
                     break;
-                case "left":
+                case LEFT:
                     tempScreenX -= gp.getTileSize();
                     break;
             } 
@@ -266,7 +278,7 @@ public class Player extends Entity{
         //Draw player
         //Transparence if Invincible
         if(invincible && invincibleCounter%20 == 0){
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
         }
         g2.drawImage(image, tempScreenX, tempScreenY, null);
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
@@ -278,10 +290,10 @@ public class Player extends Entity{
             if(attacking) {
                 int  sx = screenX, sy = screenY;
                 switch(direction){
-                    case "up": sy -= attackArea.height; break;
-                    case "down": sy += attackArea.height; break;
-                    case "left": sx -= attackArea.width; break;
-                    case "right": sx += attackArea.width; break;
+                    case UP: sy -= attackArea.height; break;
+                    case DOWN: sy += attackArea.height; break;
+                    case LEFT: sx -= attackArea.width; break;
+                    case RIGHT: sx += attackArea.width; break;
                 }
                 drawAttackCollision(g2, sx, sy);
             }
@@ -314,9 +326,16 @@ public class Player extends Entity{
     public void removeKeys(int value){
         qtdKeys -= value;
     }
-    
     public void resetLife(){
         this.life = maxLife;
     }
-    
+    @Override
+    //Teste functions
+    public void doDamage(int value){
+        //Basic validations of every Entity
+        if(!isInvincible()){
+            setInvincible(true);
+            if(life > 0) life -= value;
+        }
+    }
 }

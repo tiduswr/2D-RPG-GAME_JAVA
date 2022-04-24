@@ -1,5 +1,6 @@
 package entity;
 
+import animation.TimedAnimation;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -15,16 +16,19 @@ import javax.imageio.ImageIO;
 import main.Drawnable;
 import main.GamePanel;
 import main.WorldLocation;
+import monster.DyingAnimation;
 import util.UtilityTool;
 import tile.TileManager;
 
 public abstract class Entity implements Drawnable{
     
+    public enum Direction{UP, DOWN, LEFT, RIGHT, ANY};
+    
     protected GamePanel gp;    
     
     //Entity sprites
-    protected BufferedImage u1, u2, l1, l2, r1, r2, d1, d2;
-    protected BufferedImage atkU1, atkU2, atkL1, atkL2, atkR1, atkR2, atkD1, atkD2;
+    protected TimedAnimation up, left, right, down, atkUp, atkDown, atkLeft, atkRight;
+    protected DyingAnimation dyeAnim = new DyingAnimation(40);
     
     //Collision check and localization
     protected int worldX, worldY, speed;
@@ -41,7 +45,9 @@ public abstract class Entity implements Drawnable{
     
     //Entity Basic
     protected String name;
-    protected String direction;
+    protected Direction direction;
+    protected boolean dying = false, alive = true;
+    protected LifeBar lifeBar;
     
     //Entity Type Handler
     protected EntityType type;
@@ -57,7 +63,7 @@ public abstract class Entity implements Drawnable{
     public Entity(GamePanel gp, EntityType type){
         this.type = type;
         this.gp = gp;
-        this.direction = "down";
+        this.direction = Direction.DOWN;
         speed = 60/gp.getFPS();
         solidArea = new Rectangle();
         solidArea.x = 8;
@@ -66,6 +72,12 @@ public abstract class Entity implements Drawnable{
         solidArea.height = 32;
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+        
+        //Life bar
+        if(type == EntityType.MONSTER) {
+            lifeBar = new LifeBar(gp, this, 0, 0, 1);
+            lifeBar.setHiddenControl(5);
+        }
     }
     
     public BufferedImage makeSprite(String imgPath){
@@ -87,53 +99,82 @@ public abstract class Entity implements Drawnable{
     }
     
     public void setAction(){}
+    public void damageReaction(){};
     public void speak(){
     
         switch(gp.getPlayer().getDirection()){
-            case "up":
-                direction = "down";
+            case UP:
+                direction = Direction.DOWN;
                 break;
-            case "down":
-                direction = "up";
+            case DOWN:
+                direction = Direction.UP;
                 break;
-            case "left":
-                direction = "right";
+            case LEFT:
+                direction = Direction.RIGHT;
                 break;
-            case "right":
-                direction = "left";
+            case RIGHT:
+                direction = Direction.LEFT;
                 break;
         }
     
     };
     public void update(){
-        setAction();
-        
-        //Check tile Collision
-        checkTileCollision();
-        //Check object collision
-        checkObjectCollision();
-        //Check NPC collision
-        gp.getcChecker().checkEntity(this, gp.getNpcs());
-        //Check Monsters collision
-        gp.getcChecker().checkEntity(this, gp.getMonsters());
-        //Check Player Collision
-        if(gp.getcChecker().checkPlayer(this) && this.type == EntityType.MONSTER){
-            if(!gp.getPlayer().isInvincible()){
-                //Damage teste on collision
-                gp.getPlayer().doDamage(1);
-                gp.getPlayer().setInvincible(true);
+        if(!alive){
+            gp.removeMonster(this);
+        }else if(!dying){
+            if(lifeBar != null) lifeBar.update();
+            setAction();
+            //Check tile Collision
+            checkTileCollision();
+            //Check object collision
+            checkObjectCollision();
+            //Check NPC collision
+            gp.getcChecker().checkEntity(this, gp.getNpcs());
+            //Check Monsters collision
+            gp.getcChecker().checkEntity(this, gp.getMonsters());
+            
+            //Check Player Collision
+            if(gp.getcChecker().checkPlayer(this) && this.type == EntityType.MONSTER){
+                if(!gp.getPlayer().isInvincible()){
+                    //Damage teste on collision
+                    gp.playSoundEffect("receiveDamage", 0.4f);
+                    gp.getPlayer().doDamage(1);
+                }
+            }
+
+            checkDirection();
+            up.updateSprite();
+            down.updateSprite();
+            left.updateSprite();
+            right.updateSprite();
+            if(attacking){
+                atkUp.updateSprite();
+                atkDown.updateSprite();
+                atkLeft.updateSprite();
+                atkRight.updateSprite();
+            }
+
+            //Invincible damage frame
+            if(invincible){
+                invincibleCounter++;
+                if(invincibleCounter > gp.getFPS()-(gp.getFPS()*0.2)){
+                    invincible = false;
+                    invincibleCounter = 0;
+                }
             }
         }
-        
-        checkDirection();
-        controlSpriteAnimationSpeed();
-        
-        //Invincible damage frame
-        if(invincible){
-            invincibleCounter++;
-            if(invincibleCounter > gp.getFPS()-(gp.getFPS()*0.2)){
-                invincible = false;
-                invincibleCounter = 0;
+    }
+    
+    //Teste functions
+    public void doDamage(int value){
+        //Basic validations of every Entity
+        if(!isInvincible()){
+            setInvincible(true);
+            damageReaction();
+            if(lifeBar != null) lifeBar.setDisplay(true);
+            if(life > 0) life -= value;
+            if(life <= 0 && this.getType() == EntityType.MONSTER){
+                dying = true;
             }
         }
     }
@@ -148,33 +189,20 @@ public abstract class Entity implements Drawnable{
         gp.getcChecker().checkTile(this);
     }
     
-    protected void controlSpriteAnimationSpeed(){
-        //Update sprites
-        spriteCounter++;
-        if(spriteCounter > (int) 12/(60/gp.getFPS())){
-            if(spriteNum == 1){
-                spriteNum = 2;
-            }else if(spriteNum == 2){
-                spriteNum = 1;
-            }
-            spriteCounter = 0;
-        }
-    }
-    
     protected void checkDirection(){
         //Only move if collisionOn is true
         if(!collisionOn){
             switch(direction){
-                case "up":
+                case UP:
                     worldY -= speed;
                     break;
-                case "down":
+                case DOWN:
                    worldY += speed;
                    break;
-                case "left":
+                case LEFT:
                     worldX -= speed;
                     break;
-                case "right":
+                case RIGHT:
                     worldX += speed;
                     break;
             }
@@ -191,10 +219,19 @@ public abstract class Entity implements Drawnable{
             worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() && 
             worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()){
             
+            //Draw Life Bar
+            if(lifeBar != null){
+                lifeBar.setX(screenX);
+                lifeBar.setY(screenY);
+                lifeBar.draw(g2);
+            }
+            
+            //Draw Sprite
             BufferedImage image = getSpriteDirection();
             if(invincible){
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
             }
+            if(dying) alive = dyeAnim.update(g2);
             g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
             
@@ -218,49 +255,38 @@ public abstract class Entity implements Drawnable{
     protected BufferedImage getSpriteDirection(){
         BufferedImage image = null;
         switch(direction){
-            case "up":
+            case UP:
                 if(attacking){
-                    if(spriteNum == 1){image = atkU1;}
-                    else if(spriteNum == 2){image = atkU2;}
+                    image = atkUp.getCurrentSprite();
                 }else{
-                    if(spriteNum == 1){image = u1;}
-                    else if(spriteNum == 2){image = u2;}
+                    image = up.getCurrentSprite();
                 }
                 break;
-            case "down":
+            case DOWN:
                 if(attacking){
-                    if(spriteNum == 1){image = atkD1;}
-                    else if(spriteNum == 2){image = atkD2;}
+                    image = atkDown.getCurrentSprite();
                 }else{
-                    if(spriteNum == 1){image = d1;}
-                    else if(spriteNum == 2){image = d2;}
+                    image = down.getCurrentSprite();
                 }
                 break;
-            case "left":
+            case LEFT:
                 if(attacking){
-                    if(spriteNum == 1){image = atkL1;}
-                    else if(spriteNum == 2){image = atkL2;}
+                    image = atkLeft.getCurrentSprite();
                 }else{
-                    if(spriteNum == 1){image = l1;}
-                    else if(spriteNum == 2){image = l2;}
+                    image = left.getCurrentSprite();
                 }
                 break;
-            case "right":
+            case RIGHT:
                 if(attacking){
-                    if(spriteNum == 1){image = atkR1;}
-                    else if(spriteNum == 2){image = atkR2;}
+                    image = atkRight.getCurrentSprite();
                 }else{
-                    if(spriteNum == 1){image = r1;}
-                    else if(spriteNum == 2){image = r2;}
+                    image = right.getCurrentSprite();
                 }
             default:
                 break;
         }
         return image;
     }
-    
-    protected int spriteCounter = 0;
-    public int spriteNum = 1;
     
     @Override
     public int getWorldX() {
@@ -291,7 +317,7 @@ public abstract class Entity implements Drawnable{
     public void setCollisionOn(boolean collisionOn) {
         this.collisionOn = collisionOn;
     }
-    public String getDirection() {
+    public Direction getDirection() {
         return direction;
     }
     public int getSolidAreaDefaultX() {
@@ -354,10 +380,17 @@ public abstract class Entity implements Drawnable{
     public void setAttackArea(Rectangle attackArea) {
         this.attackArea = attackArea;
     }
-    
-    //Teste functions
-    public void doDamage(int value){
-        if(life > 0) life -= value;
+
+    public boolean isDying() {
+        return dying;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public LifeBar getLifeBar() {
+        return lifeBar;
     }
     
     @Override

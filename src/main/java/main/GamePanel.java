@@ -321,4 +321,14 @@ public final class GamePanel extends JPanel implements Runnable{
         return false;
     }
     
+    public boolean removeMonster(Entity monster){
+        for(int i = 0; i < monsters.length; i++){
+            if(monster == monsters[i]){
+                renderOrder.remove(monsters[i]);
+                monsters[i] = null;
+                return true;
+            }
+        }
+        return false;
+    }
 }

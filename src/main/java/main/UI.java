@@ -45,7 +45,7 @@ public class UI {
     
     public UI(GamePanel gp){
         UtilityTool uTool = new UtilityTool();
-        lifeBar = new LifeBar(gp, gp.getPlayer(), 0, 0);
+        lifeBar = gp.getPlayer().getLifeBar();
         try {
             this.gp = gp;
             try {

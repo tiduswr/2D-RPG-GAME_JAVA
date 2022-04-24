@@ -1,5 +1,7 @@
 package entity;
 
+import animation.TimedAnimation;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 import main.GamePanel;
 
@@ -9,21 +11,22 @@ public class NPC_WhiteMage extends Entity{
         super(gp, EntityType.NPC);
         this.worldX = gp.getTileSize()*row;
         this.worldY = gp.getTileSize()*col;
-        this.direction = "down";
+        this.direction = Direction.DOWN;
         name = "White Mage";
         getImages();
         createDialogues();
     }
     
     private void getImages(){
-        u1 = makeSprite("npc/whiteMage_u1.png");
-        u2 = makeSprite("npc/whiteMage_u2.png");
-        l1 = makeSprite("npc/whiteMage_l1.png");
-        l2 = makeSprite("npc/whiteMage_l2.png");
-        r1 = makeSprite("npc/whiteMage_r1.png");
-        r2 = makeSprite("npc/whiteMage_r2.png");
-        d1 = makeSprite("npc/whiteMage_d1.png");
-        d2 = makeSprite("npc/whiteMage_d2.png");
+        //Animations
+        up = new TimedAnimation(new BufferedImage[]{makeSprite("npc/whiteMage_u1.png"),
+            makeSprite("npc/whiteMage_u2.png")}, 12/(60/gp.getFPS()), 20);
+        down = new TimedAnimation(new BufferedImage[]{makeSprite("npc/whiteMage_d1.png"),
+            makeSprite("npc/whiteMage_d2.png")}, 12/(60/gp.getFPS()), 20);
+        left = new TimedAnimation(new BufferedImage[]{makeSprite("npc/whiteMage_l1.png"),
+            makeSprite("npc/whiteMage_l2.png")}, 12/(60/gp.getFPS()), 20);
+        right = new TimedAnimation(new BufferedImage[]{makeSprite("npc/whiteMage_r1.png"),
+            makeSprite("npc/whiteMage_r2.png")}, 12/(60/gp.getFPS()), 20);
     }
     
     private void createDialogues(){
@@ -44,13 +47,13 @@ public class NPC_WhiteMage extends Entity{
             int i = rand.nextInt(100)+1;
 
             if(i <=25){
-                direction = "up";
+                direction = Direction.UP;
             }else if(i > 25 && i <= 50){
-                direction = "down";
+                direction = Direction.DOWN;
             }else if(i > 50 && i <= 75){
-                direction = "left";
+                direction = Direction.LEFT;
             }else if(i > 75 && i <= 100){
-                direction = "right";
+                direction = Direction.RIGHT;
             }
             actionLockCounter = 0;
         }
