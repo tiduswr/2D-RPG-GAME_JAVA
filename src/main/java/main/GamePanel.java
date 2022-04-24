@@ -4,6 +4,7 @@ import ui.UI;
 import interfaces.Drawnable;
 import event.EventHandler;
 import entity.Entity;
+import entity.Entity.EntityType;
 import entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -11,6 +12,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ListIterator;
 import javax.swing.JPanel;
 import object.SuperObject;
 import tile.TileManager;
@@ -93,8 +95,33 @@ public final class GamePanel extends JPanel implements Runnable{
         updateDrawArrayMonsters();
     }
     
+    private void removeDrawableByEntityType(EntityType type){
+        ListIterator<Drawnable> it = renderOrder.listIterator();
+        while(it.hasNext()){
+            Drawnable drawable = it.next();
+            if(drawable instanceof Entity){
+                Entity e = (Entity) drawable;
+                if(e.getStats().getType() == type){
+                    it.remove();
+                }
+            }
+        }
+    }
+    
+    private void removeDrawableObjects(){
+        ListIterator<Drawnable> it = renderOrder.listIterator();
+        while(it.hasNext()){
+            Drawnable drawable = it.next();
+            if(drawable instanceof SuperObject){
+                it.remove();
+            }
+        }
+    }
+    
     public void clearObjectArray(){
         obj = new SuperObject[MAX_OBJECTS];
+        removeDrawableObjects();
+        
     }
     public void updateDrawArrayObjects(){
         for(SuperObject o : obj){
@@ -106,6 +133,7 @@ public final class GamePanel extends JPanel implements Runnable{
     
     public void clearMonstersArray(){
         monsters = new Entity[MAX_MONSTER];
+        removeDrawableByEntityType(EntityType.MONSTER);
     }
     public void updateDrawArrayMonsters(){
         for(Entity m : monsters){
@@ -117,6 +145,7 @@ public final class GamePanel extends JPanel implements Runnable{
     
     public void clearNpcArray(){
        npcs = new Entity[MAX_NPC];
+       removeDrawableByEntityType(EntityType.NPC);
     }
     public void updateDrawArrayNpc(){
         for(Entity e : npcs){

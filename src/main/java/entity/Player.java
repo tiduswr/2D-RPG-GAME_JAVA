@@ -14,7 +14,6 @@ import main.GameState;
 import main.KeyHandler;
 import interfaces.Action;
 import object.OBJ_Equipment;
-import object.SuperObject;
 import object.OBJ_GreatSword;
 import object.OBJ_WoodShield;
 import ui.Message;
@@ -206,11 +205,12 @@ public class Player extends Entity{
                 
                 if(gp.getMonsters()[i].isDying()){
                     gp.getGameUI().getScrollMsg().addMessage(
-                        new Message("You earned " + gp.getMonsters()[i].getStats().getExp() + " exp."));
+                        new Message("Você ganhou " + gp.getMonsters()[i].getStats().getExp() + " exp."));
                     if(receiveExp(gp.getMonsters()[i].getStats().getExp())){
                         //if true then Level UP!
                         gp.playSoundEffect("fanfarreSlim", 0.6f);
-                        gp.getGameUI().setCurrentDialog("You leveled up!\nThe light of the crystal bless you.");
+                        gp.getGameUI().setCurrentDialog("Você subiu de nivel!\nA luz do crystal começa a brilhar"
+                                + "\n mais intensamente.");
                         gp.setGameState(GameState.DIALOG_STATE);
                     }
                 }
