@@ -25,6 +25,7 @@ public class UI {
     private TitleScreen titleScreen;
     private StatusScreen statusScreen;
     private LifeBar lifeBar;
+    private ScrollingMessages scrollMsg;
     
     public UI(GamePanel gp){
         UtilityTool uTool = new UtilityTool();
@@ -48,6 +49,9 @@ public class UI {
             height = gp.getScreenHeight() - gp.getTileSize()*8;
         dialogUi = new DialogUI(gp, x, y, width, height);
         
+        //Scrolling messages
+        scrollMsg = new ScrollingMessages(gp);
+        
         //Status Screen Handler
         x = gp.getTileSize()/2; 
         y = gp.getTileSize()/2;
@@ -62,6 +66,7 @@ public class UI {
         switch(gp.getGameState()){
             case PLAY_STATE:
                 lifeBar.draw(g2);
+                scrollMsg.drawMessages(g2);
                 break;
             case PAUSE_STATE:
                 drawPauseScreen();
@@ -117,6 +122,10 @@ public class UI {
 
     public TitleScreen getTitleScreen() {
         return titleScreen;
+    }
+
+    public ScrollingMessages getScrollMsg() {
+        return scrollMsg;
     }
     
 }

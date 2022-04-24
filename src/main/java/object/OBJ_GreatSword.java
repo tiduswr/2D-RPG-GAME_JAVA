@@ -12,7 +12,7 @@ public class OBJ_GreatSword extends OBJ_Equipment{
         super(gp);
         name = "GreatSword";
         image = makeSprite("objects/weapons/greatSword.png");
-        attackPoints = 1;
+        attackPoints = 2;
         defensePoints = 0;
     }
     

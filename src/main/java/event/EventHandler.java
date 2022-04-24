@@ -1,6 +1,7 @@
 package event;
 
 import entity.Entity.Direction;
+import entity.damage.FixedDamage;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -39,7 +40,7 @@ public final class EventHandler {
             public void execute() {
                 gp.setGameState(GameState.DIALOG_STATE);
                 gp.getGameUI().setCurrentDialog("Você levou uma topada! kkkkk");
-                gp.getPlayer().doDamage(1);
+                gp.getPlayer().doDamage(new FixedDamage(1));
                 setCanTouchEvent(false);
             }
         };
@@ -54,6 +55,11 @@ public final class EventHandler {
                     gp.setGameState(GameState.DIALOG_STATE);
                     gp.getPlayer().resetLife();
                     gp.playSoundEffect("cure", 0.5f);
+                    
+                    //Respawn all monsters
+                    gp.clearMonstersArray();
+                    gp.getAssetSetter().spawnMonsters();
+                    gp.updateDrawArrayMonsters();
                 }
             }
         };

@@ -1,6 +1,8 @@
 package entity;
 
+import entity.damage.Damage;
 import animation.TimedAnimation;
+import entity.damage.DamageAction;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
@@ -15,6 +17,7 @@ import object.OBJ_Equipment;
 import object.SuperObject;
 import object.OBJ_GreatSword;
 import object.OBJ_WoodShield;
+import ui.Message;
 
 public class Player extends Entity{
     
@@ -72,8 +75,8 @@ public class Player extends Entity{
         curShield = new OBJ_WoodShield(gp);
         
         //Calculate attack and defense
-        stats.atk = stats.calculateAtk(curWeapon);
-        stats.def = stats.calculateDef(curWeapon);
+        stats.calculateAtk(curWeapon);
+        stats.calculateDef(curShield);
     }
     
     private void getDefaultImages(){
@@ -160,6 +163,20 @@ public class Player extends Entity{
         }
     }
     
+    @Override
+    //Teste functions
+    public void doDamage(DamageAction value){
+        //Basic validations of every Entity
+        if(!isInvincible()){
+            setInvincible(true);
+            if(stats.life > 0 && value.calculateDamage() < stats.life){
+                stats.life -= value.calculateDamage();
+            }else{
+                stats.life = 0;
+            }
+        }
+    }
+    
     private void interactNpcIndex(int i){
         if(gp.getKeyH().iszPressed()){
             if(i != -1){
@@ -173,7 +190,7 @@ public class Player extends Entity{
     private void interactMonsterIndex(int monsterIndex) {
         if(monsterIndex != -1){
             if(!invincible && !gp.getMonsters()[monsterIndex].isDying()){
-                doDamage(1);
+                doDamage(new Damage(gp.getMonsters()[monsterIndex], this));
                 gp.playSoundEffect("receiveDamage", 0.4f);
                 invincible = true;
             }
@@ -182,9 +199,38 @@ public class Player extends Entity{
     
     private void damageMonster(int i) {
         if(i != -1){
-            if(!gp.getMonsters()[i].isInvincible()) gp.playSoundEffect("doDamage", 0.4f);
-            gp.getMonsters()[i].doDamage(1);
+            if(!gp.getMonsters()[i].isInvincible()) {
+                
+                gp.playSoundEffect("doDamage", 0.4f);
+                gp.getMonsters()[i].doDamage(new Damage(this, gp.getMonsters()[i]));
+                
+                if(gp.getMonsters()[i].isDying()){
+                    gp.getGameUI().getScrollMsg().addMessage(
+                        new Message("You earned " + gp.getMonsters()[i].getStats().getExp() + " exp."));
+                    if(receiveExp(gp.getMonsters()[i].getStats().getExp())){
+                        //if true then Level UP!
+                        gp.playSoundEffect("fanfarreSlim", 0.6f);
+                        gp.getGameUI().setCurrentDialog("You leveled up!\nThe light of the crystal bless you.");
+                        gp.setGameState(GameState.DIALOG_STATE);
+                    }
+                }
+            }
         }
+    }
+    
+    private boolean receiveExp(int exp){
+        stats.exp += exp;
+        if(stats.exp >= stats.nextLvlExp){
+            stats.nextLvlExp += (int)(stats.nextLvlExp*(1.20));
+            stats.level++;
+            stats.maxLife++;
+            stats.str++;
+            stats.dex++;
+            stats.calculateAtk(curWeapon);
+            stats.calculateDef(curShield);
+            return true;
+        }
+        return false;
     }
     
     private void playerAttack(TimedAnimation atk) {
@@ -367,15 +413,5 @@ public class Player extends Entity{
 
     public void setCurShield(OBJ_Equipment curShield) {
         this.curShield = curShield;
-    }
-    
-    @Override
-    //Teste functions
-    public void doDamage(int value){
-        //Basic validations of every Entity
-        if(!isInvincible()){
-            setInvincible(true);
-            if(stats.life > 0) stats.life -= value;
-        }
     }
 }

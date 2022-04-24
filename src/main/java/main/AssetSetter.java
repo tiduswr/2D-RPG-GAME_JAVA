@@ -27,9 +27,16 @@ public class AssetSetter {
     }
     
     public void spawnMonsters(){
-        gp.getMonsters()[0] = new MON_GreenSlime(gp, 23, 36);
-        gp.getMonsters()[1] = new MON_GreenSlime(gp, 23, 37);
-        gp.getMonsters()[2] = new MON_GreenSlime(gp, 23, 38);
+        int i = 0;
+        gp.getMonsters()[i] = new MON_GreenSlime(gp, 21, 38);
+        i++;
+        gp.getMonsters()[i] = new MON_GreenSlime(gp, 23, 42);
+        i++;
+        gp.getMonsters()[i] = new MON_GreenSlime(gp, 24, 37);
+        i++;
+        gp.getMonsters()[i] = new MON_GreenSlime(gp, 34, 42);
+        i++;
+        gp.getMonsters()[i] = new MON_GreenSlime(gp, 38, 42);
     }
     
 }

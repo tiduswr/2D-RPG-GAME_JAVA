@@ -1,5 +1,6 @@
 package entity;
 
+import entity.damage.Damage;
 import animation.TimedAnimation;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -16,7 +17,8 @@ import javax.imageio.ImageIO;
 import interfaces.Drawnable;
 import main.GamePanel;
 import interfaces.WorldLocation;
-import entity.monster.DyingAnimation;
+import animation.DyingAnimation;
+import entity.damage.DamageAction;
 import util.UtilityTool;
 import tile.TileManager;
 
@@ -135,15 +137,8 @@ public abstract class Entity implements Drawnable{
             gp.getcChecker().checkEntity(this, gp.getNpcs());
             //Check Monsters collision
             gp.getcChecker().checkEntity(this, gp.getMonsters());
-            
             //Check Player Collision
-            if(gp.getcChecker().checkPlayer(this) && stats.type == EntityType.MONSTER){
-                if(!gp.getPlayer().isInvincible()){
-                    //Damage teste on collision
-                    gp.playSoundEffect("receiveDamage", 0.4f);
-                    gp.getPlayer().doDamage(1);
-                }
-            }
+            touchPlayer();
 
             checkDirection();
             up.updateSprite();
@@ -168,14 +163,28 @@ public abstract class Entity implements Drawnable{
         }
     }
     
+    private void touchPlayer(){
+        if(gp.getcChecker().checkPlayer(this) && stats.type == EntityType.MONSTER){
+            if(!gp.getPlayer().isInvincible()){
+                //Damage teste on collision
+                gp.playSoundEffect("receiveDamage", 0.4f);
+                gp.getPlayer().doDamage(new Damage(this, gp.getPlayer()));
+            }
+        }
+    }
+    
     //Teste functions
-    public void doDamage(int value){
+    public void doDamage(DamageAction value){
         //Basic validations of every Entity
         if(!isInvincible()){
             setInvincible(true);
             damageReaction();
             if(lifeBar != null) lifeBar.setDisplay(true);
-            if(stats.life > 0) stats.life -= value;
+            if(stats.life > 0 && value.calculateDamage() < stats.life){
+                stats.life -= value.calculateDamage();
+            }else{
+                stats.life = 0;
+            }
             if(stats.life <= 0 && stats.getType() == EntityType.MONSTER){
                 dying = true;
             }

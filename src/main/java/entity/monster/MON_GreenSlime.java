@@ -11,10 +11,15 @@ public class MON_GreenSlime extends Entity{
         super(gp, EntityType.MONSTER);
         stats.setName("GreenSlime");
         stats.setSpeed(60/gp.getFPS());
-        stats.setMaxLife(4);
+        stats.setMaxLife(12);
         stats.setLife(stats.getMaxLife());
         worldX = col*gp.getTileSize();
         worldY = row*gp.getTileSize();
+        
+        //Stats
+        stats.setAtk(5);
+        stats.setDef(0);
+        stats.setExp(2);
         
         solidArea.x = 3;
         solidArea.y = 17;

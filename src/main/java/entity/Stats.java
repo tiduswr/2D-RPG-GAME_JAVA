@@ -108,7 +108,7 @@ public class Stats {
     public void setNextLvlExp(int nextLvlExp) {
         this.nextLvlExp = nextLvlExp;
     }
-
+    
     public int getGil() {
         return gil;
     }
@@ -133,12 +133,12 @@ public class Stats {
         this.shield = shield;
     }
 
-    public int calculateAtk(OBJ_Equipment curWeapon) {
-        return str * curWeapon.getAttackPoints();
+    public void calculateAtk(OBJ_Equipment curWeapon) {
+        atk = str + curWeapon.getAttackPoints() - 1;
     }
 
-    public int calculateDef(OBJ_Equipment curWeapon) {
-        return dex * curWeapon.getDefensePoints();
+    public void calculateDef(OBJ_Equipment curWeapon) {
+        def = dex + curWeapon.getDefensePoints() - 1;
     }
     
 }

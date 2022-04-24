@@ -46,9 +46,10 @@ public final class GamePanel extends JPanel implements Runnable{
     //Entity and Object Settings
     private Player player = new Player(this, keyH);
     private AssetSetter assetSetter = new AssetSetter(this);
-    private SuperObject obj[] = new SuperObject[10]; //Pode ser mostrados até 10 objetos por vez no jogo
-    private Entity[] npcs = new Entity[10];
-    private Entity[] monsters = new Entity[20];
+    private final int MAX_NPC = 10, MAX_MONSTER = 20, MAX_OBJECTS = 10;
+    private SuperObject obj[] = new SuperObject[MAX_OBJECTS]; //Pode ser mostrados até 10 objetos por vez no jogo
+    private Entity[] npcs = new Entity[MAX_NPC];
+    private Entity[] monsters = new Entity[MAX_MONSTER];
     private ArrayList<Drawnable> renderOrder = new ArrayList<>();
     
     //System Game
@@ -87,22 +88,40 @@ public final class GamePanel extends JPanel implements Runnable{
         //Make renderOrder arraylist
         //Add player
         renderOrder.add(player);
-        //Add objects
+        updateDrawArrayObjects();
+        updateDrawArrayNpc();
+        updateDrawArrayMonsters();
+    }
+    
+    public void clearObjectArray(){
+        obj = new SuperObject[MAX_OBJECTS];
+    }
+    public void updateDrawArrayObjects(){
         for(SuperObject o : obj){
             if(o != null){
                 renderOrder.add(o);
             }
         }
-        //Add NPCS
-        for(Entity e : npcs){
-            if(e != null){
-                renderOrder.add(e);
-            }
-        }
-        //Add Mosnters
+    }
+    
+    public void clearMonstersArray(){
+        monsters = new Entity[MAX_MONSTER];
+    }
+    public void updateDrawArrayMonsters(){
         for(Entity m : monsters){
             if(m != null){
                 renderOrder.add(m);
+            }
+        }
+    }
+    
+    public void clearNpcArray(){
+       npcs = new Entity[MAX_NPC];
+    }
+    public void updateDrawArrayNpc(){
+        for(Entity e : npcs){
+            if(e != null){
+                renderOrder.add(e);
             }
         }
     }
