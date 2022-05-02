@@ -5,18 +5,20 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import main.GamePanel;
+import util.UtilityTool;
 
 public class DialogUI {
     private Window window;
     private String currentDialog = "";
+    private boolean stopMusic = false;
     private int xOffset, yOffset, linesDistance;
     private GamePanel gp;
     
     public DialogUI(GamePanel gp, int x, int y, int width, int height) {
         this.gp = gp;
         this.window = new Window(x, y, width, height);
-        xOffset = gp.getTileSize();
-        yOffset = gp.getTileSize();
+        xOffset = gp.getTileSize()/2;
+        yOffset = gp.getTileSize()-8;
         linesDistance = 40;
     }
     
@@ -32,10 +34,11 @@ public class DialogUI {
         g2.setColor(Color.white);
         g2.setFont(g2.getFont().deriveFont(Font.BOLD, 28f));
         
-        for(String line : currentDialog.split("\n")){
-            g2.drawString(line, x, y);
-            y += linesDistance;
-        }
+        UtilityTool.drawStringMultiLine(g2, currentDialog, window.getWidth()-xOffset*2, x, y);
+//        for(String line : currentDialog.split("\n")){
+//            g2.drawString(line, x, y);
+//            y += linesDistance;
+//        }
         
         g2.setColor(oldColor);
         g2.setStroke(oldStr);
@@ -79,6 +82,14 @@ public class DialogUI {
 
     public void setCurrentDialog(String currentDialog) {
         this.currentDialog = currentDialog;
+    }
+
+    public boolean isStopMusic() {
+        return stopMusic;
+    }
+
+    public void setStopMusic(boolean stopMusic) {
+        this.stopMusic = stopMusic;
     }
     
 }

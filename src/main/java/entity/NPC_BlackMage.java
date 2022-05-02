@@ -22,7 +22,7 @@ public class NPC_BlackMage extends Entity{
         
         dialogues[0] = "Olá Warrior of Darkness!";
         dialogues[1] = "Porque estamos aqui?";
-        dialogues[2] = "A Maga Branca é bem gata não\nacha?";
+        dialogues[2] = "A Maga Branca é bem gata não acha?";
         dialogues[3] = "To com fome :(";
     }
     

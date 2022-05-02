@@ -13,9 +13,13 @@ import main.GamePanel;
 import main.GameState;
 import main.KeyHandler;
 import interfaces.Action;
+import interfaces.listeners.InventoryListener;
+import java.util.ArrayList;
 import object.OBJ_Equipment;
 import object.OBJ_GreatSword;
+import object.OBJ_Key;
 import object.OBJ_WoodShield;
+import object.SuperObject;
 import ui.Message;
 
 public class Player extends Entity{
@@ -24,6 +28,9 @@ public class Player extends Entity{
     private int qtdKeys = 0;
     private final int screenX, screenY;
     private boolean atkCanceled = false;
+    private final int INVENTORY_SIZE = 20;
+    private SuperObject[] inventory = new SuperObject[INVENTORY_SIZE];
+    private ArrayList<InventoryListener> invListener = new ArrayList<>();
     
     //Equips
     private OBJ_Equipment curWeapon, curShield;
@@ -76,6 +83,11 @@ public class Player extends Entity{
         //Calculate attack and defense
         stats.calculateAtk(curWeapon);
         stats.calculateDef(curShield);
+        
+        //Item teste
+        addItemToInventory(new OBJ_WoodShield(gp));
+        addItemToInventory(new OBJ_GreatSword(gp));
+        addItemToInventory(new OBJ_Key(gp));
     }
     
     private void getDefaultImages(){
@@ -208,9 +220,11 @@ public class Player extends Entity{
                         new Message("Você ganhou " + gp.getMonsters()[i].getStats().getExp() + " exp."));
                     if(receiveExp(gp.getMonsters()[i].getStats().getExp())){
                         //if true then Level UP!
+                        gp.stopMusic();
+                        gp.getGameUI().setStopMusic(true);
                         gp.playSoundEffect("fanfarreSlim", 0.6f);
-                        gp.getGameUI().setCurrentDialog("Você subiu de nivel!\nA luz do crystal começa a brilhar"
-                                + "\n mais intensamente.");
+                        gp.getGameUI().setCurrentDialog("Você subiu de nivel! A luz do crystal começa a brilhar"
+                                + " mais intensamente.");
                         gp.setGameState(GameState.DIALOG_STATE);
                     }
                 }
@@ -414,4 +428,45 @@ public class Player extends Entity{
     public void setCurShield(OBJ_Equipment curShield) {
         this.curShield = curShield;
     }
+
+    public SuperObject[] getInventory() {
+        return inventory;
+    }
+    
+    public boolean addItemToInventory(SuperObject obj){
+        for(int i = 0; i < inventory.length; i++){
+            if(inventory[i] == null){
+                inventory[i] = obj;
+                notifyAllInvListener();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean removeItem(SuperObject obj){
+        for(int i = 0; i < inventory.length; i++){
+            if(inventory[i] == obj){
+                inventory[i] = null;
+                notifyAllInvListener();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public void addInvListener(InventoryListener l){
+        this.invListener.add(l);
+    }
+    
+    public void removeInvListener(InventoryListener l){
+        this.invListener.remove(l);
+    }
+    
+    private void notifyAllInvListener(){
+        for(InventoryListener l : invListener){
+            l.update();
+        }
+    }
+    
 }

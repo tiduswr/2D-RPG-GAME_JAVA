@@ -1,7 +1,6 @@
 package main;
 
 import ui.UI;
-import interfaces.Drawnable;
 import event.EventHandler;
 import entity.Entity;
 import entity.Entity.EntityType;
@@ -16,6 +15,7 @@ import java.util.ListIterator;
 import javax.swing.JPanel;
 import object.SuperObject;
 import tile.TileManager;
+import interfaces.Drawable;
 
 public final class GamePanel extends JPanel implements Runnable{
     //Screen Settings
@@ -52,7 +52,7 @@ public final class GamePanel extends JPanel implements Runnable{
     private SuperObject obj[] = new SuperObject[MAX_OBJECTS]; //Pode ser mostrados até 10 objetos por vez no jogo
     private Entity[] npcs = new Entity[MAX_NPC];
     private Entity[] monsters = new Entity[MAX_MONSTER];
-    private ArrayList<Drawnable> renderOrder = new ArrayList<>();
+    private ArrayList<Drawable> renderOrder = new ArrayList<>();
     
     //System Game
     private Thread gameThread;
@@ -96,9 +96,9 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     
     private void removeDrawableByEntityType(EntityType type){
-        ListIterator<Drawnable> it = renderOrder.listIterator();
+        ListIterator<Drawable> it = renderOrder.listIterator();
         while(it.hasNext()){
-            Drawnable drawable = it.next();
+            Drawable drawable = it.next();
             if(drawable instanceof Entity){
                 Entity e = (Entity) drawable;
                 if(e.getStats().getType() == type){
@@ -109,9 +109,9 @@ public final class GamePanel extends JPanel implements Runnable{
     }
     
     private void removeDrawableObjects(){
-        ListIterator<Drawnable> it = renderOrder.listIterator();
+        ListIterator<Drawable> it = renderOrder.listIterator();
         while(it.hasNext()){
-            Drawnable drawable = it.next();
+            Drawable drawable = it.next();
             if(drawable instanceof SuperObject){
                 it.remove();
             }
@@ -260,6 +260,11 @@ public final class GamePanel extends JPanel implements Runnable{
     
     public void stopMusic(){
         music.stop();
+    }
+    
+    public void resumeMusic(){
+        music.play();
+        music.loop();
     }
     
     public void playSoundEffect(String file, float vol){

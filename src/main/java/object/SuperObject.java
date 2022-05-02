@@ -12,15 +12,15 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import interfaces.Drawnable;
 import main.GamePanel;
 import interfaces.WorldLocation;
 import tile.TileManager;
 import util.UtilityTool;
+import interfaces.Drawable;
 
-public abstract class SuperObject implements Action, Drawnable{
+public abstract class SuperObject implements Action, Drawable{
     protected BufferedImage image;
-    protected String name;
+    protected String name = "???", description = "No description!";
     protected boolean collision;
     protected int worldX, worldY;
     protected Rectangle solidArea;
@@ -108,6 +108,14 @@ public abstract class SuperObject implements Action, Drawnable{
     @Override
     public boolean executeAction() {
         return false;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     private void drawCollision(Graphics2D g2, int screenX, int screenY){

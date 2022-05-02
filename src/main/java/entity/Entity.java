@@ -14,15 +14,15 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import interfaces.Drawnable;
 import main.GamePanel;
 import interfaces.WorldLocation;
 import animation.DyingAnimation;
 import entity.damage.DamageAction;
 import util.UtilityTool;
 import tile.TileManager;
+import interfaces.Drawable;
 
-public abstract class Entity implements Drawnable{
+public abstract class Entity implements Drawable{
     
     public enum Direction{UP, DOWN, LEFT, RIGHT, ANY};
     

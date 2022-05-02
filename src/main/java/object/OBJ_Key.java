@@ -6,6 +6,7 @@ public class OBJ_Key extends SuperObject{
     public OBJ_Key(GamePanel gp){
         super(gp);
         name = "Key";
+        description = "A simple Key.";
         image = makeSprite("objects/key.png");
     }
     @Override

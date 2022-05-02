@@ -28,16 +28,25 @@ public class KeyHandler implements KeyListener{
         }else if(gp.getGameState() == GameState.PAUSE_STATE){
             //Pause
             if(code == KeyEvent.VK_P){
+                if(gp.getGameUI().isStopMusic()){
+                    gp.getGameUI().setStopMusic(false);
+                    gp.resumeMusic();
+                }
                 gp.setGameState(GameState.PLAY_STATE);
             }
         }else if(gp.getGameState() == GameState.DIALOG_STATE){
             if(code == KeyEvent.VK_Z){
+                if(gp.getGameUI().isStopMusic()){
+                    gp.getGameUI().setStopMusic(false);
+                    gp.resumeMusic();
+                }
                 gp.setGameState(GameState.PLAY_STATE);
             }
         }else if(gp.getGameState() == GameState.STATUS_WINDOW_STATE){
             if(code == KeyEvent.VK_C){
                 gp.setGameState(GameState.PLAY_STATE);
             }
+            controlInventory(code);
         }else if(gp.getGameState() == GameState.TITLE_STATE){
             titleState(code);
         }
@@ -81,6 +90,8 @@ public class KeyHandler implements KeyListener{
         //Pause
         if(code == KeyEvent.VK_P){
             gp.setGameState(GameState.PAUSE_STATE);
+            gp.stopMusic();
+            gp.getGameUI().setStopMusic(true);
         }
     }
     
@@ -128,5 +139,20 @@ public class KeyHandler implements KeyListener{
     }
     public void setzPressed(boolean zPressed) {
         this.zPressed = zPressed;
+    }
+
+    private void controlInventory(int code) {
+        if(code == KeyEvent.VK_UP){
+            gp.getGameUI().getInventory().cursorUp();
+        }
+        if(code == KeyEvent.VK_DOWN){
+            gp.getGameUI().getInventory().cursorDown();
+        }
+        if(code == KeyEvent.VK_LEFT){
+            gp.getGameUI().getInventory().cursorLeft();
+        }
+        if(code == KeyEvent.VK_RIGHT){
+            gp.getGameUI().getInventory().cursorRight();
+        }
     }
 }

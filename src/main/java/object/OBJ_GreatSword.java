@@ -11,6 +11,7 @@ public class OBJ_GreatSword extends OBJ_Equipment{
     public OBJ_GreatSword(GamePanel gp) {
         super(gp);
         name = "GreatSword";
+        description = "A Great Sword made with iron.";
         image = makeSprite("objects/weapons/greatSword.png");
         attackPoints = 2;
         defensePoints = 0;

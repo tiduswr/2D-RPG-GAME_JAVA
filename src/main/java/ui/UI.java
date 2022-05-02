@@ -26,6 +26,7 @@ public class UI {
     private StatusScreen statusScreen;
     private LifeBar lifeBar;
     private ScrollingMessages scrollMsg;
+    private PlayerInventory inventory;
     
     public UI(GamePanel gp){
         UtilityTool uTool = new UtilityTool();
@@ -58,6 +59,12 @@ public class UI {
         width = gp.getTileSize()*5; 
         height = gp.getTileSize()*9;
         statusScreen = new StatusScreen(gp, x, y, width, height);
+        
+        //Inventory handler
+        x = gp.getTileSize()*9; 
+        y = gp.getTileSize()/2;
+        inventory = new PlayerInventory(gp, x, y, 10, gp.getPlayer().getInventory());
+        gp.getPlayer().addInvListener(inventory);
     }
     
     public void draw(Graphics2D g2){
@@ -79,6 +86,8 @@ public class UI {
                 break;
             case STATUS_WINDOW_STATE:
                 statusScreen.draw(g2);
+                inventory.draw(g2);
+                break;
         }
     }
     
@@ -126,6 +135,18 @@ public class UI {
 
     public ScrollingMessages getScrollMsg() {
         return scrollMsg;
+    }
+
+    public PlayerInventory getInventory() {
+        return inventory;
+    }
+    
+    public boolean isStopMusic() {
+        return dialogUi.isStopMusic();
+    }
+
+    public void setStopMusic(boolean stopMusic) {
+        dialogUi.setStopMusic(stopMusic);
     }
     
 }
