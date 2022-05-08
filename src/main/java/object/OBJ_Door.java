@@ -21,8 +21,7 @@ public class OBJ_Door extends SuperObject{
     @Override
     public boolean executeAction() {
         super.executeAction();
-        if(gp.getPlayer().getQtdKeys() > 0){
-            gp.getPlayer().removeKeys(1);
+        if(false){
             gp.playSoundEffect("doorUnlock",1);
             return true;
         }

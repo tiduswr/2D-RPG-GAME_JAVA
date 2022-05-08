@@ -9,9 +9,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.ListIterator;
+import java.util.*;
 import javax.swing.JPanel;
 import object.SuperObject;
 import tile.TileManager;
@@ -48,11 +46,11 @@ public final class GamePanel extends JPanel implements Runnable{
     //Entity and Object Settings
     private Player player = new Player(this, keyH);
     private AssetSetter assetSetter = new AssetSetter(this);
-    private final int MAX_NPC = 10, MAX_MONSTER = 20, MAX_OBJECTS = 10;
-    private SuperObject obj[] = new SuperObject[MAX_OBJECTS]; //Pode ser mostrados até 10 objetos por vez no jogo
-    private Entity[] npcs = new Entity[MAX_NPC];
-    private Entity[] monsters = new Entity[MAX_MONSTER];
+    private ArrayList<SuperObject> obj = new ArrayList<>(); //Pode ser mostrados até 10 objetos por vez no jogo
+    private ArrayList<Entity> npcs = new ArrayList<>();
+    private ArrayList<Entity> monsters = new ArrayList<>();
     private ArrayList<Drawable> renderOrder = new ArrayList<>();
+    private Stack<Entity> markedForDeath = new Stack<>();
     
     //System Game
     private Thread gameThread;
@@ -90,71 +88,8 @@ public final class GamePanel extends JPanel implements Runnable{
         //Make renderOrder arraylist
         //Add player
         renderOrder.add(player);
-        updateDrawArrayObjects();
-        updateDrawArrayNpc();
-        updateDrawArrayMonsters();
     }
-    
-    private void removeDrawableByEntityType(EntityType type){
-        ListIterator<Drawable> it = renderOrder.listIterator();
-        while(it.hasNext()){
-            Drawable drawable = it.next();
-            if(drawable instanceof Entity){
-                Entity e = (Entity) drawable;
-                if(e.getStats().getType() == type){
-                    it.remove();
-                }
-            }
-        }
-    }
-    
-    private void removeDrawableObjects(){
-        ListIterator<Drawable> it = renderOrder.listIterator();
-        while(it.hasNext()){
-            Drawable drawable = it.next();
-            if(drawable instanceof SuperObject){
-                it.remove();
-            }
-        }
-    }
-    
-    public void clearObjectArray(){
-        obj = new SuperObject[MAX_OBJECTS];
-        removeDrawableObjects();
-        
-    }
-    public void updateDrawArrayObjects(){
-        for(SuperObject o : obj){
-            if(o != null){
-                renderOrder.add(o);
-            }
-        }
-    }
-    
-    public void clearMonstersArray(){
-        monsters = new Entity[MAX_MONSTER];
-        removeDrawableByEntityType(EntityType.MONSTER);
-    }
-    public void updateDrawArrayMonsters(){
-        for(Entity m : monsters){
-            if(m != null){
-                renderOrder.add(m);
-            }
-        }
-    }
-    
-    public void clearNpcArray(){
-       npcs = new Entity[MAX_NPC];
-       removeDrawableByEntityType(EntityType.NPC);
-    }
-    public void updateDrawArrayNpc(){
-        for(Entity e : npcs){
-            if(e != null){
-                renderOrder.add(e);
-            }
-        }
-    }
-    
+
     @Override
     public void run() {
         
@@ -195,19 +130,25 @@ public final class GamePanel extends JPanel implements Runnable{
             player.update();
             
             //NPC
-            for(Entity e : npcs){
-                if(e != null){
-                    e.update();
-                }
+            for(Entity cur : npcs){
+                cur.update();
             }
             
             //MONSTERS
-            for(Entity m : monsters){
-                if(m != null){
-                    m.update();
+            for(Entity cur : monsters){
+                cur.update();
+            }
+
+            //REMOVE ENTITIES MARKED FOR DEATH
+            while(!markedForDeath.empty()){
+                Entity e = markedForDeath.pop();
+                if(e != null) {
+                    npcs.remove(e);
+                    monsters.remove(e);
+                    renderOrder.remove(e);
                 }
             }
-            
+
         }
         if(gameState == GameState.PAUSE_STATE){
             //Nothing
@@ -319,9 +260,6 @@ public final class GamePanel extends JPanel implements Runnable{
     public AssetSetter getAssetSetter() {
         return assetSetter;
     }
-    public SuperObject[] getObj() {
-        return obj;
-    }
     public UI getGameUI(){
         return this.ui;
     }
@@ -351,10 +289,6 @@ public final class GamePanel extends JPanel implements Runnable{
         return worldHeight;
     }
 
-    public Entity[] getNpcs() {
-        return npcs;
-    }
-
     public EventHandler geteHandler() {
         return eHandler;
     }
@@ -363,27 +297,50 @@ public final class GamePanel extends JPanel implements Runnable{
         this.eHandler = eHandler;
     }
 
-    public Entity[] getMonsters() {
+    public void addObject(SuperObject o){
+        obj.add(o);
+        renderOrder.add(o);
+    }
+
+    public void addNpc(Entity npc){
+        npcs.add(npc);
+        renderOrder.add(npc);
+    }
+
+    public void addMonster(Entity monster){
+        monsters.add(monster);
+        renderOrder.add(monster);
+    }
+
+    public void removeObject(SuperObject o){
+        obj.remove(o);
+        renderOrder.remove(o);
+    }
+
+    public void removeNpc(Entity npc){
+        npcs.remove(npc);
+        renderOrder.remove(npc);
+    }
+
+    public void removeMonster(Entity monster){
+        monsters.remove(monster);
+        renderOrder.remove(monster);
+    }
+
+    public ArrayList<SuperObject> getObj() {
+        return obj;
+    }
+
+    public ArrayList<Entity> getNpcs() {
+        return npcs;
+    }
+
+    public ArrayList<Entity> getMonsters() {
         return monsters;
     }
 
-    public boolean removeMonster(int position){
-        if(position != -1 && position <= getMonsters().length){
-            renderOrder.remove(getMonsters()[position]);
-            getMonsters()[position] = null;
-            return true;
-        }
-        return false;
+    public void markEntityForDeath(Entity e){
+        markedForDeath.push(e);
     }
-    
-    public boolean removeMonster(Entity monster){
-        for(int i = 0; i < monsters.length; i++){
-            if(monster == monsters[i]){
-                renderOrder.remove(monsters[i]);
-                monsters[i] = null;
-                return true;
-            }
-        }
-        return false;
-    }
+
 }

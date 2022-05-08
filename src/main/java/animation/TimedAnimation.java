@@ -6,13 +6,13 @@ public class TimedAnimation extends Animation{
     private int spriteCounter, standCounter, index;
     private final int FRAMES, RESET_FRAMES;
     
-    public TimedAnimation(BufferedImage[] sprites, int frames, int resetFrames){
+    public TimedAnimation(BufferedImage[] sprites, int frames){
         super(sprites);
         spriteCounter = 0;
         index = 0;
         standCounter = 0;
         this.FRAMES = frames;
-        this.RESET_FRAMES = resetFrames;
+        this.RESET_FRAMES = frames;
         running = true;
     }
     

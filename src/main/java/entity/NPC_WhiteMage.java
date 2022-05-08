@@ -20,13 +20,13 @@ public class NPC_WhiteMage extends Entity{
     private void getImages(){
         //Animations
         up = new TimedAnimation(new BufferedImage[]{makeSprite("npc/whiteMage_u1.png"),
-            makeSprite("npc/whiteMage_u2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("npc/whiteMage_u2.png")}, 12/(60/gp.getFPS()));
         down = new TimedAnimation(new BufferedImage[]{makeSprite("npc/whiteMage_d1.png"),
-            makeSprite("npc/whiteMage_d2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("npc/whiteMage_d2.png")}, 12/(60/gp.getFPS()));
         left = new TimedAnimation(new BufferedImage[]{makeSprite("npc/whiteMage_l1.png"),
-            makeSprite("npc/whiteMage_l2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("npc/whiteMage_l2.png")}, 12/(60/gp.getFPS()));
         right = new TimedAnimation(new BufferedImage[]{makeSprite("npc/whiteMage_r1.png"),
-            makeSprite("npc/whiteMage_r2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("npc/whiteMage_r2.png")}, 12/(60/gp.getFPS()));
     }
     
     private void createDialogues(){

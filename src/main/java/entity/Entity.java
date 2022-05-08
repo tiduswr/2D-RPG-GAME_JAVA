@@ -125,7 +125,7 @@ public abstract class Entity implements Drawable{
     };
     public void update(){
         if(!alive){
-            gp.removeMonster(this);
+            gp.markEntityForDeath(this);
         }else if(!dying){
             if(lifeBar != null) lifeBar.update();
             setAction();
@@ -190,7 +190,16 @@ public abstract class Entity implements Drawable{
             }
         }
     }
-    
+
+    public void heal(int hp){
+        int calculatedHp = hp + stats.getLife();
+        if(calculatedHp >= stats.getMaxLife()) {
+            stats.setLife(stats.getMaxLife());
+        }else{
+            stats.setLife(calculatedHp);
+        }
+    }
+
     protected int checkObjectCollision(){
         return gp.getcChecker().checkObject(this, false);
     }

@@ -1,13 +1,14 @@
 package object;
 
 import animation.TimedAnimation;
-import java.awt.Rectangle;
 import main.GamePanel;
 
-public abstract class OBJ_Equipment extends SuperObject{
+import java.awt.*;
+
+public abstract class OBJ_Weapon extends SuperObject{
     protected int attackPoints, defensePoints;
-    
-    public OBJ_Equipment(GamePanel gp) {
+
+    public OBJ_Weapon(GamePanel gp) {
         super(gp);
         defensePoints = 0;
         attackPoints = 0;
@@ -25,7 +26,7 @@ public abstract class OBJ_Equipment extends SuperObject{
 
     @Override
     public boolean executeInventoryAction() {
-        gp.getPlayer().equipShield(this);
+        gp.getPlayer().equipWeapon(this);
         return false;
     }
 

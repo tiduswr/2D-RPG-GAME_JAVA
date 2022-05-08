@@ -1,5 +1,7 @@
 package main;
 
+import object.SuperObject;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -153,6 +155,10 @@ public class KeyHandler implements KeyListener{
         }
         if(code == KeyEvent.VK_RIGHT){
             gp.getGameUI().getInventory().cursorRight();
+        }
+        if(code == KeyEvent.VK_ENTER){
+            SuperObject o = gp.getGameUI().getInventory().getSelectedItem();
+            if(o != null && o.executeInventoryAction()) gp.getPlayer().removeItem(o);
         }
     }
 }

@@ -2,6 +2,7 @@ package entity;
 
 import entity.Entity.EntityType;
 import object.OBJ_Equipment;
+import object.OBJ_Weapon;
 import object.SuperObject;
 
 public class Stats {
@@ -133,7 +134,7 @@ public class Stats {
         this.shield = shield;
     }
 
-    public void calculateAtk(OBJ_Equipment curWeapon) {
+    public void calculateAtk(OBJ_Weapon curWeapon) {
         atk = str + curWeapon.getAttackPoints() - 1;
     }
 

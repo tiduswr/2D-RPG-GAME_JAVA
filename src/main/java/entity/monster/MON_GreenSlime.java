@@ -34,13 +34,13 @@ public class MON_GreenSlime extends Entity{
     private void getImages(){
         //Animations
         up = new TimedAnimation(new BufferedImage[]{makeSprite("monsters/slime_u1.png"),
-            makeSprite("monsters/slime_u2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("monsters/slime_u2.png")}, 12/(60/gp.getFPS()));
         down = new TimedAnimation(new BufferedImage[]{makeSprite("monsters/slime_d1.png"),
-            makeSprite("monsters/slime_d2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("monsters/slime_d2.png")}, 12/(60/gp.getFPS()));
         left = new TimedAnimation(new BufferedImage[]{makeSprite("monsters/slime_l1.png"),
-            makeSprite("monsters/slime_l2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("monsters/slime_l2.png")}, 12/(60/gp.getFPS()));
         right = new TimedAnimation(new BufferedImage[]{makeSprite("monsters/slime_r1.png"),
-            makeSprite("monsters/slime_r2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("monsters/slime_r2.png")}, 12/(60/gp.getFPS()));
     }
     
     @Override

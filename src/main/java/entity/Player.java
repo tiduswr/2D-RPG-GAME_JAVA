@@ -15,17 +15,14 @@ import main.KeyHandler;
 import interfaces.Action;
 import interfaces.listeners.InventoryListener;
 import java.util.ArrayList;
-import object.OBJ_Equipment;
-import object.OBJ_GreatSword;
-import object.OBJ_Key;
-import object.OBJ_WoodShield;
-import object.SuperObject;
+
+import object.*;
 import ui.Message;
+import util.UtilityTool;
 
 public class Player extends Entity{
     
     private KeyHandler keyH;
-    private int qtdKeys = 0;
     private final int screenX, screenY;
     private boolean atkCanceled = false;
     private final int INVENTORY_SIZE = 20;
@@ -33,7 +30,8 @@ public class Player extends Entity{
     private ArrayList<InventoryListener> invListener = new ArrayList<>();
     
     //Equips
-    private OBJ_Equipment curWeapon, curShield;
+    private OBJ_Weapon curWeapon;
+    private OBJ_Equipment curShield;
     
     public Player(GamePanel gp, KeyHandler keyH){
         super(gp, EntityType.PLAYER);
@@ -68,38 +66,41 @@ public class Player extends Entity{
         stats.exp = 0;
         stats.nextLvlExp = 5;
         stats.gil = 0;
-        
-        //Default Weapons
-        OBJ_GreatSword defaultSword = new OBJ_GreatSword(gp);
-        TimedAnimation[] arr = defaultSword.greatSwordSprites(attackArea);
+
+        //Test Equipment
+        OBJ_GreatSword testSword = new OBJ_GreatSword(gp);
+        OBJ_WoodShield testShield = new OBJ_WoodShield(gp);
+        addItemToInventory(testSword);
+        addItemToInventory(testShield);
+        equipWeapon(testSword);
+        equipShield(testShield);
+    }
+
+    public void equipWeapon(OBJ_Weapon weapon){
+        TimedAnimation[] arr = weapon.getSprites(attackArea);
         atkUp = arr[0];
         atkDown = arr[1];
         atkLeft = arr[2];
         atkRight = arr[3];
-        
-        curWeapon = defaultSword;
-        curShield = new OBJ_WoodShield(gp);
-        
-        //Calculate attack and defense
-        stats.calculateAtk(curWeapon);
-        stats.calculateDef(curShield);
-        
-        //Item teste
-        addItemToInventory(new OBJ_WoodShield(gp));
-        addItemToInventory(new OBJ_GreatSword(gp));
-        addItemToInventory(new OBJ_Key(gp));
+        curWeapon = weapon;
+        stats.calculateAtk(weapon);
     }
-    
+
+    public void equipShield(OBJ_Equipment shield){
+        curShield = shield;
+        stats.calculateDef(shield);
+    }
+
     private void getDefaultImages(){
         //Animations
-        up = new TimedAnimation(new BufferedImage[]{makeSprite("player/u1.png"),
-                                                    makeSprite("player/u2.png")}, 12/(60/gp.getFPS()), 20);
-        down = new TimedAnimation(new BufferedImage[]{makeSprite("player/d1.png"),
-                                                      makeSprite("player/d2.png")}, 12/(60/gp.getFPS()), 20);
-        left = new TimedAnimation(new BufferedImage[]{makeSprite("player/l1.png"),
-                                                      makeSprite("player/l2.png")}, 12/(60/gp.getFPS()), 20);
-        right = new TimedAnimation(new BufferedImage[]{makeSprite("player/r1.png"),
-                                                       makeSprite("player/r2.png")}, 12/(60/gp.getFPS()), 20);
+        up = new TimedAnimation(new BufferedImage[]{makeSprite("player/walk_u1.png"),
+                                                    makeSprite("player/walk_u2.png")}, 12/(60/gp.getFPS()));
+        down = new TimedAnimation(new BufferedImage[]{makeSprite("player/walk_d1.png"),
+                                                      makeSprite("player/walk_d2.png")}, 12/(60/gp.getFPS()));
+        left = new TimedAnimation(new BufferedImage[]{makeSprite("player/walk_l1.png"),
+                                                      makeSprite("player/walk_l2.png")}, 12/(60/gp.getFPS()));
+        right = new TimedAnimation(new BufferedImage[]{makeSprite("player/walk_r1.png"),
+                                                       makeSprite("player/walk_r2.png")}, 12/(60/gp.getFPS()));
     }
     
     
@@ -193,15 +194,16 @@ public class Player extends Entity{
             if(i != -1){
                 atkCanceled = true;
                 gp.setGameState(GameState.DIALOG_STATE);
-                gp.getNpcs()[i].speak();
+                gp.getNpcs().get(i).speak();
             }
         }
     }
     
     private void interactMonsterIndex(int monsterIndex) {
         if(monsterIndex != -1){
-            if(!invincible && !gp.getMonsters()[monsterIndex].isDying()){
-                doDamage(new Damage(gp.getMonsters()[monsterIndex], this));
+            Entity monster = gp.getMonsters().get(monsterIndex);
+            if(!invincible && !monster.isDying()){
+                doDamage(new Damage(monster, this));
                 gp.playSoundEffect("receiveDamage", 0.4f);
                 invincible = true;
             }
@@ -210,15 +212,16 @@ public class Player extends Entity{
     
     private void damageMonster(int i) {
         if(i != -1){
-            if(!gp.getMonsters()[i].isInvincible()) {
+            Entity monster = gp.getMonsters().get(i);
+            if(!monster.isInvincible()) {
                 
                 gp.playSoundEffect("doDamage", 0.4f);
-                gp.getMonsters()[i].doDamage(new Damage(this, gp.getMonsters()[i]));
+                monster.doDamage(new Damage(this, monster));
                 
-                if(gp.getMonsters()[i].isDying()){
+                if(monster.isDying()){
                     gp.getGameUI().getScrollMsg().addMessage(
-                        new Message("Você ganhou " + gp.getMonsters()[i].getStats().getExp() + " exp."));
-                    if(receiveExp(gp.getMonsters()[i].getStats().getExp())){
+                        new Message("Você ganhou " + monster.getStats().getExp() + " exp."));
+                    if(receiveExp(monster.getStats().getExp())){
                         //if true then Level UP!
                         gp.stopMusic();
                         gp.getGameUI().setStopMusic(true);
@@ -289,8 +292,11 @@ public class Player extends Entity{
     
     public void pickUpObject(int i){
         if(i != -1){
-            Action a = gp.getObj()[i];
-            if(a.executeAction()) gp.getObj()[i] = null;
+            SuperObject o = gp.getObj().get(i);
+            if(UtilityTool.getLength(inventory) < (inventory.length -1) && o.executeAction()) {
+                addItemToInventory(o);
+                gp.removeObject(o);
+            }
         }
     }
     
@@ -394,15 +400,6 @@ public class Player extends Entity{
     public int getScreenY() {
         return screenY;
     }
-    public int getQtdKeys() {
-        return qtdKeys;
-    }
-    public void addKeys(int value){
-        qtdKeys += value;
-    }
-    public void removeKeys(int value){
-        qtdKeys -= value;
-    }
     public void resetLife(){
         stats.life = stats.maxLife;
     }
@@ -413,11 +410,11 @@ public class Player extends Entity{
         this.atkCanceled = atkCanceled;
     }
 
-    public OBJ_Equipment getCurWeapon() {
+    public OBJ_Weapon getCurWeapon() {
         return curWeapon;
     }
 
-    public void setCurWeapon(OBJ_Equipment curWeapon) {
+    public void setCurWeapon(OBJ_Weapon curWeapon) {
         this.curWeapon = curWeapon;
     }
 

@@ -2,6 +2,9 @@ package main;
 
 import entity.Entity;
 import object.SuperObject;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 
 public class CollisionChecker {
     
@@ -97,7 +100,7 @@ public class CollisionChecker {
     }
     
     //NPC or Monster Collision
-    public int checkEntity(Entity e, Entity[] targets){
+    public int checkEntity(Entity e, ArrayList<Entity> targets){
         int i = 0;
         int index = -1;
         

@@ -55,11 +55,6 @@ public final class EventHandler {
                     gp.setGameState(GameState.DIALOG_STATE);
                     gp.getPlayer().resetLife();
                     gp.playSoundEffect("cure", 0.5f);
-                    
-                    //Respawn all monsters
-                    gp.clearMonstersArray();
-                    gp.getAssetSetter().spawnMonsters();
-                    gp.updateDrawArrayMonsters();
                 }
             }
         };

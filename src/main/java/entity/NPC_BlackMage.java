@@ -29,13 +29,13 @@ public class NPC_BlackMage extends Entity{
     private void getImages(){
         //Animations
         up = new TimedAnimation(new BufferedImage[]{makeSprite("npc/blackMage_u1.png"),
-            makeSprite("npc/blackMage_u2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("npc/blackMage_u2.png")}, 12/(60/gp.getFPS()));
         down = new TimedAnimation(new BufferedImage[]{makeSprite("npc/blackMage_d1.png"),
-            makeSprite("npc/blackMage_d2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("npc/blackMage_d2.png")}, 12/(60/gp.getFPS()));
         left = new TimedAnimation(new BufferedImage[]{makeSprite("npc/blackMage_l1.png"),
-            makeSprite("npc/blackMage_l2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("npc/blackMage_l2.png")}, 12/(60/gp.getFPS()));
         right = new TimedAnimation(new BufferedImage[]{makeSprite("npc/blackMage_r1.png"),
-            makeSprite("npc/blackMage_r2.png")}, 12/(60/gp.getFPS()), 20);
+            makeSprite("npc/blackMage_r2.png")}, 12/(60/gp.getFPS()));
     }
     
     @Override

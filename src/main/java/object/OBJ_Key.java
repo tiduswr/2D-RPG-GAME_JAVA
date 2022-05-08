@@ -12,8 +12,6 @@ public class OBJ_Key extends SuperObject{
     @Override
     public boolean executeAction() {
         super.executeAction();
-        gp.getPlayer().addKeys(1);
-        gp.playSoundEffect("keyGet",1);
         return true;
     }
 }

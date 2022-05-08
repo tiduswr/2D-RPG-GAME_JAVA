@@ -1,10 +1,9 @@
 package ui;
 
 import interfaces.listeners.InventoryListener;
-import java.awt.BasicStroke;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Stroke;
+
+import java.awt.*;
+
 import main.GamePanel;
 import object.SuperObject;
 import util.UtilityTool;
@@ -146,7 +145,18 @@ public class PlayerInventory implements InventoryListener{
         }
         
         public void draw(Graphics2D g2){
-            if(o != null) g2.drawImage(o.getImage(), x, y, null);
+            if(o != null) {
+                if(o == gp.getPlayer().getCurWeapon() || o == gp.getPlayer().getCurShield()){
+                    Color oldColor = g2.getColor();
+
+                    g2.setColor(Color.orange);
+                    g2.fillRoundRect(x, y, width, height, 10, 10);
+
+                    g2.setColor(oldColor);
+                }
+                g2.drawImage(o.getImage(), x, y, null);
+            }
+
         }
         
     }
@@ -230,16 +240,16 @@ public class PlayerInventory implements InventoryListener{
         
         public void draw(Graphics2D g2){
             Font oldFont = g2.getFont();
-            
-            window.drawWindow(g2);
-            
+
             //Draw Description
             SuperObject o = PlayerInventory.this.getSelectedItem();
             if(o != null){
+                window.drawWindow(g2);
                 g2.setFont(oldFont.deriveFont(Font.BOLD, oldFont.getSize()));
                 g2.drawString("[" + o.getName() + "]", this.x + xOffset, this.y + yOffset);
                 g2.setFont(oldFont.deriveFont(Font.PLAIN, oldFont.getSize()));
-                UtilityTool.drawStringMultiLine(g2, o.getDescription(), this.width - xOffset, this.x + xOffset, this.y + yOffset*2);
+                UtilityTool.drawStringMultiLine(g2, o.getDescription(), this.width - xOffset,
+                        this.x + xOffset, this.y + yOffset*2);
             }
             
             g2.setFont(oldFont);
