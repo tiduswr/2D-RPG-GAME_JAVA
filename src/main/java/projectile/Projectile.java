@@ -4,6 +4,7 @@ import animation.TimedAnimation;
 import entity.Entity;
 import entity.Direction;
 import entity.damage.FixedDamage;
+import entity.damage.MagicDamage;
 import interfaces.Drawable;
 import interfaces.WorldLocation;
 import main.GamePanel;
@@ -34,7 +35,7 @@ public class Projectile implements Drawable {
     //Entity Basic
     protected Direction direction;
     protected String name = "";
-    protected int speed, cost, framesVisible;
+    protected int speed, cost, framesVisible, recastTime, recastTimeCounter;
     protected int framesVisibleCount;
     protected boolean visible = false;
     protected String hitSound = "fireBallDamage", castSound = "fireball";
@@ -46,6 +47,8 @@ public class Projectile implements Drawable {
         //Direction
         this.direction = Direction.DOWN;
 
+        recastTime = 60; //1 Second
+
         //Hitbox
         solidArea = new Rectangle();
         solidArea.x = 8;
@@ -56,13 +59,22 @@ public class Projectile implements Drawable {
         solidAreaDefaultY = solidArea.y;
     }
 
-    public void set(int worldX, int worldY, Direction dir, boolean visible){
-        this.worldX = worldX;
-        this.worldY = worldY;
-        this.direction = dir;
-        this.visible = visible;
-        framesVisibleCount = framesVisible;
-        gp.playSoundEffect( castSound, 1f);
+    public boolean set(int worldX, int worldY, Direction dir, boolean visible){
+        if(recastTimeCounter <= 0){
+            this.worldX = worldX;
+            this.worldY = worldY;
+            this.direction = dir;
+            this.visible = visible;
+            framesVisibleCount = framesVisible;
+            recastTimeCounter = recastTime;
+            if(!castSound.equalsIgnoreCase("") && user.isOnScreen()) gp.playSoundEffect(castSound, 1f);
+            return true;
+        }
+        return false;
+    }
+
+    public void recastTimeUpdate(){
+        if(recastTimeCounter > 0) recastTimeCounter--;
     }
 
     public void update(){
@@ -76,13 +88,32 @@ public class Projectile implements Drawable {
                 int monsterIndex = gp.getcChecker().checkProjectile(this, gp.getMonsters());
                 if(monsterIndex != -1){
                     framesVisibleCount = 0;
+                    recastTime = 0;
                     visible = false;
                     gp.markDrawableForDispose(this);
                     Entity e = gp.getMonsters().get(monsterIndex);
-                    e.doDamage(new FixedDamage(calculateAttack(gp.getPlayer().getStats().getMag())));
+                    e.doDamage(new MagicDamage(calculateAttack(user.getStats().getMag()), e), direction);
                     gp.getPlayer().checkExpFromMonster(e);
-                    gp.playSoundEffect(hitSound, 1f);
+                    if(!hitSound.equalsIgnoreCase("")) gp.playSoundEffect(hitSound, 1f);
                 }
+            }else if(user.getStats().getType() == Entity.EntityType.MONSTER){
+                boolean hitPlayer = gp.getcChecker().checkProjectileHitPlayer(this);
+                if(hitPlayer) {
+                    framesVisibleCount = 0;
+                    recastTime = 0;
+                    visible = false;
+                    gp.markDrawableForDispose(this);
+                    gp.getPlayer().doDamage(new MagicDamage(calculateAttack(user.getStats().getMag()), gp.getPlayer()),
+                                                direction);
+                    if(!hitSound.equalsIgnoreCase("")) gp.playSoundEffect(hitSound, 1f);
+                }
+            }
+
+            if(gp.getcChecker().checkProjectileHitWall(this)){
+                framesVisibleCount = 0;
+                recastTime = 0;
+                visible = false;
+                gp.markDrawableForDispose(this);
             }
 
             switch(direction){
@@ -110,17 +141,13 @@ public class Projectile implements Drawable {
     public void draw(Graphics2D g2) {
         int screenX = worldX - gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX();
         int screenY = worldY - gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY();
-
         if (worldX + gp.getTileSize() > gp.getPlayer().getWorldX() - gp.getPlayer().getScreenX() &&
-                worldX - gp.getTileSize() < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() &&
-                worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() &&
-                worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
-
-
+            worldX - gp.getTileSize() < gp.getPlayer().getWorldX() + gp.getPlayer().getScreenX() &&
+            worldY + gp.getTileSize() > gp.getPlayer().getWorldY() - gp.getPlayer().getScreenY() &&
+            worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
             //Draw Sprite
             BufferedImage image = getSpriteDirection();
             g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
-
             if (gp.getKeyH().debugMode()) drawCollision(g2, screenX, screenY);
         }
     }

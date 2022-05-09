@@ -49,7 +49,9 @@ public abstract class Entity implements Drawable{
     protected LifeBar lifeBar;
     protected ManaBar manaBar;
     protected String[] dialogues;
-    
+    protected int adjustHpBarY = 0;
+    protected boolean damageOnTouch, onScreen = false;
+
     //Invincible Handler
     protected int invincibleCounter = 0;
     protected boolean invincible = false;
@@ -102,8 +104,8 @@ public abstract class Entity implements Drawable{
         return scaledImage;
     }
     
-    public void setAction(){}
-    public void damageReaction(){};
+    public void setAction(){};
+    public void damageReaction(Direction dir){};
     public void speak(){
     
         switch(gp.getPlayer().getDirection()){
@@ -161,23 +163,23 @@ public abstract class Entity implements Drawable{
             }
         }
     }
-    
-    private void touchPlayer(){
-        if(gp.getcChecker().checkPlayer(this) && stats.type == EntityType.MONSTER){
-            if(!gp.getPlayer().isInvincible()){
+
+    protected void touchPlayer() {
+        if(gp.getcChecker().checkPlayer(this) && stats.getType() == EntityType.MONSTER){
+            if(!gp.getPlayer().isInvincible() && damageOnTouch){
                 //Damage teste on collision
                 gp.playSoundEffect("receiveDamage", 0.4f);
-                gp.getPlayer().doDamage(new Damage(this, gp.getPlayer()));
+                gp.getPlayer().doDamage(new Damage(this, gp.getPlayer()), direction);
             }
         }
     }
     
     //Teste functions
-    public void doDamage(DamageAction value){
+    public void doDamage(DamageAction value, Direction dir){
         //Basic validations of every Entity
         if(!isInvincible()){
             setInvincible(true);
-            damageReaction();
+            damageReaction(dir);
             if(lifeBar != null) lifeBar.setDisplay(true);
             if(stats.life > 0 && value.calculateDamage() < stats.life){
                 System.out.println(value.calculateDamage());
@@ -252,7 +254,7 @@ public abstract class Entity implements Drawable{
             //Draw Life Bar
             if(lifeBar != null){
                 lifeBar.setX(screenX);
-                lifeBar.setY(screenY);
+                lifeBar.setY(screenY+adjustHpBarY);
                 lifeBar.draw(g2);
             }
             
@@ -264,8 +266,11 @@ public abstract class Entity implements Drawable{
             if(dying) alive = dyeAnim.update(g2);
             g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-            
+            onScreen = true;
+
             if(gp.getKeyH().debugMode()) drawCollision(g2, screenX, screenY);
+        }else{
+            onScreen = false;
         }
     }
     
@@ -401,7 +406,19 @@ public abstract class Entity implements Drawable{
     public LifeBar getLifeBar() {
         return lifeBar;
     }
-    
+
+    public boolean isDamageOnTouch() {
+        return damageOnTouch;
+    }
+
+    public void setDamageOnTouch(boolean damageOnTouch) {
+        this.damageOnTouch = damageOnTouch;
+    }
+
+    public boolean isOnScreen() {
+        return onScreen;
+    }
+
     @Override
     public int compareTo(Object o) {
         WorldLocation ext = (WorldLocation) o;

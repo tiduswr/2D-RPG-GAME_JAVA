@@ -41,7 +41,7 @@ public final class EventHandler {
             public void execute() {
                 gp.setGameState(GameState.DIALOG_STATE);
                 gp.getGameUI().setCurrentDialog("Você levou uma topada! kkkkk");
-                gp.getPlayer().doDamage(new FixedDamage(1));
+                gp.getPlayer().doDamage(new FixedDamage(1), Direction.UP);
                 setCanTouchEvent(false);
             }
         };
@@ -55,6 +55,7 @@ public final class EventHandler {
                     gp.getGameUI().setCurrentDialog("Você bebeu da fonte... Você se sente recuperado!");
                     gp.setGameState(GameState.DIALOG_STATE);
                     gp.getPlayer().resetLife();
+                    gp.getPlayer().getStats().setMana(gp.getPlayer().getStats().getMaxMana());
                     gp.playSoundEffect("cure", 0.5f);
                 }
             }

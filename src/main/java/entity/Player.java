@@ -38,7 +38,9 @@ public class Player extends Entity{
     
     public Player(GamePanel gp, KeyHandler keyH){
         super(gp, EntityType.PLAYER);
+
         //Configurations
+        this.onScreen = true;
         this.keyH = keyH;
         this.screenX = gp.getScreenWidth()/2 - (gp.getTileSize()/2);
         this.screenY = gp.getScreenHeight()/2 - (gp.getTileSize()/2);
@@ -68,6 +70,7 @@ public class Player extends Entity{
         
         //Stats
         stats.maxLife = 6;
+        stats.level = 1;
         stats.life = stats.maxLife;
         stats.str = 1;
         stats.dex = 1;
@@ -177,9 +180,9 @@ public class Player extends Entity{
         }
 
         //Fireball
+        projectile.recastTimeUpdate();
         if(gp.getKeyH().isShotKeyPressed() && !projectile.isVisible()){
-            if(stats.mana >= projectile.getCost()){
-                projectile.set(worldX, worldY, direction, true);
+            if(stats.mana >= projectile.getCost() && projectile.set(worldX, worldY, direction, true)){
                 gp.addProjectile(projectile);
                 stats.mana -= projectile.getCost();
             }
@@ -197,7 +200,7 @@ public class Player extends Entity{
     
     @Override
     //Teste functions
-    public void doDamage(DamageAction value){
+    public void doDamage(DamageAction value, Direction dir){
         //Basic validations of every Entity
         if(!isInvincible()){
             setInvincible(true);
@@ -222,8 +225,8 @@ public class Player extends Entity{
     private void interactMonsterIndex(int monsterIndex) {
         if(monsterIndex != -1){
             Entity monster = gp.getMonsters().get(monsterIndex);
-            if(!invincible && !monster.isDying()){
-                doDamage(new Damage(monster, this));
+            if(!invincible && !monster.isDying() && monster.isDamageOnTouch()){
+                doDamage(new Damage(monster, this), direction);
                 gp.playSoundEffect("receiveDamage", 0.4f);
                 invincible = true;
             }
@@ -234,9 +237,8 @@ public class Player extends Entity{
         if(i != -1){
             Entity monster = gp.getMonsters().get(i);
             if(!monster.isInvincible()) {
-                
                 gp.playSoundEffect("doDamage", 0.4f);
-                monster.doDamage(new Damage(this, monster));
+                monster.doDamage(new Damage(this, monster), direction);
                 checkExpFromMonster(monster);
             }
         }

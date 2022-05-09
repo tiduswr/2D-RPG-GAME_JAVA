@@ -2,6 +2,7 @@ package main;
 
 import entity.NPC_BlackMage;
 import entity.NPC_WhiteMage;
+import entity.monster.MON_FireSnake;
 import entity.monster.MON_GreenSlime;
 import object.*;
 
@@ -35,8 +36,8 @@ public class AssetSetter {
         gp.addMonster(new MON_GreenSlime(gp, 21, 38));
         gp.addMonster(new MON_GreenSlime(gp, 23, 42));
         gp.addMonster(new MON_GreenSlime(gp, 24, 37));
-        gp.addMonster(new MON_GreenSlime(gp, 34, 42));
-        gp.addMonster(new MON_GreenSlime(gp, 38, 42));
+        gp.addMonster(new MON_FireSnake(gp, 34, 42));
+        gp.addMonster(new MON_FireSnake(gp, 38, 42));
     }
     
 }

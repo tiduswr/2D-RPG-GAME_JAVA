@@ -5,6 +5,8 @@ import entity.Direction;
 import entity.Entity;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+
+import entity.damage.Damage;
 import main.GamePanel;
 
 public class MON_GreenSlime extends Entity{
@@ -16,7 +18,10 @@ public class MON_GreenSlime extends Entity{
         stats.setLife(stats.getMaxLife());
         worldX = col*gp.getTileSize();
         worldY = row*gp.getTileSize();
-        
+
+        //Touch damage
+        damageOnTouch = true;
+
         //Stats
         stats.setAtk(5);
         stats.setDef(0);
@@ -43,7 +48,7 @@ public class MON_GreenSlime extends Entity{
         right = new TimedAnimation(new BufferedImage[]{makeSprite("monsters/slime_r1.png"),
             makeSprite("monsters/slime_r2.png")}, 12/(60/gp.getFPS()));
     }
-    
+
     @Override
     public void setAction(){
         actionLockCounter++;
@@ -66,9 +71,9 @@ public class MON_GreenSlime extends Entity{
     }
     
     @Override
-    public void damageReaction(){
+    public void damageReaction(Direction dir){
         actionLockCounter = 0;
-        direction = gp.getPlayer().getDirection();
+        direction = dir;
     }
     
 }

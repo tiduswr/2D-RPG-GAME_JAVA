@@ -1,4 +1,6 @@
-package main;
+package ui;
+
+import main.GamePanel;
 
 import java.awt.Color;
 import java.awt.Font;

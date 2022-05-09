@@ -1,10 +1,10 @@
 package main;
 
 import projectile.Projectile;
+import ui.Debug;
 import ui.UI;
 import event.EventHandler;
 import entity.Entity;
-import entity.Entity.EntityType;
 import entity.Player;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -159,7 +159,6 @@ public final class GamePanel extends JPanel implements Runnable{
                     renderOrder.remove((Drawable) e);
                 }
             }
-
         }
         if(gameState == GameState.PAUSE_STATE){
             //Nothing

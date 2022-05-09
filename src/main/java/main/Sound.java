@@ -34,6 +34,7 @@ public class Sound {
         this.soundURL.put("noHitWeapon", getClass().getResource("/sound/notHitWeapon.wav"));
         this.soundURL.put("fireball", getClass().getResource("/sound/fireball.wav"));
         this.soundURL.put("fireBallDamage", getClass().getResource("/sound/fireBallDamage.wav"));
+        this.soundURL.put("spiting", getClass().getResource("/sound/spiting.wav"));
     }
     
     public void setFile(String file){
