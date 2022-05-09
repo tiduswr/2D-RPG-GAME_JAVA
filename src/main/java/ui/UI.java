@@ -1,6 +1,7 @@
 package ui;
 
 import entity.LifeBar;
+import entity.ManaBar;
 import util.UtilityTool;
 import java.awt.Color;
 import java.awt.Font;
@@ -25,12 +26,15 @@ public class UI {
     private TitleScreen titleScreen;
     private StatusScreen statusScreen;
     private LifeBar lifeBar;
+    private ManaBar manaBar;
     private ScrollingMessages scrollMsg;
     private PlayerInventory inventory;
     
     public UI(GamePanel gp){
         UtilityTool uTool = new UtilityTool();
         lifeBar = gp.getPlayer().getLifeBar();
+        manaBar = gp.getPlayer().getManaBar();
+
         this.gp = gp;
         try {
             InputStream is = getClass().getResourceAsStream("/font/FreePixel.ttf");
@@ -57,7 +61,7 @@ public class UI {
         x = gp.getTileSize()/2; 
         y = gp.getTileSize()/2;
         width = gp.getTileSize()*5; 
-        height = gp.getTileSize()*9;
+        height = gp.getTileSize()*10;
         statusScreen = new StatusScreen(gp, x, y, width, height);
         
         //Inventory handler
@@ -73,6 +77,7 @@ public class UI {
         switch(gp.getGameState()){
             case PLAY_STATE:
                 lifeBar.draw(g2);
+                manaBar.draw(g2);
                 scrollMsg.drawMessages(g2);
                 break;
             case PAUSE_STATE:

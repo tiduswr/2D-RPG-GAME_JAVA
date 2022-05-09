@@ -9,14 +9,16 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+
 import main.GamePanel;
 import main.GameState;
 import main.KeyHandler;
-import interfaces.Action;
 import interfaces.listeners.InventoryListener;
 import java.util.ArrayList;
 
 import object.*;
+import projectile.PROJ_FireBall;
+import projectile.Projectile;
 import ui.Message;
 import util.UtilityTool;
 
@@ -28,7 +30,8 @@ public class Player extends Entity{
     private final int INVENTORY_SIZE = 20;
     private SuperObject[] inventory = new SuperObject[INVENTORY_SIZE];
     private ArrayList<InventoryListener> invListener = new ArrayList<>();
-    
+    private Projectile projectile;
+
     //Equips
     private OBJ_Weapon curWeapon;
     private OBJ_Equipment curShield;
@@ -43,14 +46,19 @@ public class Player extends Entity{
         //Basic stats
         stats.name = "Sam";
         stats.speed = 240/gp.getFPS();
-        
+        stats.mag = 1;
+        stats.maxMana = 2;
+        stats.mana = stats.maxMana;
+
         //SetDefault Values
         setDefaultValues();
         getDefaultImages();
         
         //Configure lifebar
         lifeBar = new LifeBar(gp, 56, this, 0, 0);
+        manaBar = new ManaBar(gp, 56, this, 0, gp.getTileSize() - ((int) (gp.getTileSize()*0.35f)));
         lifeBar.setDisplay(true);
+        manaBar.setDisplay(true);
     }
     
     private void setDefaultValues(){
@@ -66,6 +74,9 @@ public class Player extends Entity{
         stats.exp = 0;
         stats.nextLvlExp = 5;
         stats.gil = 0;
+
+        //Projectile
+        projectile = new PROJ_FireBall(gp, this);
 
         //Test Equipment
         OBJ_GreatSword testSword = new OBJ_GreatSword(gp);
@@ -164,7 +175,16 @@ public class Player extends Entity{
             left.resetAnimation();
             right.resetAnimation();
         }
-        
+
+        //Fireball
+        if(gp.getKeyH().isShotKeyPressed() && !projectile.isVisible()){
+            if(stats.mana >= projectile.getCost()){
+                projectile.set(worldX, worldY, direction, true);
+                gp.addProjectile(projectile);
+                stats.mana -= projectile.getCost();
+            }
+        }
+
         //Invincible damage frame
         if(invincible){
             invincibleCounter++;
@@ -217,31 +237,36 @@ public class Player extends Entity{
                 
                 gp.playSoundEffect("doDamage", 0.4f);
                 monster.doDamage(new Damage(this, monster));
-                
-                if(monster.isDying()){
-                    gp.getGameUI().getScrollMsg().addMessage(
-                        new Message("Você ganhou " + monster.getStats().getExp() + " exp."));
-                    if(receiveExp(monster.getStats().getExp())){
-                        //if true then Level UP!
-                        gp.stopMusic();
-                        gp.getGameUI().setStopMusic(true);
-                        gp.playSoundEffect("fanfarreSlim", 0.6f);
-                        gp.getGameUI().setCurrentDialog("Você subiu de nivel! A luz do crystal começa a brilhar"
-                                + " mais intensamente.");
-                        gp.setGameState(GameState.DIALOG_STATE);
-                    }
-                }
+                checkExpFromMonster(monster);
             }
         }
     }
-    
+
+    public void checkExpFromMonster(Entity monster){
+        if(monster.isDying()){
+            gp.getGameUI().getScrollMsg().addMessage(
+                    new Message("Você ganhou " + monster.getStats().getExp() + " exp."));
+            if(receiveExp(monster.getStats().getExp())){
+                //if true then Level UP!
+                gp.stopMusic();
+                gp.getGameUI().setStopMusic(true);
+                gp.playSoundEffect("fanfarreSlim", 0.6f);
+                gp.getGameUI().setCurrentDialog("Você subiu de nivel! A luz do crystal começa a brilhar"
+                        + " mais intensamente.");
+                gp.setGameState(GameState.DIALOG_STATE);
+            }
+        }
+    }
+
     private boolean receiveExp(int exp){
         stats.exp += exp;
         if(stats.exp >= stats.nextLvlExp){
             stats.nextLvlExp += (int)(stats.nextLvlExp*(1.20));
             stats.level++;
             stats.maxLife++;
+            stats.maxMana++;
             stats.str++;
+            stats.mag++;
             stats.dex++;
             stats.calculateAtk(curWeapon);
             stats.calculateDef(curShield);
@@ -296,6 +321,7 @@ public class Player extends Entity{
             if(UtilityTool.getLength(inventory) < (inventory.length -1) && o.executeAction()) {
                 addItemToInventory(o);
                 gp.removeObject(o);
+                gp.playSoundEffect("getItem", 0.2f);
             }
         }
     }

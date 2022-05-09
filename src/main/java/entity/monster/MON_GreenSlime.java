@@ -1,6 +1,7 @@
 package entity.monster;
 
 import animation.TimedAnimation;
+import entity.Direction;
 import entity.Entity;
 import java.awt.image.BufferedImage;
 import java.util.Random;

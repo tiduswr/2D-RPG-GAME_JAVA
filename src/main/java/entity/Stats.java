@@ -8,10 +8,25 @@ import object.SuperObject;
 public class Stats {
     protected Entity.EntityType type;
     protected String name;
-    protected int maxLife, life, speed, level, str, dex, atk, def, exp, nextLvlExp, gil;
+    protected int maxLife, life, speed, level, str, mag, dex, atk, def, exp, nextLvlExp, gil, mana, maxMana;
     protected SuperObject weapon, shield;
 
     public Stats() {
+        this.name = "";
+        this.maxLife = 0;
+        this.life = 1;
+        this.speed = 0;
+        this.level = 0;
+        this.str = 0;
+        this.mag = 0;
+        this.dex = 0;
+        this.atk = 0;
+        this.def = 0;
+        this.exp = 0;
+        this.nextLvlExp = 0;
+        this.gil = 0;
+        this.mana = 0;
+        this.maxMana = 0;
     }
 
     public EntityType getType() {
@@ -112,6 +127,30 @@ public class Stats {
     
     public int getGil() {
         return gil;
+    }
+
+    public int getMana() {
+        return mana;
+    }
+
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
+
+    public int getMaxMana() {
+        return maxMana;
+    }
+
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
+    }
+
+    public int getMag() {
+        return mag;
+    }
+
+    public void setMag(int mag) {
+        this.mag = mag;
     }
 
     public void setGil(int gil) {

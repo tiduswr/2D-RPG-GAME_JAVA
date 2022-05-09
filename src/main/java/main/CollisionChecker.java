@@ -3,6 +3,7 @@ package main;
 import entity.Entity;
 import object.SuperObject;
 import org.jetbrains.annotations.NotNull;
+import projectile.Projectile;
 
 import java.util.ArrayList;
 
@@ -136,7 +137,45 @@ public class CollisionChecker {
         }
         return index;
     }
-    
+
+    //NPC or Monster Collision
+    public int checkProjectile(Projectile e, ArrayList<Entity> targets){
+        int i = 0;
+        int index = -1;
+
+        for(Entity t : targets){
+            if(t != null){
+                //Get entity solid area position
+                e.getSolidArea().x = e.getWorldX() + e.getSolidArea().x;
+                e.getSolidArea().y = e.getWorldY() + e.getSolidArea().y;
+
+                //Get object solid area pos
+                t.getSolidArea().x = t.getWorldX() + t.getSolidArea().x;
+                t.getSolidArea().y = t.getWorldY() + t.getSolidArea().y;
+
+                switch(e.getDirection()){
+                    case UP: e.getSolidArea().y -= e.getSpeed(); break;
+                    case DOWN: e.getSolidArea().y += e.getSpeed(); break;
+                    case LEFT: e.getSolidArea().x -= e.getSpeed(); break;
+                    case RIGHT: e.getSolidArea().x += e.getSpeed(); break;
+                }
+                if(e.getSolidArea().intersects(t.getSolidArea())){
+                    e.setCollisionOn(true);
+                    index = i;
+                }
+
+                //Reset solid area position
+                e.getSolidArea().x = e.getSolidAreaDefaultX();
+                e.getSolidArea().y = e.getSolidAreaDefaultY();
+                t.getSolidArea().x = t.getSolidAreaDefaultX();
+                t.getSolidArea().y = t.getSolidAreaDefaultY();
+
+            }
+            i++;
+        }
+        return index;
+    }
+
     public boolean checkPlayer(Entity e){
         boolean contact = false;
         if(e != null){

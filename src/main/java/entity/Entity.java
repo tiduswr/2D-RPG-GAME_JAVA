@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+
 import main.GamePanel;
 import interfaces.WorldLocation;
 import animation.DyingAnimation;
@@ -23,9 +24,6 @@ import tile.TileManager;
 import interfaces.Drawable;
 
 public abstract class Entity implements Drawable{
-    
-    public enum Direction{UP, DOWN, LEFT, RIGHT, ANY};
-    
     protected GamePanel gp;    
     
     //Entity sprites
@@ -49,6 +47,7 @@ public abstract class Entity implements Drawable{
     protected Direction direction;
     protected boolean dying = false, alive = true;
     protected LifeBar lifeBar;
+    protected ManaBar manaBar;
     protected String[] dialogues;
     
     //Invincible Handler
@@ -125,7 +124,7 @@ public abstract class Entity implements Drawable{
     };
     public void update(){
         if(!alive){
-            gp.markEntityForDeath(this);
+            gp.markDrawableForDispose(this);
         }else if(!dying){
             if(lifeBar != null) lifeBar.update();
             setAction();
@@ -181,6 +180,7 @@ public abstract class Entity implements Drawable{
             damageReaction();
             if(lifeBar != null) lifeBar.setDisplay(true);
             if(stats.life > 0 && value.calculateDamage() < stats.life){
+                System.out.println(value.calculateDamage());
                 stats.life -= value.calculateDamage();
             }else{
                 stats.life = 0;
@@ -197,6 +197,15 @@ public abstract class Entity implements Drawable{
             stats.setLife(stats.getMaxLife());
         }else{
             stats.setLife(calculatedHp);
+        }
+    }
+
+    public void recoverMp(int mp){
+            int calculatedMp = mp + stats.getMana();
+        if(calculatedMp >= stats.getMaxMana()) {
+            stats.setMana(stats.getMaxMana());
+        }else{
+            stats.setMana(calculatedMp);
         }
     }
 
@@ -398,7 +407,11 @@ public abstract class Entity implements Drawable{
         WorldLocation ext = (WorldLocation) o;
         return Integer.compare(getWorldY(), ext.getWorldY());
     }
-    
+
+    public ManaBar getManaBar() {
+        return manaBar;
+    }
+
     public enum EntityType{MONSTER, NPC, PLAYER;}
     
 }

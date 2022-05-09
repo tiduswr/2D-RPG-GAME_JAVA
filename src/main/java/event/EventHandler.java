@@ -1,11 +1,12 @@
 package event;
 
-import entity.Entity.Direction;
 import entity.damage.FixedDamage;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.util.HashMap;
+
+import entity.Direction;
 import main.GamePanel;
 import main.GameState;
 

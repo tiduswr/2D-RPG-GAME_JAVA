@@ -15,7 +15,7 @@ public class AssetSetter {
     public void setObject(){
         spawnObject(new OBJ_Key(gp), 25, 23, 0);
         spawnObject(new OBJ_Potion(gp), 21, 19, 1);
-        spawnObject(new OBJ_Key(gp), 26, 21, 2);
+        spawnObject(new OBJ_ManaPotion(gp), 26, 21, 2);
         spawnObject(new OBJ_Axe(gp), 33, 21, 2);
         spawnObject(new OBJ_IronShield(gp), 35, 21, 2);
     }

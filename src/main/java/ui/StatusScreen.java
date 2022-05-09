@@ -28,10 +28,14 @@ public class StatusScreen {
         int auxY = yOffset;
         int auxX = (window.getX() + window.getWidth()) - 20;
         Player p = gp.getPlayer();
-        
+
+        drawLineOnTheRight(g2, auxX, auxY, "Level", String.valueOf(p.getStats().getLevel()));
+        auxY += linesDistance;
         drawLineOnTheRight(g2, auxX, auxY, "Life", String.valueOf(p.getStats().getLife() + "/" + p.getStats().getMaxLife()));
         auxY += linesDistance;
         drawLineOnTheRight(g2, auxX, auxY, "Str", String.valueOf(p.getStats().getStr()));
+        auxY += linesDistance;
+        drawLineOnTheRight(g2, auxX, auxY, "Mag", String.valueOf(p.getStats().getMag()));
         auxY += linesDistance;
         drawLineOnTheRight(g2, auxX, auxY, "Dex", String.valueOf(p.getStats().getDex()));
         auxY += linesDistance;

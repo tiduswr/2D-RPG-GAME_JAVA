@@ -23,7 +23,7 @@ public class Sound {
         this.soundURL.put("cure", getClass().getResource("/sound/cure.wav"));
         this.soundURL.put("chestUnlock", getClass().getResource("/sound/chestUnlock.wav"));
         this.soundURL.put("doorUnlock", getClass().getResource("/sound/doorUnlock.wav"));
-        this.soundURL.put("keyGet", getClass().getResource("/sound/keyGet.wav"));
+        this.soundURL.put("getItem", getClass().getResource("/sound/getItem.wav"));
         this.soundURL.put("speedUp", getClass().getResource("/sound/speedUp.wav"));
         this.soundURL.put("teleport", getClass().getResource("/sound/teleport.wav"));
         this.soundURL.put("prelude", getClass().getResource("/sound/prelude.wav"));
@@ -32,6 +32,8 @@ public class Sound {
         this.soundURL.put("doDamage", getClass().getResource("/sound/doDamage.wav"));
         this.soundURL.put("receiveDamage", getClass().getResource("/sound/receiveDamage.wav"));
         this.soundURL.put("noHitWeapon", getClass().getResource("/sound/notHitWeapon.wav"));
+        this.soundURL.put("fireball", getClass().getResource("/sound/fireball.wav"));
+        this.soundURL.put("fireBallDamage", getClass().getResource("/sound/fireBallDamage.wav"));
     }
     
     public void setFile(String file){

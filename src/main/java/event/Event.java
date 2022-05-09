@@ -1,6 +1,6 @@
 package event;
 
-import entity.Entity.Direction;
+import entity.Direction;
 
 public abstract class Event {
     private int eventCol, eventRow;
@@ -11,7 +11,7 @@ public abstract class Event {
         this.eventRow = eventRow;
         this.reqDirection = reqDirection;
     }
-    
+
     public void execute(){};
 
     public int getEventCol() {

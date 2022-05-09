@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener{
     
-    private boolean upPressed, downPressed, leftPressed, rightPressed;
+    private boolean upPressed, downPressed, leftPressed, rightPressed, shotKeyPressed;
     private GamePanel gp;
     //Debug
     private boolean debug = false;
@@ -85,9 +85,12 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_C){
             gp.setGameState(GameState.STATUS_WINDOW_STATE);
         }
+        if(code == KeyEvent.VK_Q){
+            shotKeyPressed = true;
+        }
         //Debug
         if(code == KeyEvent.VK_F1){
-            debug = debug == false;
+            debug = !debug;
         }
         //Pause
         if(code == KeyEvent.VK_P){
@@ -115,6 +118,9 @@ public class KeyHandler implements KeyListener{
         if(code == KeyEvent.VK_Z){
             zPressed = false;
         }
+        if(code == KeyEvent.VK_Q){
+            shotKeyPressed = false;
+        }
     }
     
     public boolean debugMode(){
@@ -136,6 +142,11 @@ public class KeyHandler implements KeyListener{
     public boolean isRightPressed() {
         return rightPressed;
     }
+
+    public boolean isShotKeyPressed() {
+        return shotKeyPressed;
+    }
+
     public boolean iszPressed() {
         return zPressed;
     }

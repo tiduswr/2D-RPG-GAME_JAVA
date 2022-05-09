@@ -1,5 +1,6 @@
 package main;
 
+import projectile.Projectile;
 import ui.UI;
 import event.EventHandler;
 import entity.Entity;
@@ -49,8 +50,9 @@ public final class GamePanel extends JPanel implements Runnable{
     private ArrayList<SuperObject> obj = new ArrayList<>(); //Pode ser mostrados até 10 objetos por vez no jogo
     private ArrayList<Entity> npcs = new ArrayList<>();
     private ArrayList<Entity> monsters = new ArrayList<>();
+    private ArrayList<Projectile> projectiles = new ArrayList<>();
     private ArrayList<Drawable> renderOrder = new ArrayList<>();
-    private Stack<Entity> markedForDeath = new Stack<>();
+    private Stack<Drawable> markedForDeath = new Stack<>();
     
     //System Game
     private Thread gameThread;
@@ -139,13 +141,22 @@ public final class GamePanel extends JPanel implements Runnable{
                 cur.update();
             }
 
+            //PROJECTILES
+            for(Projectile cur : projectiles){
+                cur.update();
+            }
+
             //REMOVE ENTITIES MARKED FOR DEATH
             while(!markedForDeath.empty()){
-                Entity e = markedForDeath.pop();
+                Object e = markedForDeath.pop();
                 if(e != null) {
-                    npcs.remove(e);
-                    monsters.remove(e);
-                    renderOrder.remove(e);
+                    if(e instanceof Entity) {
+                        npcs.remove((Entity) e);
+                        monsters.remove((Entity) e);
+                    }else if(e instanceof Projectile){
+                        projectiles.remove((Projectile) e);
+                    }
+                    renderOrder.remove((Drawable) e);
                 }
             }
 
@@ -312,6 +323,11 @@ public final class GamePanel extends JPanel implements Runnable{
         renderOrder.add(monster);
     }
 
+    public void addProjectile(Projectile projectile){
+        projectiles.add(projectile);
+        renderOrder.add(projectile);
+    }
+
     public void removeObject(SuperObject o){
         obj.remove(o);
         renderOrder.remove(o);
@@ -327,6 +343,15 @@ public final class GamePanel extends JPanel implements Runnable{
         renderOrder.remove(monster);
     }
 
+    public void removeProjectile(Projectile projectile){
+        projectiles.remove(projectile);
+        renderOrder.remove(projectile);
+    }
+
+    public void removeFromRenderOrder(Drawable drawable){
+        renderOrder.remove(drawable);
+    }
+
     public ArrayList<SuperObject> getObj() {
         return obj;
     }
@@ -339,7 +364,11 @@ public final class GamePanel extends JPanel implements Runnable{
         return monsters;
     }
 
-    public void markEntityForDeath(Entity e){
+    public ArrayList<Projectile> getProjectiles() {
+        return projectiles;
+    }
+
+    public void markDrawableForDispose(Drawable e){
         markedForDeath.push(e);
     }
 
