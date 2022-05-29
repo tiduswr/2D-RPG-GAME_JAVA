@@ -21,10 +21,21 @@ public class OBJ_Door extends SuperObject{
     @Override
     public boolean executeAction() {
         super.executeAction();
-        if(false){
-            gp.playSoundEffect("doorUnlock",1);
-            return true;
+
+        //Find key
+        OBJ_Key key = null;
+        for(SuperObject o : gp.getPlayer().getInventory()){
+            if(o instanceof OBJ_Key) {
+                key = (OBJ_Key) o;
+                break;
+            }
         }
+        if(key != null){
+            gp.playSoundEffect("doorUnlock",1);
+            gp.getPlayer().removeItem(key);
+            gp.removeObject(this);
+        }
+
         return false;
     }
 }

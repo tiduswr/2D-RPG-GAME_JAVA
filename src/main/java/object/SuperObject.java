@@ -22,6 +22,8 @@ import util.UtilityTool;
 import interfaces.Drawable;
 
 public abstract class SuperObject implements Action, InventoryAction, Drawable {
+    public enum ObjectType{CAN_BE_STORED, PICKUP_ONLY}
+
     protected BufferedImage image;
     protected String name = "???", description = "No description!";
     protected boolean collision;
@@ -30,6 +32,7 @@ public abstract class SuperObject implements Action, InventoryAction, Drawable {
     protected GamePanel gp;
     protected int solidAreaDefaultX, solidAreaDefaultY;
     protected final Stroke collisionRectStroke;
+    protected ObjectType objType = ObjectType.CAN_BE_STORED;
 
     public SuperObject(GamePanel gp) {
         this.gp = gp;
@@ -116,6 +119,14 @@ public abstract class SuperObject implements Action, InventoryAction, Drawable {
 
     public int getSolidAreaDefaultY() {
         return solidAreaDefaultY;
+    }
+
+    public ObjectType getObjType() {
+        return objType;
+    }
+
+    public void setObjType(ObjectType objType) {
+        this.objType = objType;
     }
 
     @Override

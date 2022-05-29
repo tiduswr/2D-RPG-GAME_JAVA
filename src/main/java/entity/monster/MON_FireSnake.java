@@ -4,8 +4,10 @@ import animation.TimedAnimation;
 import entity.Direction;
 import entity.Entity;
 import main.GamePanel;
+import object.OBJ_Coin;
 import projectile.PROJ_FireSpittle;
 import projectile.Projectile;
+import ui.Message;
 
 import java.awt.image.BufferedImage;
 import java.util.Random;
@@ -101,7 +103,14 @@ public class MON_FireSnake extends Entity{
         }
 
     }
-    
+
+    @Override
+    public void randomChooseDrop() {
+        Random rand = new Random();
+        int i = rand.nextInt(40)+26;
+        dropItem(new OBJ_Coin(gp, i));
+    }
+
     @Override
     public void damageReaction(Direction dir){
         actionLockCounter = 0;

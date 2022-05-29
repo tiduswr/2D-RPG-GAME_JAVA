@@ -247,14 +247,13 @@ public class Player extends Entity{
     public void checkExpFromMonster(Entity monster){
         if(monster.isDying()){
             gp.getGameUI().getScrollMsg().addMessage(
-                    new Message("Você ganhou " + monster.getStats().getExp() + " exp."));
+                    new Message("Earned " + monster.getStats().getExp() + " exp."));
             if(receiveExp(monster.getStats().getExp())){
                 //if true then Level UP!
                 gp.stopMusic();
                 gp.getGameUI().setStopMusic(true);
                 gp.playSoundEffect("fanfarreSlim", 0.6f);
-                gp.getGameUI().setCurrentDialog("Você subiu de nivel! A luz do crystal começa a brilhar"
-                        + " mais intensamente.");
+                gp.getGameUI().setCurrentDialog("You leveled up! The crystal's blessing intensifies.");
                 gp.setGameState(GameState.DIALOG_STATE);
             }
         }
@@ -321,7 +320,7 @@ public class Player extends Entity{
         if(i != -1){
             SuperObject o = gp.getObj().get(i);
             if(UtilityTool.getLength(inventory) < (inventory.length -1) && o.executeAction()) {
-                addItemToInventory(o);
+                if(o.getObjType() == SuperObject.ObjectType.CAN_BE_STORED) addItemToInventory(o);
                 gp.removeObject(o);
                 gp.playSoundEffect("getItem", 0.2f);
             }

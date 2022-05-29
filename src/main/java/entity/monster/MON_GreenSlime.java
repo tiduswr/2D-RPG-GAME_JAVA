@@ -8,6 +8,8 @@ import java.util.Random;
 
 import entity.damage.Damage;
 import main.GamePanel;
+import object.OBJ_Coin;
+import ui.Message;
 
 public class MON_GreenSlime extends Entity{
     public MON_GreenSlime(GamePanel gp, int col, int row){
@@ -69,7 +71,14 @@ public class MON_GreenSlime extends Entity{
             actionLockCounter = 0;
         }
     }
-    
+
+    @Override
+    public void randomChooseDrop() {
+        Random rand = new Random();
+        int i = rand.nextInt(25)+1;
+        dropItem(new OBJ_Coin(gp, i));
+    }
+
     @Override
     public void damageReaction(Direction dir){
         actionLockCounter = 0;

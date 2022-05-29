@@ -147,7 +147,7 @@ public class Projectile implements Drawable {
             worldY - gp.getTileSize() < gp.getPlayer().getWorldY() + gp.getPlayer().getScreenY()) {
             //Draw Sprite
             BufferedImage image = getSpriteDirection();
-            g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+            g2.drawImage(image, screenX, screenY, null);
             if (gp.getKeyH().debugMode()) drawCollision(g2, screenX, screenY);
         }
     }

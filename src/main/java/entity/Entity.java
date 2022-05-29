@@ -19,6 +19,7 @@ import main.GamePanel;
 import interfaces.WorldLocation;
 import animation.DyingAnimation;
 import entity.damage.DamageAction;
+import object.SuperObject;
 import util.UtilityTool;
 import tile.TileManager;
 import interfaces.Drawable;
@@ -124,8 +125,16 @@ public abstract class Entity implements Drawable{
         }
     
     };
+
+    public void randomChooseDrop(){};
+
+    protected void dropItem(SuperObject o){
+        gp.getAssetSetter().spawnObjectByWorldLocation(o, worldX, worldY);
+    }
+
     public void update(){
         if(!alive){
+            randomChooseDrop();
             gp.markDrawableForDispose(this);
         }else if(!dying){
             if(lifeBar != null) lifeBar.update();
@@ -264,7 +273,7 @@ public abstract class Entity implements Drawable{
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
             }
             if(dying) alive = dyeAnim.update(g2);
-            g2.drawImage(image, screenX, screenY, gp.getTileSize(), gp.getTileSize(), null);
+            g2.drawImage(image, screenX, screenY,null);
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
             onScreen = true;
 

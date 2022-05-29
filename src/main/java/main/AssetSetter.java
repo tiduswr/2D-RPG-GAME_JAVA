@@ -14,19 +14,26 @@ public class AssetSetter {
     }
     
     public void setObject(){
-        spawnObject(new OBJ_Key(gp), 25, 23, 0);
-        spawnObject(new OBJ_Potion(gp), 21, 19, 1);
-        spawnObject(new OBJ_ManaPotion(gp), 26, 21, 2);
-        spawnObject(new OBJ_Axe(gp), 33, 21, 2);
-        spawnObject(new OBJ_IronShield(gp), 35, 21, 2);
+        spawnObject(new OBJ_Key(gp), 25, 23);
+        spawnObject(new OBJ_Potion(gp), 21, 19);
+        spawnObject(new OBJ_ManaPotion(gp), 26, 21);
+        spawnObject(new OBJ_Axe(gp), 33, 21);
+        spawnObject(new OBJ_IronShield(gp), 35, 21);
+        spawnObject(new OBJ_Coin(gp, 50), 37, 21);
     }
     
-    private void spawnObject(SuperObject obj, int row, int col, int index){
+    public void spawnObject(SuperObject obj, int row, int col){
         obj.setWorldX(row * gp.getTileSize());
         obj.setWorldY(col * gp.getTileSize());
         gp.addObject(obj);
     }
-    
+
+    public void spawnObjectByWorldLocation(SuperObject obj, int worldX, int worldY){
+        obj.setWorldX(worldX);
+        obj.setWorldY(worldY);
+        gp.addObject(obj);
+    }
+
     public void setNPCS(){
         gp.addNpc(new NPC_BlackMage(gp, 21, 21));
         gp.addNpc(new NPC_WhiteMage(gp, 26, 21));
